@@ -68,7 +68,7 @@ module.exports = {
       loader: 'babel-loader',
       exclude: '/node_modules/'
     }, {
-      test: /\.(woff(2)?|ttf|eot|json)(\?v=\d+\.\d+\.\d+)?$/,
+      test: /\.(woff(2)?|ttf|eot)(\?v=\d+\.\d+\.\d+)?$/,
       loader: 'file-loader',
       options: {
         outputPath: PATHS.short.fonts,
@@ -114,9 +114,9 @@ module.exports = {
     //   jQuery: "jquery",
     // }),
     new CopyWebpackPlugin([
-//      { from: `${PATHS.src}/${PATHS.short.images}`, to: `${PATHS..short.images}` },
-//     { from: `${PATHS.src}/${PATHS.short.fonts}`, to: `${PATHS.short.fonts` },
-//     { from: `${PATHS.src}/static`, to: '' },
+     // { from: `${PATHS.src}/${PATHS.short.images}`, to: `${PATHS.short.images}` },
+     // { from: `${PATHS.src}/${PATHS.short.fonts}`, to: `${PATHS.short.fonts}`,
+    // { from: `${PATHS.src}/static`, to: '' },
     ]),
     // Automatic creation any html pages (Don't forget to RERUN dev server)
     ...PAGES.map(page => new HtmlWebpackPlugin({

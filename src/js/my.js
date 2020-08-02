@@ -7,24 +7,49 @@ window.onload = init
 
 let scene, camera, renderer, controls //глобальные переменные для создания сцены
 
-var loader = new THREE.FontLoader();
 
-loader.load( '../fonts/helvetiker_regular.typeface.json', function ( font ) {
 
-  var geometry = new THREE.TextGeometry( 'Hello three.js!', {
-    font: font,
-    size: 80,
-    height: 5,
-    curveSegments: 12,
-    bevelEnabled: true,
-    bevelThickness: 10,
-    bevelSize: 8,
-    bevelOffset: 0,
-    bevelSegments: 5
-  } );
-} );
 
 function init(value_init, previous_input, number_of_symbols_resize) {
+
+
+
+
+
+///////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////
+  var loader = new THREE.FontLoader();
+
+  loader.load( require('@fonts/helvetiker_regular.typeface.json.eot'), function ( font ) {
+
+    var text;
+
+          var color = 0x006699;
+
+          var matLite = new THREE.MeshBasicMaterial( {
+            color: color,
+          } );
+
+          var message = "1";
+
+          var geometry = new THREE.TextGeometry( message, {
+                    font: font,
+                    size: 0.8,
+                    height: 0.25,
+                    curveSegments: 9,
+                  } );
+
+          text = new THREE.Mesh( geometry, matLite );
+          text.position.set(-0.4,-0.4,0.5);
+          scene.add( text );
+
+        } ); 
+
+///////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////
+
 
   /////задание основных переменных////////////////////////////////////////
 

@@ -13,44 +13,6 @@ let scene, camera, renderer, controls //глобальные переменны�
 function init(value_init, previous_input, number_of_symbols_resize) {
 
 
-
-
-
-///////////////////////////////////////////////////////////////////////////////////////
-///////////////////////////////////////////////////////////////////////////////////////
-///////////////////////////////////////////////////////////////////////////////////////
-///////////////////////////////////////////////////////////////////////////////////////
-  var loader = new THREE.FontLoader();
-
-  loader.load( require('@fonts/helvetiker_regular.typeface.json.eot'), function ( font ) {
-
-    var text;
-
-          var color = 0x006699;
-
-          var matLite = new THREE.MeshBasicMaterial( {
-            color: color,
-          } );
-
-          var message = "1";
-
-          var geometry = new THREE.TextGeometry( message, {
-                    font: font,
-                    size: 0.8,
-                    height: 0.25,
-                    curveSegments: 9,
-                  } );
-
-          text = new THREE.Mesh( geometry, matLite );
-          text.position.set(-0.4,-0.4,0.5);
-          scene.add( text );
-
-        } ); 
-
-///////////////////////////////////////////////////////////////////////////////////////
-///////////////////////////////////////////////////////////////////////////////////////
-
-
   /////задание основных переменных////////////////////////////////////////
 
   //база цветов//
@@ -328,6 +290,7 @@ function init(value_init, previous_input, number_of_symbols_resize) {
       remove_all_objects_from_memory(axis)
       remove_all_objects_from_memory(plain_x_cube)
       if (border) remove_all_objects_from_memory(border)
+      if (charNumber) remove_all_objects_from_memory(charNumber)
       if (scale_border) {
         scene.remove( scale_border )
         scale_border = null }
@@ -483,6 +446,11 @@ function init(value_init, previous_input, number_of_symbols_resize) {
     //отображение бордера//
     if (selected_html_content === "b") {
       border.forEach( function(entry) { entry.visible = !entry.visible } )
+    }
+    
+    //отображение цифр//
+    if (selected_html_content === "№") {
+      charNumber.forEach( function(entry) { entry.visible = !entry.visible } )
     }
     
     //отдаление/приближение//
@@ -948,7 +916,49 @@ function init(value_init, previous_input, number_of_symbols_resize) {
 
   }
 
-///////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////
+///  РАБОТА С СИМВОЛАМИ  //////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////
 
+  let loader = new THREE.FontLoader();
+  let charNumber = []
+
+  loader.load( require('@fonts/helvetiker_regular.typeface.json.eot'), function ( font ) {
+
+    //единый материал для всех (пока)
+    let fontMaterial = new THREE.MeshBasicMaterial( {color: 0x000000} );
+    
+    //создаём массив геометрий для цифр от 0 до 9
+    let fontGeometry = []
+    
+    for (let i=0; i < 10; i++) {
+
+      let char = i.toString()
+
+      fontGeometry[i] = new THREE.TextGeometry( char, {
+                          font: font,
+                          size: 0.8,
+                          height: 0.2,
+                          curveSegments: 9,
+                          } )
+    }
+    
+    //присвоение и вывод объектов цифр
+    function everyNumber(objects) {
+      for (let i=0; i < objects.length; i++) {
+        charNumber[i] = new THREE.Mesh( fontGeometry[objects[i].colornum], fontMaterial )
+        charNumber[i].position.set(objects[i].position.x-0.35,objects[i].position.y-0.4, 0.4);
+        scene.add( charNumber[i] )
+        charNumber[i].visible = false
+      }
+    }
+
+    everyNumber([...axis,...plain_x_cube])
+
+  } );
+
+
+///////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////
 } //init() end bracket

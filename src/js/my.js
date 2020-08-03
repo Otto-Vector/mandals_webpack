@@ -450,9 +450,17 @@ function init(value_init, previous_input, number_of_symbols_resize) {
     
     //отображение цифр//
     if (selected_html_content === "№") {
+
       charNumber.forEach( function(entry) { entry.visible = !entry.visible } )
+
+      //убираем бордер для отображения цифр и возвращаем при неактиве
+      if (selected_mandala == 3) {
+        let visible_onoff = !charNumber[0].visible
+        border.forEach( function(entry) { entry.visible = visible_onoff } )
+      }
+
     }
-    
+
     //отдаление/приближение//
     if (selected_html_content === "+") camera.position.z = (camera.position.z > 10) ? camera.position.z - 10 : 10
     if (selected_html_content === "-") camera.position.z = camera.position.z + 10
@@ -920,7 +928,7 @@ function init(value_init, previous_input, number_of_symbols_resize) {
 ///  РАБОТА С СИМВОЛАМИ  //////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////
 
-  let loader = new THREE.FontLoader();
+  let loader = new THREE.FontLoader()
   let charNumber = []
 
   loader.load( require('@fonts/helvetiker_regular.typeface.json.eot'), function ( font ) {
@@ -945,13 +953,27 @@ function init(value_init, previous_input, number_of_symbols_resize) {
     
     //присвоение и вывод объектов цифр
     function everyNumber(objects) {
-      for (let i=0; i < objects.length; i++) {
-        charNumber[i] = new THREE.Mesh( fontGeometry[objects[i].colornum], fontMaterial )
-        charNumber[i].position.set(objects[i].position.x-0.35,objects[i].position.y-0.4, 0.4);
-        scene.add( charNumber[i] )
-        charNumber[i].visible = false
+
+      for (let i=0, j=0; i < objects.length; i++) {
+
+        let x = objects[i].position.x
+        let y = objects[i].position.y
+        let color_n = objects[i].colornum
+
+        //не считаем нули вне осей
+        if ( color_n !== 0 || (color_n === 0 && (x === 0 || y === 0)) ) {
+
+          charNumber[j] = new THREE.Mesh( fontGeometry[color_n], fontMaterial )
+          charNumber[j].position.set(x-0.35, y-0.4, 0.4)
+          scene.add( charNumber[j] )
+          charNumber[j].visible = false
+          j++
+
+        }
+
       }
-    }
+        
+    }//everyNumber end
 
     everyNumber([...axis,...plain_x_cube])
 

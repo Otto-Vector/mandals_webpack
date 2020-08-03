@@ -19,7 +19,7 @@ function init(value_init, previous_input, number_of_symbols_resize) {
   let basic_colors = ["#FFFFFF", "#E4388C", "#E4221B", "#FF7F00", "#FFED00", "#008739", "#02A7AA", "#47B3E7", "#2A4B9B", "#702283"]
 
   //базовый сборщик геометрии кубов//
-  let cubeGeom = new THREE.CubeGeometry(1,1,1) 
+  let cubeGeom = new THREE.CubeGeometry(1,1,0.01) 
 
   //материал кубов создаётся из массива цветов от нуля до девяти соответственно
   let color_material = basic_colors.map( color_n => new THREE.MeshBasicMaterial({ color: color_n }) )
@@ -289,8 +289,11 @@ function init(value_init, previous_input, number_of_symbols_resize) {
       //зачистка памяти
       remove_all_objects_from_memory(axis)
       remove_all_objects_from_memory(plain_x_cube)
+
       if (border) remove_all_objects_from_memory(border)
       if (charNumber) remove_all_objects_from_memory(charNumber)
+      if (squares) remove_all_objects_from_memory(squares)
+
       if (scale_border) {
         scene.remove( scale_border )
         scale_border = null }
@@ -401,9 +404,9 @@ function init(value_init, previous_input, number_of_symbols_resize) {
     //функция перебора массива с отслеживанием нажатых кнопок
     function toggle_visibler(arr) { //в ф-цию передаем массив
       arr.forEach(function(item) { //перебираем массив
-          if (selected_html_content === "#") item.visible = false //все искомые элементы становятся невидимыми
+          if (selected_html_content === "N") item.visible = false //все искомые элементы становятся невидимыми
           if (selected_html_content === "@" ||
-             +selected_html_content === +item.colornum ) item.visible = !item.visible //смена видимости на невидимость
+             +selected_html_content === +item.colornum) item.visible = !item.visible //смена видимости на невидимость
           if (selected_html_content === "A") item.visible = true //все искомые элементы становятся видимыми
         })
     }
@@ -436,12 +439,17 @@ function init(value_init, previous_input, number_of_symbols_resize) {
 
       }
     }
+    if (selected_html_content === "#")
+      squares.forEach( function(entry) { entry.visible = !entry.visible } )
 
     //смена цвета для бордера//
-    if (selected_html_content === "B") border.forEach( function(entry) { 
-      entry.colornum = (+entry.colornum === 9 ) ? 0 : ++entry.colornum //перебор цвета в замкнутом цикле 9 и смена значения
-      entry.material.color.set(basic_colors[entry.colornum]) //присвоение значения цвета
-      })
+    if (selected_html_content === "B")
+      border.forEach( 
+        function(entry) { 
+          entry.colornum = (+entry.colornum === 9) ? 0 : ++entry.colornum //перебор цвета в замкнутом цикле 9 и смена значения
+          entry.material.color.set( basic_colors[entry.colornum] ) //присвоение значения цвета
+        }
+      )
 
     //отображение бордера//
     if (selected_html_content === "b") {
@@ -452,7 +460,6 @@ function init(value_init, previous_input, number_of_symbols_resize) {
     if (selected_html_content === "№") {
 
       charNumber.forEach( function(entry) { entry.visible = !entry.visible } )
-
       //убираем бордер для отображения цифр и возвращаем при неактиве
       if (selected_mandala == 3) {
         let visible_onoff = !charNumber[0].visible
@@ -829,7 +836,7 @@ function init(value_init, previous_input, number_of_symbols_resize) {
     //поворот на 45градусов
     x_border.rotation.z = THREE.Math.degToRad( 45 )
     //приближаем объект для визуального перекрытия "зубцов"
-    x_border.position.set(0,0,0.5)
+    x_border.position.set(0,0,0.05)
     //изменение размера
     x_border.scale.set(scale_p,scale_p,scale_p)
 
@@ -946,7 +953,7 @@ function init(value_init, previous_input, number_of_symbols_resize) {
       fontGeometry[i] = new THREE.TextGeometry( char, {
                           font: font,
                           size: 0.8,
-                          height: 0.2,
+                          height: 0.02,
                           curveSegments: 9,
                           } )
     }
@@ -964,7 +971,7 @@ function init(value_init, previous_input, number_of_symbols_resize) {
         if ( color_n !== 0 || (color_n === 0 && (x === 0 || y === 0)) ) {
 
           charNumber[j] = new THREE.Mesh( fontGeometry[color_n], fontMaterial )
-          charNumber[j].position.set(x-0.35, y-0.4, 0.4)
+          charNumber[j].position.set(x-0.35, y-0.4, 0.06)
           scene.add( charNumber[j] )
           charNumber[j].visible = false
           j++
@@ -979,8 +986,55 @@ function init(value_init, previous_input, number_of_symbols_resize) {
 
   } );
 
+////////////////////////////////////////////////////////////////////////////////////
+////// РАБОТА С ЛИНИЯМИ  //////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////
 
-///////////////////////////////////////////////////////////////////////////////////////
-///////////////////////////////////////////////////////////////////////////////////////
+  let lineMaterial = new THREE.LineBasicMaterial( { color: 0x000000 } )
+  let squares = []
+
+  //функция сетки
+  function grid(object) {
+
+    let geometry_for_line = []
+    let area_position = []
+    let z_position = 0.0065
+    let area_around = 0.5
+    let x=0, y=0, color_n=0
+
+    for (let i = 0, k = 0; i < object.length; i++) {
+        x = object[i].position.x
+        y = object[i].position.y
+        color_n = object[i].colornum
+
+        area_position[0] = [ x - area_around, y - area_around, z_position ]
+        area_position[1] = [ x + area_around, y - area_around, z_position ]
+        area_position[2] = [ x + area_around, y + area_around, z_position ]
+        area_position[3] = [ x - area_around, y + area_around, z_position ]
+        area_position[4] = area_position [0]
+
+    //не считаем нули вне осей
+      if ( color_n !== 0 || (color_n === 0 && (x === 0 || y === 0)) ){
+
+        geometry_for_line[k] = new THREE.Geometry()
+        
+        for (let j = 0; j < area_position.length; j++)
+          geometry_for_line[k].vertices.push( new THREE.Vector3( ...area_position[j] ) )
+
+        squares[k] = new THREE.Line(geometry_for_line[k], lineMaterial )
+        
+        // squares[k].visible = false
+        
+        scene.add(squares[k])
+        k++
+      }
+    }
+
+  }
+  //создаём сетку
+  grid([...axis, ...plain_x_cube])
+
+////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////
 } //init() end bracket

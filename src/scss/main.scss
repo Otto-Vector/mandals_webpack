@@ -67,12 +67,16 @@ header {
 
 
 #numeric_adaptation {
-    background-color: rgba(0,0,0,0);
+    background-color: transparent;
     font-size: 2vw;
     color: gray;
     text-shadow: 0px .8px white;
     text-align: center;
     width: 100%;
+}
+
+#numeric_adaptation option {
+    text-align: center;
 }
 
 

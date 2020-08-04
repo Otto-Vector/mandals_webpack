@@ -9,9 +9,7 @@ let scene, camera, renderer, controls //глобальные переменны�
 
 
 
-
 function init(value_init, previous_input, number_of_symbols_resize) {
-
 
   /////задание основных переменных////////////////////////////////////////
 
@@ -119,13 +117,14 @@ function init(value_init, previous_input, number_of_symbols_resize) {
   // 8 - на квадрат шахматный расчёт (1вар)     +
   // 9 - на квадрат шахматый расчёт (2вар)      +
   // 
-  let selected_mandala = +value_init || 4 //проверка на первый запуск init() (по умолчанию 4-ый вариант)
+  let selected_mandala = +value_init || 3 //проверка на первый запуск init() (по умолчанию 4-ый вариант)
+  
 
+  let camera_range = 60
   //максимальное количество символов вводимой строки
   let max_input_length = 33
   //максимальное количество знаков на расширение
   let max_expansion_length = 57
-
   ///////////////БЛОК ОБРАБОТКИ ВВОДИМОЙ СТРОКИ///////////////////////////////////////////////
 
   ///заменяемая строка при неверном вводе (сейчас вводит дату)
@@ -148,7 +147,7 @@ function init(value_init, previous_input, number_of_symbols_resize) {
 
   //////////////////////////////////////////////////////////////
   //здесь будет адаптация отдаления камеры по размеру вводимого значения
-  if (selected_mandala.true_of(4,3)) camera.position.set( 0, 0, 60 ) //позиция камеры для малых квадратов
+  if (selected_mandala.true_of(4,3)) camera.position.set( 0, 0, camera_range ) //60 //позиция камеры для малых квадратов
   if (selected_mandala.true_of(8,9)) camera.position.set( 0, 0, 120 ) //позиция камеры для больших квадратов
 
 
@@ -202,9 +201,11 @@ function init(value_init, previous_input, number_of_symbols_resize) {
   ///numeric_adaptation
   //справочная строка под title`ом
   let numeric_adaptation = document.querySelector("#numeric_adaptation")
+  // numeric_adaptation.op
 
   ////////////////////////////////////////////////////////////////
-  ///события/////////////////////////////////////////////////////
+  /// события/////////////////////////////////////////////////////
+  ////////////////////////////////////////////////////////////////
 
 
   //контроль ввода цифровых значений
@@ -318,7 +319,9 @@ function init(value_init, previous_input, number_of_symbols_resize) {
   let simbols_static = "abcdefghijklmnopqrstuvwxyz абвгдеёжзийклмнопрстуфхцчшщъыьэюя"
 
   let string_for_algorithms = input_string.to_array_of_numbers(simbols_static)
-
+  
+  number_of_symbols_resize = +number_of_symbols_resize || string_for_algorithms.length
+  
   //изменяет размер обрабатываемой числовой строки
   string_for_algorithms = string_for_algorithms_to_number_of_symbols(string_for_algorithms, number_of_symbols_resize)
 
@@ -334,7 +337,6 @@ function init(value_init, previous_input, number_of_symbols_resize) {
                                 string_for_algorithms[0]
   //удаление суммарной цифры из начала строки
   numeric_adaptation.innerHTML = numeric_adaptation_text.slice(1)
-
 
 
   ///////////ВЫБОР АЛГОРИТМА РАСЧЁТА///////////
@@ -598,6 +600,7 @@ function init(value_init, previous_input, number_of_symbols_resize) {
 
     //сужение по Урсуле
     function minus(minarray, mlength) {//массив и количество нужных чисел
+
       let minus_one = []
       for (let i=0; i < minarray.length-1; i++)
         minus_one.push(to_one_fibbonachi_digit(minarray[i]+minarray[i+1]))
@@ -827,7 +830,18 @@ function init(value_init, previous_input, number_of_symbols_resize) {
     let x_border = new THREE.Group()
     
     //уменьшение повернутой обводки (0.75 идеальное значение для 8 символов, от него и "скакал")
-    let scale_p = 0.75 - Math.atan((string_for_algorithms.length-9))/50 //c применением арктангенс/коэффициэнта
+    let degree_from_diagonal = (number_of_symbols_fn) => {
+      //размер стороны куба
+      let side = number_of_symbols_fn*2+1
+      //размер диагонали
+      let diagonal = Math.sqrt(side*side*2)
+      //коэффициент разницы между реальной и нужной диагональю
+      let coefficient = (side+1)/diagonal
+      
+      return coefficient
+    }
+
+    let scale_p = degree_from_diagonal( number_of_symbols_resize)
 
     //сама группирока объекта из элементов бордюра
     border_in_fn.forEach(function(item) {x_border.add(item)} )
@@ -836,7 +850,7 @@ function init(value_init, previous_input, number_of_symbols_resize) {
     //поворот на 45градусов
     x_border.rotation.z = THREE.Math.degToRad( 45 )
     //приближаем объект для визуального перекрытия "зубцов"
-    x_border.position.set(0,0,0.05)
+    x_border.position.set(0,0,0.005)
     //изменение размера
     x_border.scale.set(scale_p,scale_p,scale_p)
 
@@ -952,7 +966,7 @@ function init(value_init, previous_input, number_of_symbols_resize) {
 
       fontGeometry[i] = new THREE.TextGeometry( char, {
                           font: font,
-                          size: 0.8,
+                          size: 0.6,
                           height: 0.02,
                           curveSegments: 9,
                           } )
@@ -971,7 +985,7 @@ function init(value_init, previous_input, number_of_symbols_resize) {
         if ( color_n !== 0 || (color_n === 0 && (x === 0 || y === 0)) ) {
 
           charNumber[j] = new THREE.Mesh( fontGeometry[color_n], fontMaterial )
-          charNumber[j].position.set(x-0.35, y-0.4, 0.06)
+          charNumber[j].position.set(x-0.25, y-0.3, 0.06)
           scene.add( charNumber[j] )
           charNumber[j].visible = false
           j++

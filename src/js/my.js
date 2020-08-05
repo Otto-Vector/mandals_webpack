@@ -252,7 +252,7 @@ function init(value_init, previous_input, number_of_symbols_resize) {
   ///numeric_adaptation
   //справочная строка под title`ом
   let numeric_adaptation = document.querySelector("#numeric_adaptation")
-  // numeric_adaptation.op
+   
 
   ////////////////////////////////////////////////////////////////
   /// события/////////////////////////////////////////////////////
@@ -332,7 +332,7 @@ function init(value_init, previous_input, number_of_symbols_resize) {
     palitra_button__check_unactive("opacity_button")
   }
 
- 
+
   ////////////////////////////////////////////////////////////////////////////////////////////////////////
   ////////////////////////////////////////////////////////////////////////////////////////////////////////
   //функция перезапуска мандалы с новыми данными//
@@ -384,26 +384,46 @@ function init(value_init, previous_input, number_of_symbols_resize) {
 
 
   //отображение чисто цифрового значения с суммой под title
-  let numeric_adaptation_text = string_for_algorithms.join('').slice(1) +
-                                " = " +
-                                string_for_algorithms[0]
-  //удаление суммарной цифры из начала строки
-  // numeric_adaptation.innerHTML = numeric_adaptation_text.slice(1)
+  numeric_adaptation.innerHTML = null
+  numeric_adaptation_Node_elements(string_for_algorithms.slice(1), numeric_adaptation)
 
-  let numeric_adaptation_item = []
-  numeric_adaptation_item[0] = document.createElement('div')
-  // numeric_adaptation_item[1] = document.createElement('div')
+  function numeric_adaptation_Node_elements(string_for_algorithms_fn, to_Node) {
+    let element = [],
+        string_fn,
+        summ_fn,
+        class_Name,
+        length_fn = string_for_algorithms_fn.length
 
-  let numeric_adaptation_item_text = []
-    numeric_adaptation_item_text[0] = document.createTextNode(numeric_adaptation_text)
-  //   numeric_adaptation_item_text[1] = document.createTextNode(numeric_adaptation_text+"1")
+    for (let i = 0; i < length_fn; i++) {
+      
+      string_fn = string_for_algorithms_fn.to_number_of_symbols(length_fn-i).join('')
+      // summ_fn = to_one_fibbonachi_digit( string_for_algorithms_fn.reduce( (sum,n) => sum+n ))
+      
+      element[i-1] = document.createElement('div')
+      
+      class_Name = (i==0) ? 'numeric_adaptation_item_first' : 'numeric_adaptation_item'
+      element[i-1].classList.add(class_Name)
+      
+      element[i-1].innerHTML = string_fn
+
+      to_Node.appendChild(element[i-1])
+    }
+  }
   
-  numeric_adaptation_item[0].appendChild(numeric_adaptation_item_text[0])
-  // numeric_adaptation_item[1].appendChild(numeric_adaptation_item_text[0])
+  let numeric_adaptation_item_first = document.querySelector(".numeric_adaptation_item_first")
+  //вывод подменюшки сокращения
+  numeric_adaptation_item_first.onclick = function() {
+    numeric_adaptation_item.forEach( function(entry) { entry.classList.toggle("active")})
+  }
 
-  numeric_adaptation.appendChild(numeric_adaptation_item[0])
-  // numeric_adaptation.appendChild(numeric_adaptation_item[1])
-  // numeric_adaptation.appendChild(numeric_adaptation_item[0])
+  
+  //действия по перемене 
+  let numeric_adaptation_item = document.querySelectorAll(".numeric_adaptation_item")
+    numeric_adaptation_item.forEach( (item,i) => item.onclick = function() {
+      number_of_symbols.value = string_for_algorithms.length-2-i
+      reinit()
+      }
+    )
 
   ///////////ВЫБОР АЛГОРИТМА РАСЧЁТА///////////
   //высчитываем двумерный массив цветов для одной стороны мандалы

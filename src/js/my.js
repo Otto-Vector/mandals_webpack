@@ -415,7 +415,13 @@ function init(value_init, previous_input, number_of_symbols_resize) {
   numeric_adaptation_item_first.onclick = function() {
     numeric_adaptation_item.forEach( function(entry) { entry.classList.toggle("active")})
   }
-
+  
+  //пересборка numeric_adaptation
+  numeric_adaptation = document.querySelector("#numeric_adaptation")
+  
+  numeric_adaptation.onmouseleave = function() {
+    numeric_adaptation_item.forEach( function(entry) { entry.classList.remove("active")})
+  }
   
   //действия по перемене 
   let numeric_adaptation_item = document.querySelectorAll(".numeric_adaptation_item")

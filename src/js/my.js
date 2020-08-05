@@ -70,7 +70,59 @@ function init(value_init, previous_input, number_of_symbols_resize) {
                   )
     }//возвращает массив чисел
 
-  }
+
+
+    ////функция пересборки цифрового кода строки до нужного количества цифр
+    Array.prototype.to_number_of_symbols = function (number_of_symbols_fn) {
+
+      let output_array_fn = this
+
+      //сужение по Урсуле
+      function minus(minarray, mlength) {//массив и количество нужных чисел
+
+        let minus_one = []
+        for (let i=0; i < minarray.length-1; i++)
+          minus_one.push(to_one_fibbonachi_digit(minarray[i]+minarray[i+1]))
+
+        return (minus_one.length == mlength) ? minus_one : minus(minus_one, mlength)
+      }//возвращает сужаемый до нужного количества цифр массив
+
+
+      //расширение по суммам между каждым числом (одна итерация => (123) = (13253))
+      function another_plus(another_plus_array, alength) {
+        
+        let another_one = []
+        //первый символ добавляется автоматически
+        another_one.push(another_plus_array[0])
+        
+        for (let i=0; i < another_plus_array.length-1; i++)
+          another_one.push( to_one_fibbonachi_digit(another_plus_array[i]+another_plus_array[i+1]),
+                            another_plus_array[i+1]
+                          )
+        return (another_one.length >= alength) ? another_one : another_plus(another_one, alength)
+      }// массив расширяется на порядок (lenght*2-1)
+      
+      //на уменьшение
+      if (number_of_symbols_fn < this.length )
+          output_array_fn = minus(this, number_of_symbols_fn)
+
+      //на расширение
+      if (this.length != 1 && //блокируем расширение одного символа
+            number_of_symbols_fn > this.length) {
+
+          // массив расширяется на порядок (lenght*2-1)
+          output_array_fn = another_plus(this, number_of_symbols_fn)
+          
+          //сокращаем до нужной длины по стандартному алгоритму
+          if (output_array_fn.length != number_of_symbols_fn)
+            output_array_fn = minus(output_array_fn, number_of_symbols_fn)
+          }
+      
+      return output_array_fn
+    }//End // to_number_of_symbols
+
+  } //End //if (!+value_init)
+
   ///////////////////////////////////////////////////////////////////////////////////////////////////
   ///////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -117,9 +169,9 @@ function init(value_init, previous_input, number_of_symbols_resize) {
   // 8 - на квадрат шахматный расчёт (1вар)     +
   // 9 - на квадрат шахматый расчёт (2вар)      +
   // 
-  let selected_mandala = +value_init || 3 //проверка на первый запуск init() (по умолчанию 4-ый вариант)
+  let selected_mandala = +value_init || 4 //проверка на первый запуск init() (по умолчанию 4-ый вариант)
   
-
+  //дальность камеры
   let camera_range = 60
   //максимальное количество символов вводимой строки
   let max_input_length = 33
@@ -136,7 +188,6 @@ function init(value_init, previous_input, number_of_symbols_resize) {
                  + (date_from_pc.getMonth()+1).zero_include()
                  + date_from_pc.getFullYear()
 
-    
   
   //пустая строка при первой инициализации
   let input_string = +value_init ? previous_input : ""
@@ -315,15 +366,16 @@ function init(value_init, previous_input, number_of_symbols_resize) {
   /////// Блок адаптации букв в цифровой код //////////////////
   ////////////////////////////////////////////////////////////
   
+  //если не задан, то присваивается значение длины введенной строки
+  number_of_symbols_resize = +number_of_symbols_resize || input_string.length
+  
   //символы расположены строго по таблице (удачно получилось то, что нужен всего один пробел)
   let simbols_static = "abcdefghijklmnopqrstuvwxyz абвгдеёжзийклмнопрстуфхцчшщъыьэюя"
 
-  let string_for_algorithms = input_string.to_array_of_numbers(simbols_static)
-  
-  number_of_symbols_resize = +number_of_symbols_resize || string_for_algorithms.length
-  
   //изменяет размер обрабатываемой числовой строки
-  string_for_algorithms = string_for_algorithms_to_number_of_symbols(string_for_algorithms, number_of_symbols_resize)
+  let string_for_algorithms = input_string
+                              .to_array_of_numbers(simbols_static)
+                              .to_number_of_symbols(number_of_symbols_resize)
 
   //добавляется нулевой элемент суммы всех чисел по фибоначи
   let summ_to_zero_element = to_one_fibbonachi_digit( string_for_algorithms.reduce( (sum,n) => sum+n ))
@@ -332,12 +384,26 @@ function init(value_init, previous_input, number_of_symbols_resize) {
 
 
   //отображение чисто цифрового значения с суммой под title
-  let numeric_adaptation_text = string_for_algorithms.toString().delete_all_spaces() +
+  let numeric_adaptation_text = string_for_algorithms.join('').slice(1) +
                                 " = " +
                                 string_for_algorithms[0]
   //удаление суммарной цифры из начала строки
-  numeric_adaptation.innerHTML = numeric_adaptation_text.slice(1)
+  // numeric_adaptation.innerHTML = numeric_adaptation_text.slice(1)
 
+  let numeric_adaptation_item = []
+  numeric_adaptation_item[0] = document.createElement('div')
+  // numeric_adaptation_item[1] = document.createElement('div')
+
+  let numeric_adaptation_item_text = []
+    numeric_adaptation_item_text[0] = document.createTextNode(numeric_adaptation_text)
+  //   numeric_adaptation_item_text[1] = document.createTextNode(numeric_adaptation_text+"1")
+  
+  numeric_adaptation_item[0].appendChild(numeric_adaptation_item_text[0])
+  // numeric_adaptation_item[1].appendChild(numeric_adaptation_item_text[0])
+
+  numeric_adaptation.appendChild(numeric_adaptation_item[0])
+  // numeric_adaptation.appendChild(numeric_adaptation_item[1])
+  // numeric_adaptation.appendChild(numeric_adaptation_item[0])
 
   ///////////ВЫБОР АЛГОРИТМА РАСЧЁТА///////////
   //высчитываем двумерный массив цветов для одной стороны мандалы
@@ -572,7 +638,7 @@ function init(value_init, previous_input, number_of_symbols_resize) {
         .reduce( (sum,n) => sum+n ) //перебор массива с подсчётом суммы чисел
 
     return amount > 9 ? to_one_fibbonachi_digit(amount) : amount //замыкание функции при многозначной сумме
-  }//возвращает одну цифру суммы всех сумм по фибоначчи
+  }//возвращает одну цифру суммы всех чисел по фибоначчи
 
 
   ////функция нормализации введенной строки, и замены его на тестовое значение
@@ -595,52 +661,7 @@ function init(value_init, previous_input, number_of_symbols_resize) {
   }//возвращает обработанную строку без пробелов меньше max_input_length символов в нижнем регистре либо обработанную тестовую строку
 
 
-  ////функция пересборки цифрового кода строки до нужного количества цифр
-  function string_for_algorithms_to_number_of_symbols(input_array_fn, number_of_symbols_fn) {
-
-    //сужение по Урсуле
-    function minus(minarray, mlength) {//массив и количество нужных чисел
-
-      let minus_one = []
-      for (let i=0; i < minarray.length-1; i++)
-        minus_one.push(to_one_fibbonachi_digit(minarray[i]+minarray[i+1]))
-
-      return (minus_one.length == mlength) ? minus_one : minus(minus_one, mlength)
-    }//возвращает сужаемый до нужного количества цифр массив
-
-    //расширение по суммам между каждым числом (одна итерация => (123) = (13253))
-    function another_plus(another_plus_array, alength) {
-      let another_one = []
-      //первый символ добавляется автоматически
-      another_one.push(another_plus_array[0])
-      
-      for (let i=0; i < another_plus_array.length-1; i++)
-        another_one.push( to_one_fibbonachi_digit(another_plus_array[i]+another_plus_array[i+1]),
-                          another_plus_array[i+1]
-                        )
-      return (another_one.length >= alength) ? another_one : another_plus(another_one, alength)
-    }// массив расширяется на порядок (lenght*2-1)
-    
-    //на уменьшение
-    if (number_of_symbols_fn < input_array_fn.length )
-        input_array_fn = minus(input_array_fn, number_of_symbols_fn)
-
-    //на расширение
-    if (input_array_fn.length != 1 && //блокируем расширение одного символа
-          number_of_symbols_fn > input_array_fn.length) {
-
-        // массив расширяется на порядок (lenght*2-1)
-        input_array_fn = another_plus(input_array_fn, number_of_symbols_fn)
-        
-        //сокращаем до нужной длины по стандартному алгоритму
-        if (input_array_fn.length != number_of_symbols_fn)
-          input_array_fn = minus(input_array_fn, number_of_symbols_fn)
-        }
-
-    return input_array_fn
-  }
-
-
+  
   ///////////////////////////////////////////////////////////////////////////////
   /////////////////////АЛГОРИТМЫ ПОДСЧЁТА МАНДАЛ////////////////////////////////
   /////////////////////////////////////////////////////////////////////////////
@@ -967,8 +988,8 @@ function init(value_init, previous_input, number_of_symbols_resize) {
       fontGeometry[i] = new THREE.TextGeometry( char, {
                           font: font,
                           size: 0.6,
-                          height: 0.02,
-                          curveSegments: 9,
+                          height: 0.03,
+                          curveSegments: 15,
                           } )
     }
     

@@ -5,51 +5,53 @@ head
   link(rel='shortcut icon', type='image/x-icon', href=require('@images/mandalas2.ico'))
   title Mandalas
 
-header.title
+body
+  .bodywrapper
+    header.title
 
-  #header_input_form
-    input#number_of_symbols(type='number', min='1')
-    input#title_input(type='text', placeholder='Название мандалы')
-    button#clear_button
+      #header_input_form
+        input#number_of_symbols(type='number', min='1')
+        input#title_input(type='text', placeholder='Название мандалы')
+        button#clear_button
 
-  #numeric_adaptation
-    //- .numeric_adaptation_item_first
-    //- .numeric_adaptation_item
-    //- .numeric_adaptation_item
-    //- (it add`s from JS)
-
-
-section.sidebar
-
-  article#statistic
-    #statistic_sort_button(title='Сортировка статистики')
-    - for (let i=1; i<10; i++) {
-      div 0
-    - }
-    
-  #palitra
-    .palitra_button(title='Статистика') S
-    - for (let i=1; i<10; i++) {
-      .palitra_button #{i}
-    - }
-
-#left_panel
-  .palitra_button(title='Убрать сетку') #
-  .palitra_button(title='Убрать все цвета') N
-  .palitra_button(title='Поменять активные с невидимыми') @
-  .palitra_button(title='Вернуть все цвета') A
-  .palitra_button(title='Поменять цвет обводки') B
-  .palitra_button(title='Убрать/отобразить обводку') b
-  .palitra_button(title='Убрать/отобразить цифры') №
-  .palitra_button(title='Приблизить') +
-  .palitra_button(title='Отдалить') -
+      #numeric_adaptation
+        //- .numeric_adaptation_item_first
+        //- .numeric_adaptation_item
+        //- .numeric_adaptation_item
+        //- (it add`s from JS)
 
 
-footer
-  label.select_mandala_type(for='select_mandala_type')
-    | Выберите тип мандалы
-  select#select_mandala_type(name='select_mandala_type')
-    option(value='4') квадрат (по три)
-    option(value='3') квадрат (по три) "ромб"
-    option(value='8') квадрат шахматный расчёт (1вар)
-    option(value='9') квадрат шахматный расчёт (2вар)
+    section.sidebar
+
+      article#statistic
+        #statistic_sort_button(title='Сортировка статистики')
+        - for (let i=1; i<10; i++) {
+          div 0
+        - }
+        
+      #palitra
+        .palitra_button(title='Статистика') S
+        - for (let i=1; i<10; i++) {
+          .palitra_button #{i}
+        - }
+
+    #left_panel
+      .palitra_button(title='Убрать сетку') #
+      .palitra_button(title='Убрать все цвета') N
+      .palitra_button(title='Поменять активные с невидимыми') @
+      .palitra_button(title='Вернуть все цвета') A
+      .palitra_button(title='Поменять цвет обводки') B
+      .palitra_button(title='Убрать/отобразить обводку') b
+      .palitra_button(title='Убрать/отобразить цифры') №
+      .palitra_button(title='Приблизить') +
+      .palitra_button(title='Отдалить') -
+
+
+    footer
+      label.select_mandala_type(for='select_mandala_type')
+        | Выберите тип мандалы
+      select#select_mandala_type(name='select_mandala_type')
+        option(value='4') квадрат (по три)
+        option(value='3') квадрат (по три) "ромб"
+        option(value='8') квадрат шахматный расчёт (1вар)
+        option(value='9') квадрат шахматный расчёт (2вар)

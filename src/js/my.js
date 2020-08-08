@@ -176,7 +176,7 @@ function init(value_init, previous_input, number_of_symbols_resize) {
   //максимальное количество символов вводимой строки
   let max_input_length = 33
   //максимальное количество знаков на расширение
-  let max_expansion_length = 57
+  let max_expansion_length = 45 //было 57
   ///////////////БЛОК ОБРАБОТКИ ВВОДИМОЙ СТРОКИ///////////////////////////////////////////////
 
   ///заменяемая строка при неверном вводе (сейчас вводит дату)
@@ -372,10 +372,13 @@ function init(value_init, previous_input, number_of_symbols_resize) {
   //символы расположены строго по таблице (удачно получилось то, что нужен всего один пробел)
   let simbols_static = "abcdefghijklmnopqrstuvwxyz абвгдеёжзийклмнопрстуфхцчшщъыьэюя"
 
+  //переводит строку в массив чисел
+  let input_string_array = input_string.to_array_of_numbers(simbols_static)
+  
   //изменяет размер обрабатываемой числовой строки
-  let string_for_algorithms = input_string
-                              .to_array_of_numbers(simbols_static)
+  let string_for_algorithms = input_string_array
                               .to_number_of_symbols(number_of_symbols_resize)
+                              .map(n=>n) //мапим, чтобы не изменять предыдущий массив
 
   //добавляется нулевой элемент суммы всех чисел по фибоначи
   let summ_to_zero_element = to_one_fibbonachi_digit( string_for_algorithms.reduce( (sum,n) => sum+n ))
@@ -384,27 +387,32 @@ function init(value_init, previous_input, number_of_symbols_resize) {
 
 
   //отображение чисто цифрового значения с суммой под title
+  //сброс пред. значений
   numeric_adaptation.innerHTML = null
-  numeric_adaptation_Node_elements(string_for_algorithms.slice(1), numeric_adaptation)
+  //запуск функции
+  numeric_adaptation_Node_elements(input_string_array, numeric_adaptation, number_of_symbols_resize)
 
-  function numeric_adaptation_Node_elements(string_for_algorithms_fn, to_Node) {
+  function numeric_adaptation_Node_elements(input_string_array_fn, to_Node, now_resize_is) {
     let element = [],
         string_fn,
         summ_fn,
-        class_Name,
-        length_fn = string_for_algorithms_fn.length
+        class_Name
+        // length_fn = string_for_array_fn.length-1
 
-    for (let i = 0; i < length_fn; i++) {
+    for (let i = 0; i < now_resize_is; i++) {
       
-      string_fn = string_for_algorithms_fn.to_number_of_symbols(length_fn-i).join('')
-      // summ_fn = to_one_fibbonachi_digit( string_for_algorithms_fn.reduce( (sum,n) => sum+n ))
+      string_fn = input_string_array_fn.to_number_of_symbols(now_resize_is-i)
+      console.log(input_string_array_fn)
+      console.log(string_fn)
+      console.log(now_resize_is-i)
+      summ_fn = to_one_fibbonachi_digit( string_fn.reduce( (sum,n) => sum+n ))
       
       element[i-1] = document.createElement('div')
       
       class_Name = (i==0) ? 'numeric_adaptation_item_first' : 'numeric_adaptation_item'
       element[i-1].classList.add(class_Name)
       
-      element[i-1].innerHTML = string_fn
+      element[i-1].innerHTML = `(${string_fn.length}) ${string_fn.join('')}  =  ${summ_fn}`
 
       to_Node.appendChild(element[i-1])
     }

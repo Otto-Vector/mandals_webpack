@@ -8,10 +8,9 @@ canvas {
     padding: 0;
 }
 select, input {
-    -webkit-appearance: none;
-    -moz-appearance: none;
-    appearance: none;
+     appearance: none;
 }
+
 /*сброс стилей инпутов*/
 input, button, select, textarea {
   outline: 0;
@@ -80,13 +79,18 @@ header {
 }
 
 #numeric_adaptation {
+    
     background-color: transparent;
-    font-size: 3vw;
     color: white;
+    
+    font-size: 3vw;
+        
     text-shadow: 0 0.2vw 0.15vw #555555;
     text-align: center;
-    width: 100%;
-    overflow-y: auto;
+    width: 80%;
+    margin: 0 auto;
+    
+    overflow-y: scroll;
 }
 
 #numeric_adaptation.active {
@@ -95,16 +99,11 @@ header {
 
 .numeric_adaptation_item {
     font-size: 0%;
+    line-height: 0%;
     text-align: center;
-
-    -o-transform: scaleY(0);
-    -ms-transform: scaleY(0);
-    -moz-transform: scaleY(0);
-    -webkit-transform: scaleY(0);
+    
     transform: scaleY(0);
     
-    -webkit-transform-origin: top; 
-    -ms-transform-origin: top; 
     transform-origin: top;
     
     transition: 0.2s;
@@ -116,11 +115,8 @@ header {
 
 .numeric_adaptation_item.active {
     font-size: 100%;
+    line-height: 200%;
 
-    -o-transform: scaleY(1);
-    -ms-transform: scaleY(1);
-    -moz-transform: scaleY(1);
-    -webkit-transform: scaleY(1);
     transform: scaleY(1);
 }
 
@@ -140,18 +136,11 @@ section.sidebar {
 }
 
 section.sidebar #statistic {
-    padding-top: 5px;
+    
     user-select: none;
-    font-size: 0.01%;
+    font-size: 0%;
     
-    -o-transform: scaleX(0);
-    -ms-transform: scaleX(0);
-    -moz-transform: scaleX(0);
-    -webkit-transform: scaleX(0);
     transform: scaleX(0);
-    
-    -webkit-transform-origin: right; 
-    -ms-transform-origin: right; 
     transform-origin: right;
     
     transition: 0.5s;
@@ -161,10 +150,6 @@ section.sidebar #statistic {
 section.sidebar #statistic.active {
     font-size: 100%;
 
-    -o-transform: scaleX(1);
-    -ms-transform: scaleX(1);
-    -moz-transform: scaleX(1);
-    -webkit-transform: scaleX(1);
     transform: scaleX(1);
   
 }

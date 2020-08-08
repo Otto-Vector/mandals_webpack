@@ -119,9 +119,9 @@ function init(value_init, previous_input, number_of_symbols_resize) {
           }
       
       return output_array_fn
-    }//End // to_number_of_symbols
+    }//end // to_number_of_symbols
 
-  } //End //if (!+value_init)
+  } //end //if (!+value_init)
 
   ///////////////////////////////////////////////////////////////////////////////////////////////////
   ///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -414,6 +414,8 @@ function init(value_init, previous_input, number_of_symbols_resize) {
   //вывод подменюшки сокращения
   numeric_adaptation_item_first.onclick = function() {
     numeric_adaptation_item.forEach( function(entry) { entry.classList.toggle("active")})
+    numeric_adaptation.classList.toggle("active")
+
   }
   
   //пересборка numeric_adaptation
@@ -421,11 +423,13 @@ function init(value_init, previous_input, number_of_symbols_resize) {
   
   numeric_adaptation.onmouseleave = function() {
     numeric_adaptation_item.forEach( function(entry) { entry.classList.remove("active")})
+    numeric_adaptation.classList.remove("active")
   }
   
   //действия по перемене 
   let numeric_adaptation_item = document.querySelectorAll(".numeric_adaptation_item")
     numeric_adaptation_item.forEach( (item,i) => item.onclick = function() {
+      numeric_adaptation.classList.remove("active")
       number_of_symbols.value = string_for_algorithms.length-2-i
       reinit()
       }
@@ -556,6 +560,7 @@ function init(value_init, previous_input, number_of_symbols_resize) {
       charNumber.forEach( function(entry) { entry.visible = !entry.visible } )
       //убираем бордер для отображения цифр и возвращаем при неактиве
       if (selected_mandala == 3) {
+        //в зависимости от отображаемых цифр
         let visible_onoff = !charNumber[0].visible
         border.forEach( function(entry) { entry.visible = visible_onoff } )
       }

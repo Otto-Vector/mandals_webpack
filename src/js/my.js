@@ -898,7 +898,7 @@ function init(value_init, previous_input, number_of_symbols_resize) {
   let loader = new THREE.FontLoader()
   let charNumber = []
 
-  loader.load( require('@fonts/helvetiker_regular.typeface.json.eot'), function ( font ) {
+  loader.load( require('@fonts/helvetiker_regular.typeface.onlynumbers.json.eot'), function ( font ) {
 
     //единый материал для всех (пока)
     let fontMaterial = new THREE.MeshBasicMaterial( {color: 0x000000} );

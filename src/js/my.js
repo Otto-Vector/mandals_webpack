@@ -2,11 +2,17 @@
 
 import * as THREE from './three.min.js'
 import { OrbitControls } from './OrbitControls.js'
+//мои модули
+import './modules/prototypes.js' //прототипизированные функции
+import {modification_to_normal,to_one_fibbonachi_digit} from './modules/support.js'
+// import {onWindowResize,remove_all_objects_from_memory} from './modules/threex_my.js'
+
+
 
 window.onload = init
 
-let scene, camera, renderer, controls //глобальные переменные для создания сцены
 
+var scene, camera, renderer, controls //глобальные переменные для создания сцены
 
 
 function init(value_init, previous_input, number_of_symbols_resize) {
@@ -40,89 +46,7 @@ function init(value_init, previous_input, number_of_symbols_resize) {
       return cubus
     }//возвращает новый объект куб, обработанный по заданным координатам и цвету
 
-  /////////////////////////////////////////////////////////
-  ////////////// прототипируемые функции /////////////////
-  ///////////////////////////////////////////////////////
-
-  if (!+value_init) { //эти функции инициализируются один раз при запуске
-
-  ////функция для проверки различных значений selected_mandala (прототипирована в Number)
-    Number.prototype.true_of = function(...props) {//передаётся множество цифровых значений // обычно (1,2,3)
-        return props.indexOf(this) != -1 //проверяет, есть ли переменная, к которой применяется функция, в указанном множестве цифровых значений
-      }//возвращает boolean
-
-    ////функция подстановки нуля в строку для даты (прототипирована в Number)
-    Number.prototype.zero_include = function() {//принимает число
-        return this < 10 ? "0"+this : this.toString() //добавляет "0" при значениях меньше 10
-      }//возвращает строку
-
-    //удаляет все пробелы
-    String.prototype.delete_all_spaces = function() { return this.replace(/[\s.,%]/g, '') }
-
-    ///функция перевода строки в числа
-    String.prototype.to_array_of_numbers = function(simbols_static_in_fn) {//принимает строку, где каждая позиция символа соответсвует числовому коду
-
-      return this
-              .split('') //перевод строки в массив
-              .map( string_simbol =>   //пересборка в новый массив
-                    +string_simbol || //если символ число, то возвращает число
-                    simbols_static_in_fn.indexOf(string_simbol)%9+1 //иначе возвращает позицию символа в соответствии с таблицей Урсулы
-                  )
-    }//возвращает массив чисел
-
-
-
-    ////функция пересборки цифрового кода строки до нужного количества цифр
-    Array.prototype.to_number_of_symbols = function (number_of_symbols_fn) {
-
-      let output_array_fn = this
-
-      //сужение по Урсуле
-      function minus(minarray, mlength) {//массив и количество нужных чисел
-
-        let minus_one = []
-        for (let i=0; i < minarray.length-1; i++)
-          minus_one.push(to_one_fibbonachi_digit(minarray[i]+minarray[i+1]))
-
-        return (minus_one.length == mlength) ? minus_one : minus(minus_one, mlength)
-      }//возвращает сужаемый до нужного количества цифр массив
-
-
-      //расширение по суммам между каждым числом (одна итерация => (123) = (13253))
-      function another_plus(another_plus_array, alength) {
-        
-        let another_one = []
-        //первый символ добавляется автоматически
-        another_one.push(another_plus_array[0])
-        
-        for (let i=0; i < another_plus_array.length-1; i++)
-          another_one.push( to_one_fibbonachi_digit(another_plus_array[i]+another_plus_array[i+1]),
-                            another_plus_array[i+1]
-                          )
-        return (another_one.length >= alength) ? another_one : another_plus(another_one, alength)
-      }// массив расширяется на порядок (lenght*2-1)
-      
-      //на уменьшение
-      if (number_of_symbols_fn < this.length )
-          output_array_fn = minus(this, number_of_symbols_fn)
-
-      //на расширение
-      if (this.length != 1 && //блокируем расширение одного символа
-            number_of_symbols_fn > this.length) {
-
-          // массив расширяется на порядок (lenght*2-1)
-          output_array_fn = another_plus(this, number_of_symbols_fn)
-          
-          //сокращаем до нужной длины по стандартному алгоритму
-          if (output_array_fn.length != number_of_symbols_fn)
-            output_array_fn = minus(output_array_fn, number_of_symbols_fn)
-          }
-      
-      return output_array_fn
-    }//end // to_number_of_symbols
-
-  } //end //if (!+value_init)
-
+ 
   ///////////////////////////////////////////////////////////////////////////////////////////////////
   ///////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -134,20 +58,24 @@ function init(value_init, previous_input, number_of_symbols_resize) {
   ///////////////////////////////////////////////////////////////////////////////////
 
   //добавил сцену
-  if (!+value_init) scene = new THREE.Scene()
+  if (!+value_init)
+    scene = new THREE.Scene()
   scene.background = new THREE.Color( "white" ) //задал сцене задний фон
 
   //настроил параметры камеры
-  if (!+value_init) camera = new THREE.PerspectiveCamera( 45, window.innerWidth / window.innerHeight, 1, 500 )
+  if (!+value_init)
+    camera = new THREE.PerspectiveCamera( 45, window.innerWidth / window.innerHeight, 1, 500 )
   camera.lookAt( 0, 0, 0 ) //смотреть в центр координат
 
   //выбрал рендер
-  if (!+value_init) renderer = new THREE.WebGLRenderer()
+  if (!+value_init)
+    renderer = new THREE.WebGLRenderer()
   renderer.setPixelRatio(window.devicePixelRatio)
   renderer.setSize( window.innerWidth-4, window.innerHeight-4 ) //отнял по 4 пикселя, потому что появляется прокрутка
 
   //добавление скрипта к документу в тег
-  if (!+value_init) document.body.appendChild( renderer.domElement )
+  if (!+value_init)
+    document.body.appendChild( renderer.domElement )
   //при динамическом изменении размера окна
   window.addEventListener('resize', onWindowResize, false)
 
@@ -392,31 +320,27 @@ function init(value_init, previous_input, number_of_symbols_resize) {
   //запуск функции
   numeric_adaptation_Node_elements(input_string_array, numeric_adaptation, number_of_symbols_resize)
 
-  function numeric_adaptation_Node_elements(input_string_array_fn, to_Node, now_resize_is) {
-    let element = [],
-        string_fn,
-        summ_fn,
-        class_Name
-        // length_fn = string_for_array_fn.length-1
+  // function numeric_adaptation_Node_elements(input_string_array_fn, to_Node, now_resize_is) {
+  //   let element = [],
+  //       string_fn,
+  //       summ_fn,
+  //       class_Name = 'numeric_adaptation_item'
 
-    for (let i = 0; i < now_resize_is; i++) {
+  //   for (let i = 0; i < now_resize_is; i++) {
       
-      string_fn = input_string_array_fn.to_number_of_symbols(now_resize_is-i)
-      console.log(input_string_array_fn)
-      console.log(string_fn)
-      console.log(now_resize_is-i)
-      summ_fn = to_one_fibbonachi_digit( string_fn.reduce( (sum,n) => sum+n ))
+  //     string_fn = input_string_array_fn.to_number_of_symbols(now_resize_is-i)
       
-      element[i-1] = document.createElement('div')
+  //     summ_fn = to_one_fibbonachi_digit( string_fn.reduce( (sum,n) => sum+n ))
+       
+  //     element[i] = document.createElement('div')
       
-      class_Name = (i==0) ? 'numeric_adaptation_item_first' : 'numeric_adaptation_item'
-      element[i-1].classList.add(class_Name)
+  //     element[i].classList.add(class_Name+(i==0 ? '_first' : ''))
       
-      element[i-1].innerHTML = `(${string_fn.length}) ${string_fn.join('')}  =  ${summ_fn}`
+  //     element[i].innerHTML = `(${string_fn.length}) ${string_fn.join('')}  =  ${summ_fn}`
 
-      to_Node.appendChild(element[i-1])
-    }
-  }
+  //     to_Node.appendChild(element[i])
+  //   }
+  // }
   
   let numeric_adaptation_item_first = document.querySelector(".numeric_adaptation_item_first")
   //вывод подменюшки сокращения
@@ -662,45 +586,7 @@ function init(value_init, previous_input, number_of_symbols_resize) {
     }
 
   }
-  ///////////////////////////////////////////////////////////////////////////////
-  ///////ВСПОМОГАТЕЛЬНЫЕ ФУНКЦИИ АНАЛИЗА И ПРЕОБРАЗОВАНИЯ///////////////////////
-  /////////////////////////////////////////////////////////////////////////////
-
-  ////универсальная функция числа фибоначчи/////////////////
-  function to_one_fibbonachi_digit(number_in_fn) {//передаётся числовое значение
-
-    let amount = 
-        Math.abs(+number_in_fn) //на всякий случай перевод из отрицательного в абсолютное значение с нумеризацией
-        .toString()           //перевод числа в строку для разъединения многозначных чисел
-        .split('')           //перевод строки в массив
-        .map(Number)        //перевод массива символов в массив чисел
-        .reduce( (sum,n) => sum+n ) //перебор массива с подсчётом суммы чисел
-
-    return amount > 9 ? to_one_fibbonachi_digit(amount) : amount //замыкание функции при многозначной сумме
-  }//возвращает одну цифру суммы всех чисел по фибоначчи
-
-
-  ////функция нормализации введенной строки, и замены его на тестовое значение
-  function modification_to_normal(string_from_user_input, string_by_default) {
-  //принимает две строки, string_from_user_input - на обработку
-  //string_by_default - на замену, если string_from_user_input оказалась false
-  
-    return  (
-              !string_from_user_input ||
-              !string_from_user_input.trim() ||
-              +string_from_user_input == 0
-            ) ? //проверка string_from_user_input на значения приводящие к false (в том числе пустая строка после сброса пробелов)
-                //присваивается значение по умолчанию //и (на всякий случай) обрабатывается и оно
-                modification_to_normal( string_by_default, "0123456789" )
-              : 
-                string_from_user_input
-                  .delete_all_spaces() //убираем все пробелы
-                  .slice( 0, max_input_length )        //обрезание более 30ти символов
-                  .toLowerCase()     //убираем верхний регистр
-  }//возвращает обработанную строку без пробелов меньше max_input_length символов в нижнем регистре либо обработанную тестовую строку
-
-
-  
+    
   ///////////////////////////////////////////////////////////////////////////////
   /////////////////////АЛГОРИТМЫ ПОДСЧЁТА МАНДАЛ////////////////////////////////
   /////////////////////////////////////////////////////////////////////////////
@@ -921,12 +807,12 @@ function init(value_init, previous_input, number_of_symbols_resize) {
   }
 
 
-  ///////////////////////////////////////////////////////////////////////////////
-  /////////////////////СПЕЦИАЛЬНЫЕ ФУНКЦИИ THREEX///////////////////////////////
-  /////////////////////////////////////////////////////////////////////////////
+  // ///////////////////////////////////////////////////////////////////////////////
+  // /////////////////////СПЕЦИАЛЬНЫЕ ФУНКЦИИ THREEX///////////////////////////////
+  // /////////////////////////////////////////////////////////////////////////////
 
 
-  /////функция изменения центровки камеры при изменении размера экрана///////////////
+  // /////функция изменения центровки камеры при изменении размера экрана///////////////
   function onWindowResize() {
 
     camera.aspect = window.innerWidth / window.innerHeight
@@ -938,7 +824,7 @@ function init(value_init, previous_input, number_of_symbols_resize) {
   }
 
 
-  ////анимация
+  // ////анимация
   function animate() {
 
     requestAnimationFrame( animate )
@@ -950,7 +836,7 @@ function init(value_init, previous_input, number_of_symbols_resize) {
   }
 
 
-  ////функция очистки памяти от ссылок на объекты THREEX, оставшихся в render
+  // ////функция очистки памяти от ссылок на объекты THREEX, оставшихся в render
   function remove_all_objects_from_memory(object_to_clear) {
 
     //функция поиска соответствий на наличие объектов
@@ -1109,6 +995,30 @@ function init(value_init, previous_input, number_of_symbols_resize) {
   grid([...axis, ...plain_x_cube])
 
 ////////////////////////////////////////////////////////////////////////////////////
-///////////////////////////////////////////////////////////////////////////////////
+///ФУНКЦИИ ПРЕОБРАЗДВАНИЯ DOM дерева//////////
 //////////////////////////////////////////////////////////////////////////////////
+  function numeric_adaptation_Node_elements(input_string_array_fn, to_Node, now_resize_is) {
+    let element = [],
+        string_fn,
+        summ_fn,
+        class_Name = 'numeric_adaptation_item'
+
+    for (let i = 0; i < now_resize_is; i++) {
+      
+      string_fn = input_string_array_fn.to_number_of_symbols(now_resize_is-i)
+      
+      summ_fn = to_one_fibbonachi_digit( string_fn.reduce( (sum,n) => sum+n ))
+       
+      element[i] = document.createElement('div')
+      
+      element[i].classList.add(class_Name+(i==0 ? '_first' : ''))
+      
+      element[i].innerHTML = `(${string_fn.length}) ${string_fn.join('')}  =  ${summ_fn}`
+
+      to_Node.appendChild(element[i])
+    }
+  }
 } //init() end bracket
+
+// export {init.to_one_fibbonachi_digit} //'./modules/prototypes.js'
+// export {scene, camera, renderer, controls}

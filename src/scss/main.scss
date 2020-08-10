@@ -22,12 +22,15 @@ input, button, select, textarea {
   outline : 0;
 }
 
-header {
+header.title {
     position: absolute;
     top: 0;
     background: linear-gradient(rgba(0,0,0,0.4),rgba(0,0,0,0.1),rgba(0,0,0,0));
     width: 100%;
+}
 
+header.title.new_bg {
+    background: linear-gradient(rgba(0,0,0,0.2),rgba(0,0,0,0.5),rgba(0,0,0,0.6));
 }
 
 #title_input, #number_of_symbols {
@@ -94,12 +97,13 @@ header {
 }
 
 #numeric_adaptation.active {
-    height: 80vh;
+    height: 75vh;
 }
 
 .numeric_adaptation_item {
+
     font-size: 0%;
-    line-height: 0%;
+    line-height: 200%;
     text-align: center;
     
     transform: scaleY(0);
@@ -115,13 +119,11 @@ header {
 
 .numeric_adaptation_item.active {
     font-size: 100%;
-    line-height: 200%;
-
     transform: scaleY(1);
 }
 
 .numeric_adaptation_item:hover {
-    color: black;
+
     font-weight: bold;
     
 }

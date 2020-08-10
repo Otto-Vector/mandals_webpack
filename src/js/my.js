@@ -1,6 +1,7 @@
 "use strict"
 
 import * as THREE from './three.min.js'
+// import {CubeGeometry} from './three.min.js'
 import { OrbitControls } from './OrbitControls.js'
 //мои модули
 import './modules/prototypes.js' //прототипизированные функции
@@ -8,9 +9,7 @@ import {modification_to_normal,to_one_fibbonachi_digit} from './modules/support.
 // import {onWindowResize,remove_all_objects_from_memory} from './modules/threex_my.js'
 
 
-
 window.onload = init
-
 
 var scene, camera, renderer, controls //глобальные переменные для создания сцены
 
@@ -313,55 +312,39 @@ function init(value_init, previous_input, number_of_symbols_resize) {
   //в начало массива
   string_for_algorithms.unshift( summ_to_zero_element )
 
-
+  let header_title = document.querySelector('.title')
   //отображение чисто цифрового значения с суммой под title
   //сброс пред. значений
   numeric_adaptation.innerHTML = null
   //запуск функции
   numeric_adaptation_Node_elements(input_string_array, numeric_adaptation, number_of_symbols_resize)
 
-  // function numeric_adaptation_Node_elements(input_string_array_fn, to_Node, now_resize_is) {
-  //   let element = [],
-  //       string_fn,
-  //       summ_fn,
-  //       class_Name = 'numeric_adaptation_item'
-
-  //   for (let i = 0; i < now_resize_is; i++) {
-      
-  //     string_fn = input_string_array_fn.to_number_of_symbols(now_resize_is-i)
-      
-  //     summ_fn = to_one_fibbonachi_digit( string_fn.reduce( (sum,n) => sum+n ))
-       
-  //     element[i] = document.createElement('div')
-      
-  //     element[i].classList.add(class_Name+(i==0 ? '_first' : ''))
-      
-  //     element[i].innerHTML = `(${string_fn.length}) ${string_fn.join('')}  =  ${summ_fn}`
-
-  //     to_Node.appendChild(element[i])
-  //   }
-  // }
-  
+    
   let numeric_adaptation_item_first = document.querySelector(".numeric_adaptation_item_first")
   //вывод подменюшки сокращения
   numeric_adaptation_item_first.onclick = function() {
     numeric_adaptation_item.forEach( function(entry) { entry.classList.toggle("active")})
     numeric_adaptation.classList.toggle("active")
+    header_title.classList.toggle("new_bg")
 
   }
   
   //пересборка numeric_adaptation
   numeric_adaptation = document.querySelector("#numeric_adaptation")
   
+  //сворачивание списка
   numeric_adaptation.onmouseleave = function() {
     numeric_adaptation_item.forEach( function(entry) { entry.classList.remove("active")})
     numeric_adaptation.classList.remove("active")
+    header_title.classList.remove("new_bg")
   }
   
   //действия по перемене 
   let numeric_adaptation_item = document.querySelectorAll(".numeric_adaptation_item")
-    numeric_adaptation_item.forEach( (item,i) => item.onclick = function() {
+
+  numeric_adaptation_item.forEach( (item,i) => item.onclick = function() {
       numeric_adaptation.classList.remove("active")
+      header_title.classList.remove("new_bg")
       number_of_symbols.value = string_for_algorithms.length-2-i
       reinit()
       }
@@ -899,7 +882,7 @@ function init(value_init, previous_input, number_of_symbols_resize) {
   let charNumber = []
 
   loader.load( require('@fonts/helvetiker_regular.typeface.onlynumbers.json.eot'), function ( font ) {
-
+  
     //единый материал для всех (пока)
     let fontMaterial = new THREE.MeshBasicMaterial( {color: 0x000000} );
     
@@ -944,18 +927,24 @@ function init(value_init, previous_input, number_of_symbols_resize) {
 
     everyNumber([...axis,...plain_x_cube])
 
-  } );
+  }
+
+   );
+
 
 ////////////////////////////////////////////////////////////////////////////////////
 ////// РАБОТА С ЛИНИЯМИ  //////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////
-
-  let lineMaterial = new THREE.LineBasicMaterial( { color: 0x000000 } )
+  
+  //создаём сетку
+  //локально-глобальная переменная для обработки сетки
   let squares = []
-
+  squares = grid([...axis, ...plain_x_cube])
   //функция сетки
   function grid(object) {
 
+    let lineMaterial = new THREE.LineBasicMaterial( { color: 0x000000 } )
+    let grid = []
     let geometry_for_line = []
     let area_position = []
     let z_position = 0.0065
@@ -981,18 +970,19 @@ function init(value_init, previous_input, number_of_symbols_resize) {
         for (let j = 0; j < area_position.length; j++)
           geometry_for_line[k].vertices.push( new THREE.Vector3( ...area_position[j] ) )
 
-        squares[k] = new THREE.Line(geometry_for_line[k], lineMaterial )
+        grid[k] = new THREE.Line(geometry_for_line[k], lineMaterial )
         
-        // squares[k].visible = false
+        // grid[k].visible = false
         
-        scene.add(squares[k])
+        scene.add(grid[k])
         k++
       }
     }
 
-  }
-  //создаём сетку
-  grid([...axis, ...plain_x_cube])
+    return grid
+  } //возвращает массив объектов линий
+  
+  
 
 ////////////////////////////////////////////////////////////////////////////////////
 ///ФУНКЦИИ ПРЕОБРАЗДВАНИЯ DOM дерева//////////
@@ -1019,6 +1009,7 @@ function init(value_init, previous_input, number_of_symbols_resize) {
     }
   }
 } //init() end bracket
+
 
 // export {init.to_one_fibbonachi_digit} //'./modules/prototypes.js'
 // export {scene, camera, renderer, controls}

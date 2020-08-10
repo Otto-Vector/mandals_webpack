@@ -1,92 +1,37 @@
 "use strict"
 
 import * as THREE from './three.min.js'
-// import {CubeGeometry} from './three.min.js'
-import { OrbitControls } from './OrbitControls.js'
+// import { OrbitControls } from './OrbitControls.js'
 //мои модули
 import './modules/prototypes.js' //прототипизированные функции
-import {modification_to_normal,to_one_fibbonachi_digit} from './modules/support.js'
-// import {onWindowResize,remove_all_objects_from_memory} from './modules/threex_my.js'
+import {modification_to_normal, to_one_fibbonachi_digit} from './modules/support.js'
+import {onWindowResize, animate, remove_all_objects_from_memory} from './modules/three_manipulations.js'
+import {plane_square_3x_algorithm, curtail_diamond_algorithm, chess_algorithm} from './modules/calc_mandalas_algorithms.js'
+import {basic_colors, scene, camera, renderer,
+         axis_visual, plain_x_cube_visual, border_visual, x_border_visual, grid
+        } from './modules/visual_constructors.js'
 
 
 window.onload = init
 
-var scene, camera, renderer, controls //глобальные переменные для создания сцены
+var /*scene, camera, renderer,*/ controls //глобальные переменные для создания сцены
 
 
 function init(value_init, previous_input, number_of_symbols_resize) {
 
-  /////задание основных переменных////////////////////////////////////////
-
-  //база цветов//
-  let basic_colors = ["#FFFFFF", "#E4388C", "#E4221B", "#FF7F00", "#FFED00", "#008739", "#02A7AA", "#47B3E7", "#2A4B9B", "#702283"]
-
-  //базовый сборщик геометрии кубов//
-  let cubeGeom = new THREE.CubeGeometry(1,1,0.01) 
-
-  //материал кубов создаётся из массива цветов от нуля до девяти соответственно
-  let color_material = basic_colors.map( color_n => new THREE.MeshBasicMaterial({ color: color_n }) )
-  //еще один материал для бордера и дальнейших манипуляций с ним
-  let color_material_for_border = new THREE.MeshBasicMaterial({ color: basic_colors[9] })
-
-  //////////функция конструктора объектов//////////////////////////////////////////////////
-  function cubus_construct(x, y, z, colornum) {//передаются координаты и номер цвета
-
-      let color_material_choice = (colornum < 0) ? color_material_for_border //в конструкторе для бордюра задаются отрицательные значения цвета
-                                                 : color_material[colornum]
-
-      let cubus = new THREE.Mesh( cubeGeom, //геометрия куба задана один раз
-                                  color_material_choice
-                                )
-      cubus.position.set(x,y,z) // устанавливается позиция объекта
-      cubus.colornum = Math.abs(colornum) //идентификатор для отбора объектов по значению цвета
-      scene.add(cubus) //визуализация полученного объекта
-
-      return cubus
-    }//возвращает новый объект куб, обработанный по заданным координатам и цвету
-
- 
-  ///////////////////////////////////////////////////////////////////////////////////////////////////
-  ///////////////////////////////////////////////////////////////////////////////////////////////////
-
-  //  if (!+value_init) - это проверка запущена ли функция init()
-  //  в первый раз передаётся объект, который не является числом(NaN), соответственно - !false = true
-
+  
   /////////////////////////////////////////////////////////////////////////////////////
   ///////////////////PRE_BEGIN////////////////////////////////////////////////////////
   ///////////////////////////////////////////////////////////////////////////////////
 
-  //добавил сцену
-  if (!+value_init)
-    scene = new THREE.Scene()
-  scene.background = new THREE.Color( "white" ) //задал сцене задний фон
-
-  //настроил параметры камеры
-  if (!+value_init)
-    camera = new THREE.PerspectiveCamera( 45, window.innerWidth / window.innerHeight, 1, 500 )
-  camera.lookAt( 0, 0, 0 ) //смотреть в центр координат
-
-  //выбрал рендер
-  if (!+value_init)
-    renderer = new THREE.WebGLRenderer()
-  renderer.setPixelRatio(window.devicePixelRatio)
-  renderer.setSize( window.innerWidth-4, window.innerHeight-4 ) //отнял по 4 пикселя, потому что появляется прокрутка
-
-  //добавление скрипта к документу в тег
+  
+  //добавление графического окна к документу в тег
   if (!+value_init)
     document.body.appendChild( renderer.domElement )
   //при динамическом изменении размера окна
   window.addEventListener('resize', onWindowResize, false)
 
-  ///////////МАНИПУЛЯЦИЯ СЦЕНОЙ (оставил только приближение и удаление)//////////////////////
-  // также активация внутри функции render() и onwindowresize() строкой controls.update()
-  controls = new THREE.OrbitControls (camera, renderer.domElement)
-  controls.minDistance = 2 //минимальная 
-  controls.maxDistance = 444 //максимальная дистанция при ручном приближении
-
-
-
-
+  
   /////////////////////////////////////////////////////////////////////////////////
   //////////////////////////BEGIN/////////////////////////////////////////////////
   ///////////////////////////////////////////////////////////////////////////////
@@ -266,12 +211,12 @@ function init(value_init, previous_input, number_of_symbols_resize) {
   function reinit() {
 
       //зачистка памяти
-      remove_all_objects_from_memory(axis)
-      remove_all_objects_from_memory(plain_x_cube)
+      if (axis) remove_all_objects_from_memory(axis)
+      if (plain_x_cube) remove_all_objects_from_memory(plain_x_cube)
 
       if (border) remove_all_objects_from_memory(border)
       if (charNumber) remove_all_objects_from_memory(charNumber)
-      if (squares) remove_all_objects_from_memory(squares)
+      if (grid_squares) remove_all_objects_from_memory(grid_squares)
 
       if (scale_border) {
         scene.remove( scale_border )
@@ -311,6 +256,11 @@ function init(value_init, previous_input, number_of_symbols_resize) {
   let summ_to_zero_element = to_one_fibbonachi_digit( string_for_algorithms.reduce( (sum,n) => sum+n ))
   //в начало массива
   string_for_algorithms.unshift( summ_to_zero_element )
+
+  
+  //////////////////////////////////////////////////////////////////////////////
+  ///// NUMERIC ADAPTATION ITEM BLOCK /////////////////////////////////////////
+  ////////////////////////////////////////////////////////////////////////////
 
   let header_title = document.querySelector('.title')
   //отображение чисто цифрового значения с суммой под title
@@ -375,6 +325,9 @@ function init(value_init, previous_input, number_of_symbols_resize) {
   //пластины между осями
   let plain_x_cube = plain_x_cube_visual(plane_of_colors)
 
+  //создаём сетку
+  let grid_squares = grid([...axis, ...plain_x_cube])
+  
   //массив для элементов обводки мандалы
   let border = border_visual(plane_of_colors[0])
 
@@ -453,7 +406,7 @@ function init(value_init, previous_input, number_of_symbols_resize) {
       }
     }
     if (selected_html_content === "#")
-      squares.forEach( function(entry) { entry.visible = !entry.visible } )
+      grid_squares.forEach( function(entry) { entry.visible = !entry.visible } )
 
     //смена цвета для бордера//
     if (selected_html_content === "B")
@@ -570,309 +523,6 @@ function init(value_init, previous_input, number_of_symbols_resize) {
 
   }
     
-  ///////////////////////////////////////////////////////////////////////////////
-  /////////////////////АЛГОРИТМЫ ПОДСЧЁТА МАНДАЛ////////////////////////////////
-  /////////////////////////////////////////////////////////////////////////////
-
-  ////////пластина мандалы из кубов по первому алгоритму (Юлин вариант)///////
-  function plane_square_3x_algorithm(input_nums_in_fn) {//принимает одномерный массив чисел, созданных из введенной строки
-
-    //задаём основной цифро-световой массив мандалы
-    let matrix = []
-    //сначала назначаем ось по горизонтали
-      matrix[0] = input_nums_in_fn
-    //и зеркально по вертикали от единицы
-    for (let i=1; i < input_nums_in_fn.length; i++) {
-      //первое значение каждой строки
-      matrix[i] = [matrix[0][i]]
-    }
-
-    //высчитываем мандалу на основе заданных осей (массивы считаются от 1, потому что подсчёт -1)
-    let fibbo_number
-    for (let y=1; y < input_nums_in_fn.length; y++)
-      for (let x=1; x < input_nums_in_fn.length; x++) {
-
-        fibbo_number = to_one_fibbonachi_digit( matrix[y-1][x] +
-                                                matrix[y][x-1] +
-                                                matrix[y-1][x-1]
-                                              )
-
-        matrix[y].push(fibbo_number)
-      }
-
-    return matrix
-  }//возвращает двумерный массив
-
-
-  //алгоритм для мадалы "ромб"
-  function curtail_diamond_algorithm(plane_of_colors_in_fn) {
-
-    let diamond_matrix = [...plane_of_colors_in_fn]
-
-    //краткое описание: происходит "заворачивание" углов квадратной мандалы
-    // суммированием от крайних элементов к середине
-    for (let x=1; x < plane_of_colors_in_fn.length-1; x++)
-      for (let y=1; y < plane_of_colors_in_fn.length-x; y++) {
-      diamond_matrix[x][y] = to_one_fibbonachi_digit(
-          plane_of_colors_in_fn[x][y]+
-          plane_of_colors_in_fn[plane_of_colors_in_fn.length-x][plane_of_colors_in_fn.length-y]
-          )
-      diamond_matrix[plane_of_colors_in_fn.length-x][plane_of_colors_in_fn.length-y] = 0
-      }
-    
-    return diamond_matrix
-  }
-
-  ////////алгоритм сбора мандалы по шахматной схеме/////////////////////////////
-  function chess_algorithm(input_nums_fn, mirror_variant = false ) {//принимает одномерный массив чисел, созданных из введенной строки и модификатор стиля отображения косой оси
-
-    //косая ось шахматного подсчёта
-    let axis_fn = !mirror_variant ?
-    //первый вариант если false
-      [ //создаём базис отсчёта сумма посередине и по краям, основное "слово" от центра
-        input_nums_fn[0], //это уже посчитанная заранее сумма вписанная в нулевой элемент
-        ...input_nums_fn.map((n,i,arr) => arr[arr.length-1-i]), //разворот вводного значения, соотвественно сумма из нулевого значения становится в середине
-        ...input_nums_fn.slice(1), //еще раз вставляем значение и обрезаем повторную сумму
-        input_nums_fn[0] //и снова сумма в конце
-      ]
-      :
-    //второй вариант если true
-      [//создаём базис отсчёта сумма посередине и по краям, основное "слово" от краёв к центру
-        ...input_nums_fn,
-        input_nums_fn[0],
-        ...input_nums_fn.map((n,i,arr) => arr[arr.length-1-i]) //аналог reverse() без изменения массива
-      ]
-
-    let matrix = axis_fn.map(n => axis_fn.map( n => 0)) // создаём двумерную матрицу на нулях на основе размера базиса
-
-    axis_fn.forEach( (n,i) => matrix[i][i] = n) // вписываем косую "ось" (базис) в матрицу подсчёта
-
-      //сначала расчёт диагонали в сторону уменьшения
-      for (let i=1; i < axis_fn.length; i++)
-        for (let j=i; j < axis_fn.length; j++)
-
-            matrix[j][j-i] =
-              to_one_fibbonachi_digit ( //складывается в шахматном порядке нечетная диагональ по две цифры
-                                        matrix[j][j-i+1]
-                                        + matrix[j-1][j-i]
-                                        + ((i%2==0) ? matrix[j-1][j-i+1] : 0) //четные диагонали - по три цифры
-                                      )
-
-      //расчёт диагонали в сторону увеличения
-       for (let i=0; i < axis_fn.length; i++)
-        for (let j=0; j < axis_fn.length-1-i; j++)
-
-            matrix[j][j+i+1] = 
-              to_one_fibbonachi_digit ( //складывается в шахматном порядке нечетная диагональ по две цифры
-                                        matrix[j][j+i]
-                                        + matrix[j+1][j+i+1]
-                                        + ((i%2==0) ? matrix[j+1][j+i] : 0) //четные диагонали - по три цифры
-                                      )
-
-    return matrix.reverse()
-  }//возвращаем развёрнутую наоборот двумерную матрицу, потому как отображение с другого угла
-
-  ///////////////////////////////////////////////////////////////////////////////
-  /////// ФУНКЦИИ ВИЗУАЛЬНОЙ СБОРКИ и ГРУППИРОВКИ ОБЪЕКТОВ В МАССИВ ////////////
-  /////////////////////////////////////////////////////////////////////////////
-  
-
-  //////////сборка осей //////////
-  function axis_visual(input_nums_fn) {//принимает одномерный числовой массив
-    let axis_fn = []
-
-    //нулевой куб в центре оси
-    axis_fn[0] = cubus_construct( 0,0,0, input_nums_fn[0] )
-
-    let color_n
-    for (let i = 1; i < input_nums_fn.length; i++) {
-      //присваиваем значение цвета из принятого массива
-      color_n = input_nums_fn[i]
-
-      //направо
-      axis_fn.push( cubus_construct( i,0,0, color_n) )
-      //вверх
-      axis_fn.push( cubus_construct( 0,i,0, color_n) )
-      //налево
-      axis_fn.push( cubus_construct( -i,0,0, color_n) )
-      //вниз
-      axis_fn.push( cubus_construct( 0,-i,0, color_n) )
-
-    }
-
-    return axis_fn
-  }//возвращает одномерный массив объектов
-
-
-  ///////рабочий вариант обводки мандалы////////////////////////
-  function border_visual(input_nums_fn) {//принимает одномерный числовой массив
-    //перменные для обводки мандалы
-    let border_coordin = input_nums_fn.length
-    let color_n = summ_to_zero_element
-    let border_fn = [] //массив для элементов обводки мандалы
-  
-    color_material_for_border.color.set(basic_colors[color_n]) //присваивается цвет нулевой клетки
-  
-      for (let i = -border_coordin; i < border_coordin; i++) {
-          border_fn.push(
-            cubus_construct( -border_coordin, i, 0, -color_n ), //левая
-            cubus_construct( i, border_coordin, 0, -color_n ), //верхняя
-            cubus_construct( border_coordin, -i, 0, -color_n ), //правая
-            cubus_construct( -i, -border_coordin, 0, -color_n ) //нижняя
-          )
-
-      }
-
-    return border_fn
-  }//возвращает одномерный массив объектов
-
-
-  ////////пластина/плоскость кубов/////////////
-  function plain_x_cube_visual(plane_of_colors_fn) {//принимает одномерный числовой массив
-
-    let plain_x_cube_fn = []
-    //отрисовка панелей
-    let color_n
-    for (let y = 1; y < plane_of_colors_fn[0].length; y++)
-      for (let x = 1; x < plane_of_colors_fn[0].length; x++) {
-
-        //назначение цвета в соответствии с цветоцифрами, вычисленными по примененному алгоритму
-        color_n = plane_of_colors_fn[y][x] 
-
-        //верх-право
-        plain_x_cube_fn.push( cubus_construct ( y, x, 0, color_n) )
-        //низ-лево
-        plain_x_cube_fn.push( cubus_construct ( -y, -x, 0, color_n) )
-        //верх-лево
-        plain_x_cube_fn.push( cubus_construct ( -x, y, 0, color_n) )
-        //низ-право
-        plain_x_cube_fn.push( cubus_construct ( x, -y, 0, color_n) )
-      }
-
-    return plain_x_cube_fn
-  }//возвращает одномерный массив объектов
-
-  //поворот и уменьшение стандартной обводки для мандалы "ромб"
-  function x_border_visual(border_in_fn) {
-    
-    //создание группы
-    let x_border = new THREE.Group()
-    
-    //уменьшение повернутой обводки (0.75 идеальное значение для 8 символов, от него и "скакал")
-    let degree_from_diagonal = (number_of_symbols_fn) => {
-      //размер стороны куба
-      let side = number_of_symbols_fn*2+1
-      //размер диагонали
-      let diagonal = Math.sqrt(side*side*2)
-      //коэффициент разницы между реальной и нужной диагональю
-      let coefficient = (side+1)/diagonal
-      
-      return coefficient
-    }
-
-    let scale_p = degree_from_diagonal( number_of_symbols_resize)
-
-    //сама группирока объекта из элементов бордюра
-    border_in_fn.forEach(function(item) {x_border.add(item)} )
-    
-    scene.add(x_border)
-    //поворот на 45градусов
-    x_border.rotation.z = THREE.Math.degToRad( 45 )
-    //приближаем объект для визуального перекрытия "зубцов"
-    x_border.position.set(0,0,0.005)
-    //изменение размера
-    x_border.scale.set(scale_p,scale_p,scale_p)
-
-    //перекрас в белый цвет
-    border_in_fn.forEach( function(entry) { entry.material.color.set(basic_colors[0]) } )
-
-    return x_border
-  }
-
-
-  // ///////////////////////////////////////////////////////////////////////////////
-  // /////////////////////СПЕЦИАЛЬНЫЕ ФУНКЦИИ THREEX///////////////////////////////
-  // /////////////////////////////////////////////////////////////////////////////
-
-
-  // /////функция изменения центровки камеры при изменении размера экрана///////////////
-  function onWindowResize() {
-
-    camera.aspect = window.innerWidth / window.innerHeight
-    camera.updateProjectionMatrix()
-    renderer.setSize(window.innerWidth-4, window.innerHeight-4)
-
-    controls.update() //для сохранения пропорций при динамическом изменении ширины экрана
-
-  }
-
-
-  // ////анимация
-  function animate() {
-
-    requestAnimationFrame( animate )
-
-    // рендеринг
-    controls.update() //манипуляция со сценой
-    renderer.render( scene, camera )
-    // console.log(camera.position)
-  }
-
-
-  // ////функция очистки памяти от ссылок на объекты THREEX, оставшихся в render
-  function remove_all_objects_from_memory(object_to_clear) {
-
-    //функция поиска соответствий на наличие объектов
-    function disposeNode(parentObject) {
-
-    parentObject.traverse(function (node) {
-        if (node instanceof THREE.Mesh) {
-            if (node.geometry) {
-                node.geometry.dispose();
-            }
-
-            if (node.material) {
-
-                if (node.material instanceof THREE.MeshFaceMaterial || node.material instanceof THREE.MultiMaterial) {
-                    node.material.materials.forEach(function (mtrl, idx) {
-                        if (mtrl.map) mtrl.map.dispose();
-                        if (mtrl.lightMap) mtrl.lightMap.dispose();
-                        if (mtrl.bumpMap) mtrl.bumpMap.dispose();
-                        if (mtrl.normalMap) mtrl.normalMap.dispose();
-                        if (mtrl.specularMap) mtrl.specularMap.dispose();
-                        if (mtrl.envMap) mtrl.envMap.dispose();
-
-                        mtrl.dispose();    // disposes any programs associated with the material
-                    });
-                }
-                else {
-                    if (node.material.map) node.material.map.dispose();
-                    if (node.material.lightMap) node.material.lightMap.dispose();
-                    if (node.material.bumpMap) node.material.bumpMap.dispose();
-                    if (node.material.normalMap) node.material.normalMap.dispose();
-                    if (node.material.specularMap) node.material.specularMap.dispose();
-                    if (node.material.envMap) node.material.envMap.dispose();
-
-                    node.material.dispose();   // disposes any programs associated with the material
-                }
-            }
-        }
-      });
-    }
-
-    //сама реализация очистки
-    for (let i = 0; i < object_to_clear.length; i++) {
-
-      scene.remove( object_to_clear[i] ) //убираем объект со сцены
-      disposeNode(object_to_clear[i]) //запускаем встроенную функцию очистки
-      object_to_clear[i] = null //зачищаем сам массив
-    
-    }
-
-    //дополнительная очистка (на всякий)
-    object_to_clear.length = 0
-
-  }
 
 ////////////////////////////////////////////////////////////////////////////////////////
 ///  РАБОТА С СИМВОЛАМИ  //////////////////////////////////////////////////////////////
@@ -933,58 +583,6 @@ function init(value_init, previous_input, number_of_symbols_resize) {
 
 
 ////////////////////////////////////////////////////////////////////////////////////
-////// РАБОТА С ЛИНИЯМИ  //////////////////////////////////////////////////////////
-//////////////////////////////////////////////////////////////////////////////////
-  
-  //создаём сетку
-  //локально-глобальная переменная для обработки сетки
-  let squares = []
-  squares = grid([...axis, ...plain_x_cube])
-  //функция сетки
-  function grid(object) {
-
-    let lineMaterial = new THREE.LineBasicMaterial( { color: 0x000000 } )
-    let grid = []
-    let geometry_for_line = []
-    let area_position = []
-    let z_position = 0.0065
-    let area_around = 0.5
-    let x=0, y=0, color_n=0
-
-    for (let i = 0, k = 0; i < object.length; i++) {
-        x = object[i].position.x
-        y = object[i].position.y
-        color_n = object[i].colornum
-
-        area_position[0] = [ x - area_around, y - area_around, z_position ]
-        area_position[1] = [ x + area_around, y - area_around, z_position ]
-        area_position[2] = [ x + area_around, y + area_around, z_position ]
-        area_position[3] = [ x - area_around, y + area_around, z_position ]
-        area_position[4] = area_position [0]
-
-    //не считаем нули вне осей
-      if ( color_n !== 0 || (color_n === 0 && (x === 0 || y === 0)) ){
-
-        geometry_for_line[k] = new THREE.Geometry()
-        
-        for (let j = 0; j < area_position.length; j++)
-          geometry_for_line[k].vertices.push( new THREE.Vector3( ...area_position[j] ) )
-
-        grid[k] = new THREE.Line(geometry_for_line[k], lineMaterial )
-        
-        // grid[k].visible = false
-        
-        scene.add(grid[k])
-        k++
-      }
-    }
-
-    return grid
-  } //возвращает массив объектов линий
-  
-  
-
-////////////////////////////////////////////////////////////////////////////////////
 ///ФУНКЦИИ ПРЕОБРАЗДВАНИЯ DOM дерева//////////
 //////////////////////////////////////////////////////////////////////////////////
   function numeric_adaptation_Node_elements(input_string_array_fn, to_Node, now_resize_is) {
@@ -1008,8 +606,5 @@ function init(value_init, previous_input, number_of_symbols_resize) {
       to_Node.appendChild(element[i])
     }
   }
-} //init() end bracket
 
-
-// export {init.to_one_fibbonachi_digit} //'./modules/prototypes.js'
-// export {scene, camera, renderer, controls}
+}; //init() end bracket

@@ -20,6 +20,7 @@ import {to_one_fibbonachi_digit} from './support.js'
   //материал для линий сетки
   let lineMaterial = new THREE.LineBasicMaterial( { color: 0x000000 } )
 
+
 /////////////////////////////////////////////////////////////////////////////
   //добавил сцену
   let scene = new THREE.Scene()

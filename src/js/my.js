@@ -14,7 +14,7 @@ import {basic_colors, scene, camera, renderer,
 
 window.onload = init
 
-var /*scene, camera, renderer,*/ controls //глобальные переменные для создания сцены
+// var /*scene, camera, renderer,*/ controls //глобальные переменные для создания сцены
 
 
 function init(value_init, previous_input, number_of_symbols_resize) {
@@ -528,12 +528,12 @@ function init(value_init, previous_input, number_of_symbols_resize) {
 ///  РАБОТА С СИМВОЛАМИ  //////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////
 
-  let loader = new THREE.FontLoader()
   let charNumber = []
+  let loader_font = new THREE.FontLoader()
 
-  loader.load( require('@fonts/helvetiker_regular.typeface.onlynumbers.json.eot'), function ( font ) {
+  loader_font.load( require('@fonts/helvetiker_regular.typeface.onlynumbers.json.eot'), function ( font ) {
   
-    //единый материал для всех (пока)
+    //единый материал для всех символоа(пока)
     let fontMaterial = new THREE.MeshBasicMaterial( {color: 0x000000} );
     
     //создаём массив геометрий для цифр от 0 до 9

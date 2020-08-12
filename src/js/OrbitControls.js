@@ -419,44 +419,44 @@ THREE.OrbitControls = function ( object, domElement, localElement ) {
 
 	}
 
-	function onKeyDown( event ) {
+	// function onKeyDown( event ) {
 
-		if ( scope.enabled === false ) { return; }
-		if ( scope.noKeys === true ) { return; }
-		if ( scope.noPan === true ) { return; }
+	// 	if ( scope.enabled === false ) { return; }
+	// 	if ( scope.noKeys === true ) { return; }
+	// 	if ( scope.noPan === true ) { return; }
 
-		// pan a pixel - I guess for precise positioning?
-		// Greggman fix: https://github.com/greggman/three.js/commit/fde9f9917d6d8381f06bf22cdff766029d1761be
-		var needUpdate = false;
+	// 	// pan a pixel - I guess for precise positioning?
+	// 	// Greggman fix: https://github.com/greggman/three.js/commit/fde9f9917d6d8381f06bf22cdff766029d1761be
+	// 	var needUpdate = false;
 		
-		switch ( event.keyCode ) {
+	// 	switch ( event.keyCode ) {
 
-			case scope.keys.UP:
-				scope.pan( new THREE.Vector2( 0, scope.keyPanSpeed ) );
-				needUpdate = true;
-				break;
-			case scope.keys.BOTTOM:
-				scope.pan( new THREE.Vector2( 0, -scope.keyPanSpeed ) );
-				needUpdate = true;
-				break;
-			case scope.keys.LEFT:
-				scope.pan( new THREE.Vector2( scope.keyPanSpeed, 0 ) );
-				needUpdate = true;
-				break;
-			case scope.keys.RIGHT:
-				scope.pan( new THREE.Vector2( -scope.keyPanSpeed, 0 ) );
-				needUpdate = true;
-				break;
-		}
+	// 		case scope.keys.UP:
+	// 			scope.pan( new THREE.Vector2( 0, scope.keyPanSpeed ) );
+	// 			needUpdate = true;
+	// 			break;
+	// 		case scope.keys.BOTTOM:
+	// 			scope.pan( new THREE.Vector2( 0, -scope.keyPanSpeed ) );
+	// 			needUpdate = true;
+	// 			break;
+	// 		case scope.keys.LEFT:
+	// 			scope.pan( new THREE.Vector2( scope.keyPanSpeed, 0 ) );
+	// 			needUpdate = true;
+	// 			break;
+	// 		case scope.keys.RIGHT:
+	// 			scope.pan( new THREE.Vector2( -scope.keyPanSpeed, 0 ) );
+	// 			needUpdate = true;
+	// 			break;
+	// 	}
 
-		// Greggman fix: https://github.com/greggman/three.js/commit/fde9f9917d6d8381f06bf22cdff766029d1761be
-		if ( needUpdate ) {
+	// 	// Greggman fix: https://github.com/greggman/three.js/commit/fde9f9917d6d8381f06bf22cdff766029d1761be
+	// 	if ( needUpdate ) {
 
-			scope.update();
+	// 		scope.update();
 
-		}
+	// 	}
 
-	}
+	// }
 	
 	function touchstart( event ) {
 
@@ -465,11 +465,11 @@ THREE.OrbitControls = function ( object, domElement, localElement ) {
 		switch ( event.touches.length ) {
 
 			case 1:	// one-fingered touch: rotate
-				if ( scope.noRotate === true ) { return; }
+				// if ( scope.noRotate === true ) { return; }
 
-				state = STATE.TOUCH_ROTATE;
+				// state = STATE.TOUCH_ROTATE;
 
-				rotateStart.set( event.touches[ 0 ].pageX, event.touches[ 0 ].pageY );
+				// rotateStart.set( event.touches[ 0 ].pageX, event.touches[ 0 ].pageY );
 				break;
 
 			case 2:	// two-fingered touch: dolly
@@ -509,18 +509,18 @@ THREE.OrbitControls = function ( object, domElement, localElement ) {
 		switch ( event.touches.length ) {
 
 			case 1: // one-fingered touch: rotate
-				if ( scope.noRotate === true ) { return; }
-				if ( state !== STATE.TOUCH_ROTATE ) { return; }
+				// if ( scope.noRotate === true ) { return; }
+				// if ( state !== STATE.TOUCH_ROTATE ) { return; }
 
-				rotateEnd.set( event.touches[ 0 ].pageX, event.touches[ 0 ].pageY );
-				rotateDelta.subVectors( rotateEnd, rotateStart );
+				// rotateEnd.set( event.touches[ 0 ].pageX, event.touches[ 0 ].pageY );
+				// rotateDelta.subVectors( rotateEnd, rotateStart );
 
-				// rotating across whole screen goes 360 degrees around
-				scope.rotateLeft( 2 * Math.PI * rotateDelta.x / element.clientWidth * scope.rotateSpeed );
-				// rotating up and down along whole screen attempts to go 360, but limited to 180
-				scope.rotateUp( 2 * Math.PI * rotateDelta.y / element.clientHeight * scope.rotateSpeed );
+				// // rotating across whole screen goes 360 degrees around
+				// scope.rotateLeft( 2 * Math.PI * rotateDelta.x / element.clientWidth * scope.rotateSpeed );
+				// // rotating up and down along whole screen attempts to go 360, but limited to 180
+				// scope.rotateUp( 2 * Math.PI * rotateDelta.y / element.clientHeight * scope.rotateSpeed );
 
-				rotateStart.copy( rotateEnd );
+				// rotateStart.copy( rotateEnd );
 				break;
 
 			case 2: // two-fingered touch: dolly
@@ -579,9 +579,9 @@ THREE.OrbitControls = function ( object, domElement, localElement ) {
 
 	// this.domElement.addEventListener( 'keydown', onKeyDown, false );
 
-	// this.localElement.addEventListener( 'touchstart', touchstart, false );
-	// this.domElement.addEventListener( 'touchend', touchend, false );
-	// this.domElement.addEventListener( 'touchmove', touchmove, false );
+	this.localElement.addEventListener( 'touchstart', touchstart, false );
+	this.domElement.addEventListener( 'touchend', touchend, false );
+	this.domElement.addEventListener( 'touchmove', touchmove, false );
 
 //////////////////////////////////////////////////////////////////////////////////////////
 	this.domElement.addEventListener( 'mousewheel', onMouseWheel, false );

@@ -1,6 +1,21 @@
 import * as THREE from '../three.min.js'
-import { scene, camera, renderer} from './visual_constructors.js'
+// import { scene, camera, renderer} from './visual_constructors.js'
 import { OrbitControls } from '../OrbitControls.js'
+
+
+/////////////////////////////////////////////////////////////////////////////
+  //добавил сцену
+  let scene = new THREE.Scene()
+  scene.background = new THREE.Color( "white" ) //задал сцене задний фон
+ 
+  //настроил параметры камеры
+  let camera = new THREE.PerspectiveCamera( 45, window.innerWidth / window.innerHeight, 1, 500 )
+  camera.lookAt( 0, 0, 0 ) //смотреть в центр координат
+
+  //выбрал рендер
+  let renderer = new THREE.WebGLRenderer()
+  renderer.setPixelRatio(window.devicePixelRatio)
+  renderer.setSize( window.innerWidth-4, window.innerHeight-4 ) //отнял по 4 пикселя, потому что появляется прокрутка
 
 ///////////МАНИПУЛЯЦИИ СО СЦЕНОЙ (оставил только приближение и удаление)//////////////////////
 
@@ -89,4 +104,5 @@ function remove_all_objects_from_memory(object_to_clear) {
 
 }
 
-  export {onWindowResize, animate, remove_all_objects_from_memory, controls}
+  export {scene, camera, renderer,
+          onWindowResize, animate, remove_all_objects_from_memory, controls}

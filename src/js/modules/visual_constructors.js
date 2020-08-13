@@ -1,6 +1,7 @@
 import * as THREE from '../three.min.js'
+import {scene} from './three_manipulations.js'
 import {to_one_fibbonachi_digit} from './support.js'
-
+// import {axis, plain_x_cube} from '../my.js'
 ///////////////////////////////////////////////////////////////////////////////
 /////// ФУНКЦИИ ВИЗУАЛЬНОЙ СБОРКИ и ГРУППИРОВКИ ОБЪЕКТОВ В МАССИВ ////////////
 /////////////////////////////////////////////////////////////////////////////
@@ -21,20 +22,7 @@ import {to_one_fibbonachi_digit} from './support.js'
   let lineMaterial = new THREE.LineBasicMaterial( { color: 0x000000 } )
 
 
-/////////////////////////////////////////////////////////////////////////////
-  //добавил сцену
-  let scene = new THREE.Scene()
-  scene.background = new THREE.Color( "white" ) //задал сцене задний фон
- 
-  //настроил параметры камеры
-  let camera = new THREE.PerspectiveCamera( 45, window.innerWidth / window.innerHeight, 1, 500 )
-  camera.lookAt( 0, 0, 0 ) //смотреть в центр координат
-
-  //выбрал рендер
-  let renderer = new THREE.WebGLRenderer()
-  renderer.setPixelRatio(window.devicePixelRatio)
-  renderer.setSize( window.innerWidth-4, window.innerHeight-4 ) //отнял по 4 пикселя, потому что появляется прокрутка
-
+// /////////////////////////////////////////////////////////////////////////////
 
 /////////////////////////////////////////////////////////////////////////////
 
@@ -228,10 +216,66 @@ function grid(object) {
 } //возвращает массив объектов линий
 
 
+///////////////////////////////////////////////////////////////////////////////////////////
+  // charNumber = charNumber_active([...axis,...plain_x_cube])
+  let charNumber = []
+  //единый материал для всех символоа(пока)
+  let fontMaterial = new THREE.MeshBasicMaterial( {color: 0x000000} );
+  
+  //создаём массив геометрий для цифр от 0 до 9
+  let fontGeometry = []
+
+  function charNumber_active(props) {
+    let loader_font = new THREE.FontLoader()
+    loader_font.load( require('@fonts/helvetiker_regular.typeface.onlynumbers.json.eot'),
+      function ( font ) {
+        charNumber = font_visibler( font, props )
+      }
+    )
+    return charNumber
+  }
+    console.log (charNumber)
+  
+  function font_visibler(font, objectos) {
+
+    let CharsN = []
+
+    for (let i=0; i < 10; i++) {
+
+      let char = i.toString()
+
+      fontGeometry[i] = new THREE.TextGeometry( char, {
+                          font: font,
+                          size: 0.6,
+                          height: 0.03,
+                          curveSegments: 15,
+                          } )
+    }
+    
+    for (let i=0, j=0; i < objectos.length; i++) {
+
+        let x = objectos[i].position.x
+        let y = objectos[i].position.y
+        let color_n = objectos[i].colornum
+
+        //не считаем нули вне осей
+        if ( color_n !== 0 || (color_n === 0 && (x === 0 || y === 0)) ) {
+
+          CharsN[j] = new THREE.Mesh( fontGeometry[color_n], fontMaterial )
+          CharsN[j].position.set( x-0.25, y-0.3, 0.06 )
+          scene.add( CharsN[j] )
+          CharsN[j].visible = false
+          j++
+
+        }
+
+      }
+        
+    return CharsN
+  }
 
 
 
-
-export { basic_colors, scene, camera, renderer,
+export { basic_colors, charNumber_active, charNumber,
         axis_visual, plain_x_cube_visual,
         border_visual, x_border_visual, grid }

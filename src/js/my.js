@@ -1,25 +1,21 @@
 "use strict"
 
-import * as THREE from './three.min.js'
-// import { OrbitControls } from './OrbitControls.js'
 //мои модули
 import './modules/prototypes.js' //прототипизированные функции
 import {modification_to_normal, to_one_fibbonachi_digit} from './modules/support.js'
-import {onWindowResize, animate, remove_all_objects_from_memory} from './modules/three_manipulations.js'
+import {scene, camera, renderer,
+        onWindowResize, animate, remove_all_objects_from_memory} from './modules/three_manipulations.js'
 import {plane_square_3x_algorithm, curtail_diamond_algorithm, chess_algorithm} from './modules/calc_mandalas_algorithms.js'
-import {basic_colors, scene, camera, renderer,
+import {basic_colors, charNumber_active, charNumber,
          axis_visual, plain_x_cube_visual, border_visual, x_border_visual, grid
         } from './modules/visual_constructors.js'
 
 
 window.onload = init
 
-// var /*scene, camera, renderer,*/ controls //глобальные переменные для создания сцены
-
 
 function init(value_init, previous_input, number_of_symbols_resize) {
 
-  
   /////////////////////////////////////////////////////////////////////////////////////
   ///////////////////PRE_BEGIN////////////////////////////////////////////////////////
   ///////////////////////////////////////////////////////////////////////////////////
@@ -250,7 +246,7 @@ function init(value_init, previous_input, number_of_symbols_resize) {
   //изменяет размер обрабатываемой числовой строки
   let string_for_algorithms = input_string_array
                               .to_number_of_symbols(number_of_symbols_resize)
-                              .map(n=>n) //мапим, чтобы не изменять предыдущий массив
+                              .map(Number) //мапим, чтобы не изменять предыдущий массив
 
   //добавляется нулевой элемент суммы всех чисел по фибоначи
   let summ_to_zero_element = to_one_fibbonachi_digit( string_for_algorithms.reduce( (sum,n) => sum+n ))
@@ -334,6 +330,7 @@ function init(value_init, previous_input, number_of_symbols_resize) {
   //массив для поворота и изменения размера обводки в мандале "ромб"
   let scale_border = selected_mandala.true_of(3) ? x_border_visual(border) : null
   
+  charNumber_active([...axis,...plain_x_cube])
   
   ////анимация объектов////////////////////
   if (!+value_init) animate()
@@ -524,64 +521,6 @@ function init(value_init, previous_input, number_of_symbols_resize) {
   }
     
 
-////////////////////////////////////////////////////////////////////////////////////////
-///  РАБОТА С СИМВОЛАМИ  //////////////////////////////////////////////////////////////
-//////////////////////////////////////////////////////////////////////////////////////
-
-  let charNumber = []
-  let loader_font = new THREE.FontLoader()
-
-  loader_font.load( require('@fonts/helvetiker_regular.typeface.onlynumbers.json.eot'), function ( font ) {
-  
-    //единый материал для всех символоа(пока)
-    let fontMaterial = new THREE.MeshBasicMaterial( {color: 0x000000} );
-    
-    //создаём массив геометрий для цифр от 0 до 9
-    let fontGeometry = []
-    
-    for (let i=0; i < 10; i++) {
-
-      let char = i.toString()
-
-      fontGeometry[i] = new THREE.TextGeometry( char, {
-                          font: font,
-                          size: 0.6,
-                          height: 0.03,
-                          curveSegments: 15,
-                          } )
-    }
-    
-    //присвоение и вывод объектов цифр
-    function everyNumber(objects) {
-
-      for (let i=0, j=0; i < objects.length; i++) {
-
-        let x = objects[i].position.x
-        let y = objects[i].position.y
-        let color_n = objects[i].colornum
-
-        //не считаем нули вне осей
-        if ( color_n !== 0 || (color_n === 0 && (x === 0 || y === 0)) ) {
-
-          charNumber[j] = new THREE.Mesh( fontGeometry[color_n], fontMaterial )
-          charNumber[j].position.set(x-0.25, y-0.3, 0.06)
-          scene.add( charNumber[j] )
-          charNumber[j].visible = false
-          j++
-
-        }
-
-      }
-        
-    }//everyNumber end
-
-    everyNumber([...axis,...plain_x_cube])
-
-  }
-
-   );
-
-
 ////////////////////////////////////////////////////////////////////////////////////
 ///ФУНКЦИИ ПРЕОБРАЗДВАНИЯ DOM дерева//////////
 //////////////////////////////////////////////////////////////////////////////////
@@ -608,3 +547,7 @@ function init(value_init, previous_input, number_of_symbols_resize) {
   }
 
 }; //init() end bracket
+
+
+
+// export {axis, plain_x_cube}

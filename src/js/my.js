@@ -6,10 +6,15 @@ import {modification_to_normal, to_one_fibbonachi_digit} from './modules/support
 import {scene, camera, renderer,
         onWindowResize, animate, remove_all_objects_from_memory} from './modules/three_manipulations.js'
 import {plane_square_3x_algorithm, curtail_diamond_algorithm, chess_algorithm} from './modules/calc_mandalas_algorithms.js'
-import {basic_colors, charNumber_active, charNumber,
+import {charNumber_active, charNumber,
          axis_visual, plain_x_cube_visual, border_visual, x_border_visual, grid
         } from './modules/visual_constructors.js'
 
+import {basic_colors, camera_range, max_expansion_length} from './default_values.js'
+
+import {title_input, number_of_symbols, number_of_symbols_changer_from_current} from './nodmodules/title_inputs.js'
+
+// import './modules/reinit.js'
 
 window.onload = init
 
@@ -39,12 +44,7 @@ function init(value_init, previous_input, number_of_symbols_resize) {
   // 
   let selected_mandala = +value_init || 4 //проверка на первый запуск init() (по умолчанию 4-ый вариант)
   
-  //дальность камеры
-  let camera_range = 60
-  //максимальное количество символов вводимой строки
-  let max_input_length = 33
-  //максимальное количество знаков на расширение
-  let max_expansion_length = 45 //было 57
+  
   ///////////////БЛОК ОБРАБОТКИ ВВОДИМОЙ СТРОКИ///////////////////////////////////////////////
 
   ///заменяемая строка при неверном вводе (сейчас вводит дату)
@@ -94,23 +94,14 @@ function init(value_init, previous_input, number_of_symbols_resize) {
   //окрашиваем кнопки визуализации цветов
   palitra_button__colored()
   
-  ///title_input
-  //поле ввода значения/имени мандалы
-  let title_input = document.querySelector("#title_input")
   //вывод в заголовок обработанного текста
   title_input.value = input_string
   
-  ///number_of_symbols
-  //количество символов для расширения/сужения мандалы
-  let number_of_symbols = document.querySelector("#number_of_symbols")
   //задание дефолтных значений поля ввода количества символов
   number_of_symbols.placeholder = title_input.value.length
   number_of_symbols.max = max_expansion_length
 
-  ///clear_button
-  //кнопка очистки значений и фокусировка на поле ввода
-  let clear_button = document.querySelector("#clear_button")
-
+  
   ///selected mandalas type
   //селект для выбора типа мандалы
   let selected_mandala_type = document.querySelector("#select_mandala_type")
@@ -126,39 +117,6 @@ function init(value_init, previous_input, number_of_symbols_resize) {
   /// события/////////////////////////////////////////////////////
   ////////////////////////////////////////////////////////////////
 
-
-  //контроль ввода цифровых значений
-  number_of_symbols.oninput = function() {
-    //убираем ввод недопустимых символов
-    number_of_symbols.value = number_of_symbols.value.delete_all_spaces()
-    //удаляем первый ноль
-    if (number_of_symbols.value == 0) number_of_symbols.value = ""
-    //предотвращаем ввод от руки большого значения
-    if (number_of_symbols.value > max_expansion_length) number_of_symbols.value = max_expansion_length
-  }
-  
-  //контроль ввода значений мандалы
-  title_input.oninput = function() {
-    //убираем пробелы,точки и запятые при вводе
-    title_input.value = title_input.value.delete_all_spaces()
-    //обрезаем ввод
-    if (title_input.value.length >= max_input_length)
-      title_input.value = title_input.value.substr(0,max_input_length)
-
-    //данные о длине вводимой строки сразу вводятся в поле
-    number_of_symbols.placeholder = title_input.value.length
-    number_of_symbols.value = ""
-  }
-  
-  //очистка поля title_input
-  clear_button.onclick = () => {
-    title_input.value = ""
-    number_of_symbols.value = ""
-    number_of_symbols.placeholder = 0
-    let todo_focus_wrap = () => title_input.focus()
-    todo_focus_wrap()
-    }
-  
   //перезапуск по выбору типа мандалы
   selected_mandala_type.oninput = function() { reinit() }
   
@@ -170,19 +128,7 @@ function init(value_init, previous_input, number_of_symbols_resize) {
 
     if (e.key == "Enter") reinit()
 
-    if (e.key == "ArrowUp" || e.key == "ArrowDown") number_of_symbols_changer_from_current()
-
-    function number_of_symbols_changer_from_current() {
-      //если поле пустое, то отсчет ведется от длины введенного текста
-      if (!number_of_symbols.value) number_of_symbols.value = title_input.value.length
-
-      //добавление манипуляций с количеством из поля ввода имени мандалы
-      if (e.target.id == title_input.id)
-        if (e.key == "ArrowUp" && number_of_symbols.value < max_expansion_length)
-          ++number_of_symbols.value
-        else if (e.key == "ArrowDown" && number_of_symbols.value > 1)
-          --number_of_symbols.value
-      }
+    if (e.key == "ArrowUp" || e.key == "ArrowDown") number_of_symbols_changer_from_current(e)
 
   }
 
@@ -201,31 +147,7 @@ function init(value_init, previous_input, number_of_symbols_resize) {
   }
 
 
-  ////////////////////////////////////////////////////////////////////////////////////////////////////////
-  ////////////////////////////////////////////////////////////////////////////////////////////////////////
-  //функция перезапуска мандалы с новыми данными//
-  function reinit() {
-
-      //зачистка памяти
-      if (axis) remove_all_objects_from_memory(axis)
-      if (plain_x_cube) remove_all_objects_from_memory(plain_x_cube)
-
-      if (border) remove_all_objects_from_memory(border)
-      if (charNumber) remove_all_objects_from_memory(charNumber)
-      if (grid_squares) remove_all_objects_from_memory(grid_squares)
-
-      if (scale_border) {
-        scene.remove( scale_border )
-        scale_border = null }
-
-      //обработка введенной строки
-      input_string = modification_to_normal(title_input.value)
-      //дополнительная проверка на ошибки при вводе значений количетва символов
-      let number_of_symbols_correct = +number_of_symbols.value || input_string.length
-
-      //перезапуск
-      init(select_mandala_type.value, input_string, number_of_symbols_correct )
-  }
+  
   ////////////////////////////////////////////////////////////////////////////////////////////////////////
   ////////////////////////////////////////////////////////////////////////////////////////////////////////
   
@@ -330,8 +252,10 @@ function init(value_init, previous_input, number_of_symbols_resize) {
   //массив для поворота и изменения размера обводки в мандале "ромб"
   let scale_border = selected_mandala.true_of(3) ? x_border_visual(border) : null
   
+  //цифры//
+  //активация переменной charNumber и прорисовка объектов цифр в инвиз
   charNumber_active([...axis,...plain_x_cube])
-  
+ 
   ////анимация объектов////////////////////
   if (!+value_init) animate()
 
@@ -421,7 +345,7 @@ function init(value_init, previous_input, number_of_symbols_resize) {
     
     //отображение цифр//
     if (selected_html_content === "№") {
-
+      
       charNumber.forEach( function(entry) { entry.visible = !entry.visible } )
       //убираем бордер для отображения цифр и возвращаем при неактиве
       if (selected_mandala == 3) {
@@ -546,8 +470,35 @@ function init(value_init, previous_input, number_of_symbols_resize) {
     }
   }
 
+  ////////////////////////////////////////////////////////////////////////////////////////////////////////
+  ////////////////////////////////////////////////////////////////////////////////////////////////////////
+  // функция перезапуска мандалы с новыми данными//
+  
+  function reinit() {
+
+      //зачистка памяти
+      if (axis) remove_all_objects_from_memory(axis)
+      if (plain_x_cube) remove_all_objects_from_memory(plain_x_cube)
+
+      if (border) remove_all_objects_from_memory(border)
+      if (charNumber) remove_all_objects_from_memory(charNumber)
+      if (grid_squares) remove_all_objects_from_memory(grid_squares)
+
+      if (scale_border) {
+        scene.remove( scale_border )
+        scale_border = null }
+
+      //обработка введенной строки
+      input_string = modification_to_normal(title_input.value)
+      //дополнительная проверка на ошибки при вводе значений количетва символов
+      let number_of_symbols_correct = +number_of_symbols.value || input_string.length
+
+      //перезапуск
+      init(select_mandala_type.value, input_string, number_of_symbols_correct )
+  }
+
 }; //init() end bracket
 
 
 
-// export {axis, plain_x_cube}
+// export {init}

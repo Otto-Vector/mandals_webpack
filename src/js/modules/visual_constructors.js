@@ -1,6 +1,7 @@
 import * as THREE from '../three.min.js'
 import {scene} from './three_manipulations.js'
 import {to_one_fibbonachi_digit} from './support.js'
+import {basic_colors} from '../default_values.js'
 // import {axis, plain_x_cube} from '../my.js'
 ///////////////////////////////////////////////////////////////////////////////
 /////// ФУНКЦИИ ВИЗУАЛЬНОЙ СБОРКИ и ГРУППИРОВКИ ОБЪЕКТОВ В МАССИВ ////////////
@@ -8,8 +9,8 @@ import {to_one_fibbonachi_digit} from './support.js'
 
 
 /////////////////////////////////////////////////////////////////////////////
-  //база цветов//
-  let basic_colors = ["#FFFFFF", "#E4388C", "#E4221B", "#FF7F00", "#FFED00", "#008739", "#02A7AA", "#47B3E7", "#2A4B9B", "#702283"]
+  // //база цветов//
+  
 
   //базовый сборщик геометрии кубов//
   let cubeGeom = new THREE.CubeGeometry(1,1,0.01)
@@ -234,7 +235,7 @@ function grid(object) {
     )
     return charNumber
   }
-    console.log (charNumber)
+
   
   function font_visibler(font, objectos) {
 

@@ -1,20 +1,17 @@
 
 import {max_expansion_length, max_input_length} from '../default_values.js'
 
-// import {reinit} from '../modules/reinit.js'
+import {reinit} from '../modules/reinit.js'
 
   ///title_input
   //поле ввода значения/имени мандалы
   let title_input = document.querySelector("#title_input")
-  // //вывод в заголовок обработанного текста
-  // title_input.value = input_string
+
   
   ///number_of_symbols
   //количество символов для расширения/сужения мандалы
   let number_of_symbols = document.querySelector("#number_of_symbols")
-  // //задание дефолтных значений поля ввода количества символов
-  // number_of_symbols.placeholder = title_input.value.length
-  // number_of_symbols.max = max_expansion_length
+
 
   ///clear_button
   //кнопка очистки значений и фокусировка на поле ввода
@@ -57,19 +54,33 @@ import {max_expansion_length, max_input_length} from '../default_values.js'
     todo_focus_wrap()
     }
 
+//пересборка мандалы по нажанию Enter в полях ввода
+  title_input.onkeydown = onEnter
+  number_of_symbols.onkeydown = onEnter
 
-  //функция изменения цифр по нажатию стрелок вверх-вниз    
-    function number_of_symbols_changer_from_current(e) {
-      //если поле пустое, то отсчет ведется от длины введенного текста
-      if (!number_of_symbols.value) number_of_symbols.value = title_input.value.length
+  function onEnter(e) {
 
-      //добавление манипуляций с количеством из поля ввода имени мандалы
-      if (e.target.id == title_input.id)
-        if (e.key == "ArrowUp" && number_of_symbols.value < max_expansion_length)
-          ++number_of_symbols.value
-        else if (e.key == "ArrowDown" && number_of_symbols.value > 1)
-          --number_of_symbols.value
-      }
+    if (e.key == "Enter") reinit()
+
+    if (e.key == "ArrowUp" || e.key == "ArrowDown") number_of_symbols_changer_from_current(e)
+
+  }
+///////////////////////ФУНКЦИИ/////////////////////////////////////
+///////////////////////ФУНКЦИИ/////////////////////////////////////
+///////////////////////ФУНКЦИИ/////////////////////////////////////
+
+//функция изменения цифр по нажатию стрелок вверх-вниз    
+  function number_of_symbols_changer_from_current(e) {
+    //если поле пустое, то отсчет ведется от длины введенного текста
+    if (!number_of_symbols.value) number_of_symbols.value = title_input.value.length
+
+    //добавление манипуляций с количеством из поля ввода имени мандалы
+    if (e.target.id == title_input.id)
+      if (e.key == "ArrowUp" && number_of_symbols.value < max_expansion_length)
+        ++number_of_symbols.value
+      else if (e.key == "ArrowDown" && number_of_symbols.value > 1)
+        --number_of_symbols.value
+    }
 
 
 export {number_of_symbols, title_input, clear_button,

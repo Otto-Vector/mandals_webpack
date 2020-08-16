@@ -1,24 +1,49 @@
 "use strict"
 
-//мои модули
+//модули переменных и функций поддержки
 import './modules/prototypes.js' //прототипизированные функции
+import {basic_colors, camera_range, max_expansion_length} from './default_values.js'
 import {modification_to_normal, to_one_fibbonachi_digit} from './modules/support.js'
+
+//модули THREE
 import {scene, camera, renderer,
         onWindowResize, animate, remove_all_objects_from_memory} from './modules/three_manipulations.js'
 import {plane_square_3x_algorithm, curtail_diamond_algorithm, chess_algorithm} from './modules/calc_mandalas_algorithms.js'
-import {charNumber_active, charNumber,
-         axis_visual, plain_x_cube_visual, border_visual, x_border_visual, grid
-        } from './modules/visual_constructors.js'
+import {charNumber_active,
+        charNumber,
+        axis_visual,
+        plain_x_cube_visual,
+        border_visual,
+        x_border_visual,
+        grid} from './modules/visual_constructors.js'
 
-import {basic_colors, camera_range, max_expansion_length} from './default_values.js'
+//модули для обработки DOM элементов
+import {title_input,
+        number_of_symbols,
+        number_of_symbols_changer_from_current} from './nodmodules/title_inputs.js'
+import {palitra,
+        palitra_button__default_pos_value,
+        palitra_button__colored,
+        palitra_button__check_unactive,
+        palitra_button__unactive_visibler,
+        statistic__value_counter,
+        statistic_item,
+        statistic_item__zero,
+        statistic_sort_button,
+        statistic_sort_button__sort} from './nodmodules/palitra_sort_buttons.js'
+import {numeric_adaptation_Node_elements} from './nodmodules/numeric_adaptation.js'
 
-import {title_input, number_of_symbols, number_of_symbols_changer_from_current} from './nodmodules/title_inputs.js'
+//модуль перезапуска и очистки памяти
+import {reinit} from './modules/reinit.js'
 
-// import './modules/reinit.js'
 
+//запуск программы
 window.onload = init
 
+//глобальные переменные
+let axis, plain_x_cube, grid_squares, border, scale_border
 
+//основная функция
 function init(value_init, previous_input, number_of_symbols_resize) {
 
   /////////////////////////////////////////////////////////////////////////////////////
@@ -44,6 +69,11 @@ function init(value_init, previous_input, number_of_symbols_resize) {
   // 
   let selected_mandala = +value_init || 4 //проверка на первый запуск init() (по умолчанию 4-ый вариант)
   
+  //////////////////////////////////////////////////////////////
+  //здесь будет адаптация отдаления камеры по размеру вводимого значения
+  if (selected_mandala.true_of(4,3)) camera.position.set( 0, 0, camera_range ) //60 //позиция камеры для малых квадратов
+  if (selected_mandala.true_of(8,9)) camera.position.set( 0, 0, 120 ) //позиция камеры для больших квадратов
+
   
   ///////////////БЛОК ОБРАБОТКИ ВВОДИМОЙ СТРОКИ///////////////////////////////////////////////
 
@@ -64,93 +94,7 @@ function init(value_init, previous_input, number_of_symbols_resize) {
   input_string = modification_to_normal(input_string, default_string)
 
 
-  //////////////////////////////////////////////////////////////
-  //здесь будет адаптация отдаления камеры по размеру вводимого значения
-  if (selected_mandala.true_of(4,3)) camera.position.set( 0, 0, camera_range ) //60 //позиция камеры для малых квадратов
-  if (selected_mandala.true_of(8,9)) camera.position.set( 0, 0, 120 ) //позиция камеры для больших квадратов
 
-
-  //////////////////////////////////////
-  ///DOM///////////////////////////////
-  ////////////////////////////////////
-
-  ///statistic_item
-  //объекты пунктов статы
-  let statistic_item = document.querySelectorAll("#statistic div")
-  
-  //обнуление значений статы
-  statistic_item__zero()
-
-  ///statistic_button
-  //кнопка вывода статы
-  let statistic_sort_button = document.querySelector("#statistic_sort_button")
-
-  ///palitra
-  //задаём массив кнопок
-  let palitra = document.querySelectorAll(".palitra_button")
-  
-  //возвращение кнопок в дефолтное значение
-  palitra_button__default_pos_value()
-  //окрашиваем кнопки визуализации цветов
-  palitra_button__colored()
-  
-  //вывод в заголовок обработанного текста
-  title_input.value = input_string
-  
-  //задание дефолтных значений поля ввода количества символов
-  number_of_symbols.placeholder = title_input.value.length
-  number_of_symbols.max = max_expansion_length
-
-  
-  ///selected mandalas type
-  //селект для выбора типа мандалы
-  let selected_mandala_type = document.querySelector("#select_mandala_type")
-  //задание дефолтных значений
-  select_mandala_type.value = selected_mandala
-
-  ///numeric_adaptation
-  //справочная строка под title`ом
-  let numeric_adaptation = document.querySelector("#numeric_adaptation")
-   
-
-  ////////////////////////////////////////////////////////////////
-  /// события/////////////////////////////////////////////////////
-  ////////////////////////////////////////////////////////////////
-
-  //перезапуск по выбору типа мандалы
-  selected_mandala_type.oninput = function() { reinit() }
-  
-  //пересборка мандалы по нажанию Enter в полях ввода
-  title_input.onkeydown = onEnter
-  number_of_symbols.onkeydown = onEnter
-
-  function onEnter(e) {
-
-    if (e.key == "Enter") reinit()
-
-    if (e.key == "ArrowUp" || e.key == "ArrowDown") number_of_symbols_changer_from_current(e)
-
-  }
-
-  //нажатие кнопки сортировки статы
-  statistic_sort_button.onclick = function() {
-    //смена класса для визуализации параметров статы
-    statistic_sort_button.classList.toggle("up")
-    //сортировка
-    statistic_sort_button__sort()
-    //перекрашивание кнопок по изменившемуся значению
-    palitra_button__colored()
-    //переотметка неактивных визуально кубов
-    palitra_button__unactive_visibler([...axis,...plain_x_cube], "unactive_visual_button")
-    //проверка на нулевые значения статы
-    palitra_button__check_unactive("opacity_button")
-  }
-
-
-  
-  ////////////////////////////////////////////////////////////////////////////////////////////////////////
-  ////////////////////////////////////////////////////////////////////////////////////////////////////////
-  
 
   //////////////////////////////////////////////////////////////
   /////// Блок адаптации букв в цифровой код //////////////////
@@ -158,6 +102,7 @@ function init(value_init, previous_input, number_of_symbols_resize) {
   
   //если не задан, то присваивается значение длины введенной строки
   number_of_symbols_resize = +number_of_symbols_resize || input_string.length
+  // resize = number_of_symbols_resize
   
   //символы расположены строго по таблице (удачно получилось то, что нужен всего один пробел)
   let simbols_static = "abcdefghijklmnopqrstuvwxyz абвгдеёжзийклмнопрстуфхцчшщъыьэюя"
@@ -175,48 +120,8 @@ function init(value_init, previous_input, number_of_symbols_resize) {
   //в начало массива
   string_for_algorithms.unshift( summ_to_zero_element )
 
-  
-  //////////////////////////////////////////////////////////////////////////////
-  ///// NUMERIC ADAPTATION ITEM BLOCK /////////////////////////////////////////
-  ////////////////////////////////////////////////////////////////////////////
+ 
 
-  let header_title = document.querySelector('.title')
-  //отображение чисто цифрового значения с суммой под title
-  //сброс пред. значений
-  numeric_adaptation.innerHTML = null
-  //запуск функции
-  numeric_adaptation_Node_elements(input_string_array, numeric_adaptation, number_of_symbols_resize)
-
-    
-  let numeric_adaptation_item_first = document.querySelector(".numeric_adaptation_item_first")
-  //вывод подменюшки сокращения
-  numeric_adaptation_item_first.onclick = function() {
-    numeric_adaptation_item.forEach( function(entry) { entry.classList.toggle("active")})
-    numeric_adaptation.classList.toggle("active")
-    header_title.classList.toggle("new_bg")
-
-  }
-  
-  //пересборка numeric_adaptation
-  numeric_adaptation = document.querySelector("#numeric_adaptation")
-  
-  //сворачивание списка
-  numeric_adaptation.onmouseleave = function() {
-    numeric_adaptation_item.forEach( function(entry) { entry.classList.remove("active")})
-    numeric_adaptation.classList.remove("active")
-    header_title.classList.remove("new_bg")
-  }
-  
-  //действия по перемене 
-  let numeric_adaptation_item = document.querySelectorAll(".numeric_adaptation_item")
-
-  numeric_adaptation_item.forEach( (item,i) => item.onclick = function() {
-      numeric_adaptation.classList.remove("active")
-      header_title.classList.remove("new_bg")
-      number_of_symbols.value = string_for_algorithms.length-2-i
-      reinit()
-      }
-    )
 
   ///////////ВЫБОР АЛГОРИТМА РАСЧЁТА///////////
   //высчитываем двумерный массив цветов для одной стороны мандалы
@@ -238,19 +143,19 @@ function init(value_init, previous_input, number_of_symbols_resize) {
   /////////////////////////////////////////////////////////////////////////////
   
   //задаём ось
-  let axis = axis_visual( plane_of_colors[0] )
+  axis = axis_visual( plane_of_colors[0] )
 
   //пластины между осями
-  let plain_x_cube = plain_x_cube_visual(plane_of_colors)
+  plain_x_cube = plain_x_cube_visual(plane_of_colors)
 
   //создаём сетку
-  let grid_squares = grid([...axis, ...plain_x_cube])
+  grid_squares = grid([...axis, ...plain_x_cube])
   
   //массив для элементов обводки мандалы
-  let border = border_visual(plane_of_colors[0])
+  border = border_visual(plane_of_colors[0])
 
   //массив для поворота и изменения размера обводки в мандале "ромб"
-  let scale_border = selected_mandala.true_of(3) ? x_border_visual(border) : null
+  scale_border = selected_mandala.true_of(3) ? x_border_visual(border) : null
   
   //цифры//
   //активация переменной charNumber и прорисовка объектов цифр в инвиз
@@ -259,27 +164,62 @@ function init(value_init, previous_input, number_of_symbols_resize) {
   ////анимация объектов////////////////////
   if (!+value_init) animate()
 
+
+
+  //////////////////////////////////////
+  ///DOM///////////////////////////////
+  ////////////////////////////////////
+
+  //возвращение кнопок в дефолтное значение
+  palitra_button__default_pos_value()
+  //окрашиваем кнопки визуализации цветов
+  palitra_button__colored()
+  
+  //обнуление значений статы
+  statistic_item__zero()
+  //подсчёт статистики и его отображение
+  statistic__value_counter([...axis,...plain_x_cube])
+  
+  //затемнение неактивных кнопок на основе статы
+  palitra_button__unactive_visibler([...axis,...plain_x_cube], "unactive_visual_button")
+  //запуск изменения формы кнопок при проверке девизуализации
+  palitra_button__check_unactive("opacity_button")
+  
+  //вывод в заголовок обработанного текста
+  title_input.value = input_string
+  
+  //задание дефолтных значений поля ввода количества символов
+  number_of_symbols.placeholder = title_input.value.length
+  number_of_symbols.max = max_expansion_length
+
+  
+  ///selected mandalas type
+  //селект для выбора типа мандалы
+  let selected_mandala_type = document.querySelector("#select_mandala_type")
+  //задание дефолтных значений
+  select_mandala_type.value = selected_mandala
+  //перезапуск по выбору типа мандалы
+  selected_mandala_type.oninput = function() { reinit() }
+ 
+
+  ///numeric_adaptation
+  let numeric_adaptation = document.querySelector("#numeric_adaptation")
+  //зачистка предыдущих значений
+  numeric_adaptation.innerHTML = null
+  //запуск функции сборки    
+  numeric_adaptation_Node_elements(input_string_array, numeric_adaptation, number_of_symbols_resize)    
+
+
   
   //отслеживание нажатия кнопок боковой панели и передача содержимого этих кнопок
   for (let i = 0; i < palitra.length; i++) {
     palitra[i].onmousedown = (event) => selected_button(event.target.innerHTML) //передача в функцию визуального содержимого кнопки
   }
 
-  //подсчёт статистики и его отображение
-  statistic__value_counter([...axis,...plain_x_cube])
-
-  //затемнение неактивных кнопок на основе статы
-  palitra_button__unactive_visibler([...axis,...plain_x_cube], "unactive_visual_button")
-
-  //запуск изменения формы кнопок при проверке девизуализации
-  palitra_button__check_unactive("opacity_button")
-
-
+  
   //\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//
   //\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//
   //\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//
-
-  //КОНЕЦ ОСНОВНОГО БЛОКА, ДАЛЬШЕ ТОЛЬКО ФУНКЦИИ//
 
   ////////////////////////////////////////////////////////////////////////////////////////////////////
   ///МАНИПУЛЯЦИИ С ПРИМЕНЕНИЕМ И ОСЛЕЖИВАНИЕМ СОБЫТИЙ НАЖАТИЯ НА ОБЪЕКТЫ И КНОПКИ НА БОКОВОЙ ПАНЕЛИ///
@@ -291,7 +231,7 @@ function init(value_init, previous_input, number_of_symbols_resize) {
     //функция перебора массива с отслеживанием нажатых кнопок
     function toggle_visibler(arr) { //в ф-цию передаем массив
       arr.forEach(function(item) { //перебираем массив
-          if (selected_html_content === "N") item.visible = false //все искомые элементы становятся невидимыми
+          if (selected_html_content === "X") item.visible = false //все искомые элементы становятся невидимыми
           if (selected_html_content === "@" ||
              +selected_html_content === +item.colornum) item.visible = !item.visible //смена видимости на невидимость
           if (selected_html_content === "A") item.visible = true //все искомые элементы становятся видимыми
@@ -363,142 +303,9 @@ function init(value_init, previous_input, number_of_symbols_resize) {
   }
 
 
-  //обнуление значений статы
-  function statistic_item__zero() {
-    for (let i = 1; i < statistic_item.length; i++) statistic_item[i].innerHTML = 0
-  }
   
-  //возвращение кнопок на дефолтное значение
-  function palitra_button__default_pos_value() {
-    for (let i = 1; i < 10; i++) palitra[i].innerHTML = i
-  }
-  
-  //окрашиваем кнопки визуализации цветов
-  function palitra_button__colored() {
-    palitra.forEach( (palitra_item) => palitra_item.style.background = basic_colors[palitra_item.innerHTML] )
-  }
-  
-  //затемнение неактивных кнопок на основе статы
-  function palitra_button__check_unactive(unactive_class) {
-
-    for (let i = 1; i < 10; i++) {
-
-      palitra[i].classList.remove(unactive_class)
-
-      if (statistic_item[i].innerHTML == 0) palitra[i].classList.toggle(unactive_class)
-    }
-
-  }
-
-  //запуск изменения формы кнопок при проверке девизуализации
-  function palitra_button__unactive_visibler(arr, unactive_visual_class) {
-   
-    for (let i=1; i < 10; i++) {
-
-      palitra[i].classList.remove(unactive_visual_class)
-   
-      let visible_of = (element) => element.colornum == palitra[i].innerHTML && element.visible == false
-
-      if (arr.some(visible_of)) palitra[i].classList.add(unactive_visual_class)
-    }
-
-  }
-
-
-  ///подсчёт статистики
-  function statistic__value_counter(objects_to_count) {
-
-    for (let i = 0; i < objects_to_count.length; i++)
-      if (objects_to_count[i].colornum !== 0) //ноль не считаем
-        statistic_item[objects_to_count[i].colornum].innerHTML =
-          ++statistic_item[objects_to_count[i].colornum].innerHTML
-
-  }//манипуляция с DOM объектами statistic_item
-
-
-  //запуск сортировки по возрастанию/убыванию со сменой значения кнопок цвета
-  function statistic_sort_button__sort() {
-      
-    let buffer_sort_arr = []
-    
-    for (let i = 1; i < 10; i++) {
-      
-      let buffer_sort_item = {
-        value : statistic_item[i].innerHTML,
-        position : palitra[i].innerHTML
-      }
-
-      buffer_sort_arr.push(buffer_sort_item)
-    }
-
-    //сама сортировка
-    buffer_sort_arr.sort(function(a, b) { return a.value - b.value })
-    //зеркальная пересборка массива сотрировки
-    if (statistic_sort_button.className == "up") buffer_sort_arr.reverse()
-
-    for (let i = 1; i < 10; i++) {
-    
-      statistic_item[i].innerHTML = buffer_sort_arr[i-1].value
-      palitra[i].innerHTML = buffer_sort_arr[i-1].position
-    }
-
-  }
-    
-
-////////////////////////////////////////////////////////////////////////////////////
-///ФУНКЦИИ ПРЕОБРАЗДВАНИЯ DOM дерева//////////
-//////////////////////////////////////////////////////////////////////////////////
-  function numeric_adaptation_Node_elements(input_string_array_fn, to_Node, now_resize_is) {
-    let element = [],
-        string_fn,
-        summ_fn,
-        class_Name = 'numeric_adaptation_item'
-
-    for (let i = 0; i < now_resize_is; i++) {
-      
-      string_fn = input_string_array_fn.to_number_of_symbols(now_resize_is-i)
-      
-      summ_fn = to_one_fibbonachi_digit( string_fn.reduce( (sum,n) => sum+n ))
-       
-      element[i] = document.createElement('div')
-      
-      element[i].classList.add(class_Name+(i==0 ? '_first' : ''))
-      
-      element[i].innerHTML = `(${string_fn.length}) ${string_fn.join('')}  =  ${summ_fn}`
-
-      to_Node.appendChild(element[i])
-    }
-  }
-
-  ////////////////////////////////////////////////////////////////////////////////////////////////////////
-  ////////////////////////////////////////////////////////////////////////////////////////////////////////
-  // функция перезапуска мандалы с новыми данными//
-  
-  function reinit() {
-
-      //зачистка памяти
-      if (axis) remove_all_objects_from_memory(axis)
-      if (plain_x_cube) remove_all_objects_from_memory(plain_x_cube)
-
-      if (border) remove_all_objects_from_memory(border)
-      if (charNumber) remove_all_objects_from_memory(charNumber)
-      if (grid_squares) remove_all_objects_from_memory(grid_squares)
-
-      if (scale_border) {
-        scene.remove( scale_border )
-        scale_border = null }
-
-      //обработка введенной строки
-      input_string = modification_to_normal(title_input.value)
-      //дополнительная проверка на ошибки при вводе значений количетва символов
-      let number_of_symbols_correct = +number_of_symbols.value || input_string.length
-
-      //перезапуск
-      init(select_mandala_type.value, input_string, number_of_symbols_correct )
-  }
-
 }; //init() end bracket
 
 
 
-// export {init}
+export {axis, plain_x_cube, grid_squares, border, scale_border, init}

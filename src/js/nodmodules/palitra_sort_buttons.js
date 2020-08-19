@@ -104,7 +104,7 @@ import {axis, plain_x_cube} from '../my.js'
     //сама сортировка
     buffer_sort_arr.sort(function(a, b) { return a.value - b.value })
     //зеркальная пересборка массива сотрировки
-    if (statistic_sort_button.className == "up") buffer_sort_arr.reverse()
+    if (statistic_sort_button.classList.contains("up")) buffer_sort_arr.reverse()
 
     for (let i = 1; i < 10; i++) {
     

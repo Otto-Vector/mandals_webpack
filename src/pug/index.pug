@@ -24,7 +24,7 @@ body
     section.sidebar
 
       article#statistic
-        #statistic_sort_button(title='Сортировка статистики')
+        #statistic_sort_button.bg_arrow_down(title='Сортировка статистики')
         - for (let i=1; i<10; i++) {
           div 0
         - }
@@ -50,7 +50,7 @@ body
     footer
       label.select_mandala_type(for='select_mandala_type')
         | Выберите тип мандалы
-      select#select_mandala_type(name='select_mandala_type')
+      select#select_mandala_type.bg_arrow_down(name='select_mandala_type')
         option(value='4') квадрат (по три)
         option(value='3') квадрат (по три) "ромб"
         option(value='8') квадрат шахматный расчёт (1вар)

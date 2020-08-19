@@ -23,9 +23,10 @@ import {to_one_fibbonachi_digit} from './support.js'
 
       return this
               .split('') //перевод строки в массив
-              .map( string_simbol =>   //пересборка в новый массив
-                    +string_simbol || //если символ число, то возвращает число
-                    simbols_static_in_fn.indexOf(string_simbol)%9+1 //иначе возвращает позицию символа в соответствии с таблицей Урсулы
+              .map( string_symbol =>   //пересборка в новый массив
+                    +string_symbol || //если символ число, то возвращает число
+                    //иначе возвращает позицию символа в соответствии с таблицей Урсулы
+                    simbols_static_in_fn.indexOf(string_symbol)%9+1 
                   )
     }//возвращает массив чисел
 

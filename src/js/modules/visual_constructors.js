@@ -228,7 +228,7 @@ function grid(object) {
 
   function charNumber_active(props) {
     let loader_font = new THREE.FontLoader()
-    loader_font.load( require('@fonts/helvetiker_regular.typeface.onlynumbers.json.eot'),
+    loader_font.load( require('@fonts/helvetiker_regular.mini.onlynumbers.json.eot'),
       function ( font ) {
         charNumber = font_visibler( font, props )
       }

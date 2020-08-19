@@ -167,6 +167,11 @@ section.sidebar #statistic div {
     text-shadow: .5px .5px white;
 }
 
+.bg_arrow_down {
+    background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' width='12' height='7' stroke='%23000' stroke-linecap='round' stroke-linejoin='round' fill='%23fff' fill-rule='evenodd'%3e%3cpath d='M.5 1l4.75 5L10 1z' fill='%23989da1' stroke='%23989da1'/%3e%3c/svg%3e");
+    background-repeat: no-repeat;
+}
+
 #statistic_sort_button {
     width: 20px;
     height: 20px;
@@ -175,7 +180,9 @@ section.sidebar #statistic div {
     padding-top: 2px;
     padding-left: 1px;
 
-    background: url("../assets/img/arrow_down.png") 50% 50% no-repeat whitesmoke;
+    background-color: whitesmoke;
+    background-position: 50% 50%;
+    background-size: 55%;
     
 
     cursor: pointer;
@@ -254,7 +261,11 @@ footer label {
 }
 
 #select_mandala_type {
-    background: url("../assets/img/arrow_down.png") 97% 50% no-repeat #e3e4e5;
+    
+    background-color: #e3e4e5;
+    background-position: 97% 50%;
+    background-size: 5%;
+
     border: 1px solid #a2a2a2;
     border-radius: 3px;
     color: #757575;

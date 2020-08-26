@@ -34,6 +34,8 @@ import {palitra,
 import {header_title,
         numeric_adaptation_Node_elements} from './nodmodules/numeric_adaptation.js'
 
+import {undo_button, redo_button} from './nodmodules/undo_redo.js'
+
 //модуль перезапуска и очистки памяти
 import {reinit} from './modules/reinit.js'
 
@@ -104,6 +106,11 @@ function init(value_init, previous_input, number_of_symbols_resize) {
   //если не задан, то присваивается значение длины введенной строки
   number_of_symbols_resize = +number_of_symbols_resize || input_string.length
   
+  if (number_of_symbols_resize !== input_string.length)
+    number_of_symbols.value = number_of_symbols_resize
+  else
+    number_of_symbols.value = ''
+
   //символы расположены строго по таблице (удачно получилось то, что нужен всего один пробел)
   let simbols_static = "abcdefghijklmnopqrstuvwxyz абвгдеёжзийклмнопрстуфхцчшщъыьэюя"
 

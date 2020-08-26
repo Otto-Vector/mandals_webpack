@@ -20,6 +20,7 @@ import {charNumber_active,
 //модули для обработки DOM элементов
 import {title_input,
         number_of_symbols,
+        number_of_symbols_init,
         number_of_symbols_changer_from_current} from './nodmodules/title_inputs.js'
 import {palitra,
         palitra_button__default_pos_value,
@@ -34,7 +35,7 @@ import {palitra,
 import {header_title,
         numeric_adaptation_Node_elements} from './nodmodules/numeric_adaptation.js'
 
-import {undo_button, redo_button} from './nodmodules/undo_redo.js'
+import {undo_button, redo_button, undo_redo_check} from './nodmodules/undo_redo.js'
 
 //модуль перезапуска и очистки памяти
 import {reinit} from './modules/reinit.js'
@@ -106,11 +107,6 @@ function init(value_init, previous_input, number_of_symbols_resize) {
   //если не задан, то присваивается значение длины введенной строки
   number_of_symbols_resize = +number_of_symbols_resize || input_string.length
   
-  if (number_of_symbols_resize !== input_string.length)
-    number_of_symbols.value = number_of_symbols_resize
-  else
-    number_of_symbols.value = ''
-
   //символы расположены строго по таблице (удачно получилось то, что нужен всего один пробел)
   let simbols_static = "abcdefghijklmnopqrstuvwxyz абвгдеёжзийклмнопрстуфхцчшщъыьэюя"
 
@@ -196,9 +192,8 @@ function init(value_init, previous_input, number_of_symbols_resize) {
   title_input.value = input_string
   
   //задание дефолтных значений поля ввода количества символов
-  number_of_symbols.placeholder = title_input.value.length
-  number_of_symbols.max = max_expansion_length
-
+  number_of_symbols_init(number_of_symbols_resize)
+  
   
   ///selected mandalas type
   //селект для выбора типа мандалы
@@ -209,6 +204,9 @@ function init(value_init, previous_input, number_of_symbols_resize) {
   selected_mandala_type.oninput = function() { reinit() }
  
 
+
+
+
   ///numeric_adaptation
   let numeric_adaptation = document.querySelector("#numeric_adaptation")
   //зачистка предыдущих значений
@@ -216,7 +214,7 @@ function init(value_init, previous_input, number_of_symbols_resize) {
   //запуск функции сборки    
   numeric_adaptation_Node_elements(input_string_array, numeric_adaptation, number_of_symbols_resize)    
 
-
+  undo_redo_check()
   
   //отслеживание нажатия кнопок боковой панели и передача содержимого этих кнопок
   for (let i = 0; i < palitra.length; i++) {

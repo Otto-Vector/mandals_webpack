@@ -17,6 +17,16 @@ import {reinit} from '../modules/reinit.js'
   //кнопка очистки значений и фокусировка на поле ввода
   let clear_button = document.querySelector("#clear_button")
 
+//////////////////////////////////////////////////////////////
+function number_of_symbols_init(_resize){
+    //задание дефолтных значений поля ввода количества символов
+    number_of_symbols.placeholder = title_input.value.length
+    number_of_symbols.max = max_expansion_length
+    //перезапись значения
+    number_of_symbols.value =
+      (_resize !== title_input.value.length) ? _resize : ''
+  }
+
 
 //////////////СОБЫТИЯ/////////////////////////////////////
 //////////////СОБЫТИЯ/////////////////////////////////////
@@ -84,4 +94,4 @@ import {reinit} from '../modules/reinit.js'
 
 
 export {number_of_symbols, title_input, clear_button,
-        number_of_symbols_changer_from_current}
+        number_of_symbols_changer_from_current, number_of_symbols_init}

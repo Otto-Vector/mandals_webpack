@@ -44,13 +44,20 @@ let redo_button = document.querySelector("#redo_button")
 undo_button.onclick = function () { reinit(-1) }
 redo_button.onclick = function () { reinit(1) }
 
+undo_button.firstChild.innerHTML = '77'
+
 //функция проверки и окрашивания стрелок в крайних значениях
 function undo_redo_check() {
 
 	//сброс цвета
 	undo_button.classList.remove('opacity_button')
 	redo_button.classList.remove('opacity_button')
-
+	
+	//отображение значения количества повторов и отмен
+	undo_button.firstChild.innerHTML = (history_counter == 0) ? '' : history_counter
+	redo_button.firstChild.innerHTML = (history_counter+1 == history.length) ? '' : Math.abs(history_counter+1-history.length)
+	
+	console.log((history_counter+1)+' / '+history.length)
 	//окрашивание кнопки назад в нулевой позиции массива
 	if (history_counter == 0) {
 	  undo_button.classList.add('opacity_button')

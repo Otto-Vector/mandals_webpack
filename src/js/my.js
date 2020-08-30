@@ -11,7 +11,7 @@ import {scene, camera, renderer,
 import {plane_square_3x_algorithm, curtail_diamond_algorithm, chess_algorithm} from './modules/calc_mandalas_algorithms.js'
 import {dots_visibler,
         charNumber_active,
-        charNumber,
+        // charNumber,
         axis_visual,
         plain_x_cube_visual,
         border_visual,
@@ -46,7 +46,7 @@ import {reinit} from './modules/reinit.js'
 window.onload = init
 
 //глобальные переменные
-let axis, plain_x_cube, grid_squares, border, scale_border, dots
+let axis, plain_x_cube, grid_squares, border, scale_border, dots, charNumber
 
 //основная функция
 function init(value_init, previous_input, number_of_symbols_resize) {
@@ -156,14 +156,14 @@ function init(value_init, previous_input, number_of_symbols_resize) {
   grid_squares = grid([...axis, ...plain_x_cube])
   
   //массив для элементов обводки мандалы
-  border = border_visual(plane_of_colors[0])
+  border = border_visual( plane_of_colors[0] )
 
   //массив для поворота и изменения размера обводки в мандале "ромб"
   scale_border = selected_mandala.true_of(3) ? x_border_visual(border) : null
   
   //цифры//
   //активация переменной charNumber и прорисовка объектов цифр в инвиз
-  charNumber_active([...axis,...plain_x_cube])
+  charNumber = charNumber_active([...axis,...plain_x_cube])
 
   //точки
   dots = dots_visibler([...axis,...plain_x_cube])
@@ -187,11 +187,14 @@ function init(value_init, previous_input, number_of_symbols_resize) {
   //подсчёт статистики и его отображение
   statistic__value_counter([...axis,...plain_x_cube])
   
-  //затемнение неактивных кнопок на основе статы
-  palitra_button__unactive_visibler([...axis,...plain_x_cube], "unactive_visual_button")
   //запуск изменения формы кнопок при проверке девизуализации
+  palitra_button__unactive_visibler([...axis,...plain_x_cube], "unactive_visual_button")
+  //затемнение неактивных кнопок на основе статы
   palitra_button__check_unactive("opacity_button")
   
+  //изменение кнопок левой панели (отключенные объекты)
+  check_left_panel()
+
   //вывод в заголовок обработанного текста
   title_input.value = input_string
   
@@ -278,9 +281,10 @@ function init(value_init, previous_input, number_of_symbols_resize) {
     //отображение сетки//
     if (selected_html_content === "#") {
       grid_squares.forEach( function(entry) { entry.visible = !entry.visible } )
-      selected_target.classList.toggle("unactive_visual_button")
+      // selected_target.classList.toggle("unactive_visual_button")
     }
 
+   
     //смена цвета для бордера//
     if (selected_html_content === "B") {
       //перекрашиваем кнопку
@@ -292,15 +296,11 @@ function init(value_init, previous_input, number_of_symbols_resize) {
           entry.material.color.set( basic_colors[entry.colornum] ) //присвоение значения цвета
         }
       )
-      //перекрашиваем кнопку
-      selected_target.style.backgroundColor = basic_colors[border[0].colornum]
     }
 
     //отображение бордера//
     if (selected_html_content === "b") {
-      //изменение отображения кнопки бордюра
-      selected_target.classList.toggle("unactive_visual_button")
-      
+     
       border.forEach( function(entry) { entry.visible = !entry.visible } )
     }
     
@@ -309,7 +309,7 @@ function init(value_init, previous_input, number_of_symbols_resize) {
       
       charNumber.forEach( function(entry) { entry.visible = !entry.visible } )
       //
-      selected_target.classList.toggle("unactive_visual_button")
+      // selected_target.classList.toggle("unactive_visual_button")
       //убираем бордер для отображения цифр и возвращаем при неактиве
       if (selected_mandala == 3) {
         //в зависимости от отображаемых цифр
@@ -334,13 +334,31 @@ function init(value_init, previous_input, number_of_symbols_resize) {
     //отдаление/приближение//
     if (selected_html_content === "+") camera.position.z = (camera.position.z > 10) ? camera.position.z - 10 : 10
     if (selected_html_content === "-") camera.position.z = camera.position.z + 10
-    
+
+    //пересборка отображения кнопок левой панели
+    check_left_panel()
+
   }
 
-
+  function check_left_panel() {
+    //"#"
+    palitra[10].classList.remove("unactive_visual_button")
+    if (!grid_squares[0].visible) palitra[10].classList.toggle("unactive_visual_button")
+    //"B" //тут перекрас в цвет бордера
+    palitra[14].style.backgroundColor = basic_colors[border[0].colornum]
+    //"b"
+    palitra[15].classList.remove("unactive_visual_button")
+    if (!border[0].visible) palitra[15].classList.toggle("unactive_visual_button")
+    //"№"
+    palitra[16].classList.remove("unactive_visual_button")
+    if (!charNumber[0].visible) palitra[16].classList.toggle("unactive_visual_button")
+    //"."
+    palitra[17].classList.remove("unactive_visual_button")
+    if (!dots[0].visible) palitra[17].classList.toggle("unactive_visual_button")
+  }
   
 }; //init() end bracket
 
 
 
-export {axis, plain_x_cube, grid_squares, border, scale_border, init}
+export {axis, plain_x_cube, grid_squares, border, scale_border, charNumber, dots, init}

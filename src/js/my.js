@@ -9,7 +9,7 @@ import {modification_to_normal, to_one_fibbonachi_digit} from './modules/support
 import {scene, camera, renderer,
         onWindowResize, animate, remove_all_objects_from_memory} from './modules/three_manipulations.js'
 import {plane_square_3x_algorithm, curtail_diamond_algorithm, chess_algorithm} from './modules/calc_mandalas_algorithms.js'
-import {to_points,
+import {dots_visibler,
         charNumber_active,
         charNumber,
         axis_visual,
@@ -46,7 +46,7 @@ import {reinit} from './modules/reinit.js'
 window.onload = init
 
 //глобальные переменные
-let axis, plain_x_cube, grid_squares, border, scale_border
+let axis, plain_x_cube, grid_squares, border, scale_border, dots
 
 //основная функция
 function init(value_init, previous_input, number_of_symbols_resize) {
@@ -164,6 +164,9 @@ function init(value_init, previous_input, number_of_symbols_resize) {
   //цифры//
   //активация переменной charNumber и прорисовка объектов цифр в инвиз
   charNumber_active([...axis,...plain_x_cube])
+
+  //точки
+  dots = dots_visibler([...axis,...plain_x_cube])
  
   ////анимация объектов////////////////////
   if (!+value_init) animate()
@@ -295,8 +298,9 @@ function init(value_init, previous_input, number_of_symbols_resize) {
 
     //отображение бордера//
     if (selected_html_content === "b") {
-      //if (border[0].visible)
+      //изменение отображения кнопки бордюра
       selected_target.classList.toggle("unactive_visual_button")
+      
       border.forEach( function(entry) { entry.visible = !entry.visible } )
     }
     
@@ -317,7 +321,13 @@ function init(value_init, previous_input, number_of_symbols_resize) {
 
     //точечный режим//
     if (selected_html_content == "\u2219") {
-      to_points()
+
+      dots.forEach( function(entry) { entry.visible = !entry.visible })
+      
+      //отключаем все, кроме точек
+      let all_unvis = [...border,...axis,...plain_x_cube,...grid_squares,...charNumber]
+      all_unvis.forEach( function(entry) { entry.visible = false } )
+      
       selected_target.classList.toggle("unactive_visual_button")
     }
 

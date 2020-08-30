@@ -16,17 +16,17 @@ import {basic_colors} from '../default_values.js'
   let cubeGeom = new THREE.CubeGeometry(1,1,0.01)
   //геометрия точек//
   let sphereGeom = new THREE.SphereGeometry(0.15,32,32)
-  let setGeom = cubeGeom
-  //.material.color.set(0x000000)
+  // let setGeom = cubeGeom
+  // //.material.color.set(0x000000)
   
-  //функция смены геометрии на точечную и обратно
-  function to_points() {
+  // //функция смены геометрии на точечную и обратно
+  // function to_points() {
   
-    let out = ( setGeom == sphereGeom )
-    setGeom = ( out ) ? cubeGeom : sphereGeom 
+  //   let out = ( setGeom == sphereGeom )
+  //   setGeom = ( out ) ? cubeGeom : sphereGeom 
 
-  return out
-  }
+  // return out
+  // }
 
   //материал кубов создаётся из массива цветов от нуля до девяти соответственно
   let color_material = basic_colors.map( color_n => new THREE.MeshBasicMaterial({ color: color_n }) )
@@ -43,9 +43,10 @@ import {basic_colors} from '../default_values.js'
 
 
 //////////функция конструктора объектов КУБА////////////////////////////////////////////
-function cubus_construct(x, y, z, colornum) {//передаются координаты и номер цвета
+function cubus_construct(x, y, z, colornum, setGeom = cubeGeom) {//передаются координаты и номер цвета
 
-    let color_material_choice = (colornum < 0) ? color_material_for_border //в конструкторе для бордюра задаются отрицательные значения цвета
+    //в конструкторе для бордюра задаются отрицательные значения цвета
+    let color_material_choice = (colornum < 0) ? color_material_for_border
                                                : color_material[colornum]
 
     let cubus = new THREE.Mesh( setGeom , //геометрия куба задана один раз
@@ -196,7 +197,7 @@ function grid(object) {
   let area_position = []
   let z_position = 0.0065
   let area_around = 0.5
-  let x=0, y=0, color_n=0
+  let x = 0, y = 0, color_n = 0
 
   for (let i = 0, k = 0; i < object.length; i++) {
       x = object[i].position.x
@@ -209,7 +210,7 @@ function grid(object) {
       area_position[3] = [ x - area_around, y + area_around, z_position ]
       area_position[4] = area_position [0]
 
-  //не считаем нули вне осей
+    //не считаем нули вне осей
     if ( color_n !== 0 || (color_n === 0 && (x === 0 || y === 0)) ){
 
       geometry_for_line[k] = new THREE.Geometry()
@@ -229,23 +230,27 @@ function grid(object) {
   return grid
 } //возвращает массив объектов линий
 
+////////////////////////////////////////////////////////////////////////////////////
+////// РАБОТА С ЦИФРАМИ  //////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////
 
-///////////////////////////////////////////////////////////////////////////////////////////
-  // charNumber = charNumber_active([...axis,...plain_x_cube])
   let charNumber = []
-  //единый материал для всех символоа(пока)
+  //единый материал для всех символов(пока)
   let fontMaterial = new THREE.MeshBasicMaterial( {color: 0x000000} );
   
   //создаём массив геометрий для цифр от 0 до 9
   let fontGeometry = []
 
   function charNumber_active(props) {
+
     let loader_font = new THREE.FontLoader()
+
     loader_font.load( require('@fonts/helvetiker_regular.mini.onlynumbers.json.eot'),
       function ( font ) {
         charNumber = font_visibler( font, props )
       }
     )
+
     return charNumber
   }
 
@@ -288,9 +293,28 @@ function grid(object) {
     return CharsN
   }
 
+////////////////////////////////////////////////////////////////////////////////////
+////// РАБОТА С ТОЧКАМИ  //////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////
 
+function dots_visibler(objectos) {
+  let x = 0, y = 0, color_n = 0
+  let dots_fn = []
+  
+  for (let i = 0, k = 0; i < objectos.length; i++) {
+    x = objectos[i].position.x
+    y = objectos[i].position.y
+    color_n = objectos[i].colornum
 
-export {to_points,
+    dots_fn.push( cubus_construct( x, y, 0, color_n, sphereGeom) )
+  }
+  
+  dots_fn.forEach( function(entry) { entry.visible = !entry.visible })
+  
+  return dots_fn
+}
+
+export { dots_visibler,
         charNumber_active, charNumber,
         axis_visual, plain_x_cube_visual,
         border_visual, x_border_visual, grid }

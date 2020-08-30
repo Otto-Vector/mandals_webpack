@@ -216,7 +216,7 @@ function init(value_init, previous_input, number_of_symbols_resize) {
   
   //отслеживание нажатия кнопок боковой панели и передача содержимого этих кнопок
   for (let i = 0; i < palitra.length; i++) {
-    palitra[i].onmousedown = (event) => selected_button(event.target.innerHTML) //передача в функцию визуального содержимого кнопки
+    palitra[i].onmousedown = (event) => selected_button(event.target) //передача в функцию визуального содержимого кнопки
   }
 
   
@@ -229,7 +229,9 @@ function init(value_init, previous_input, number_of_symbols_resize) {
   ////////////////////////////////////////////////////////////////////////////////////////////////////
 
   ////функция проверки нажатой кнопки боковых панелей
-  function selected_button(selected_html_content) { //передаётся символ внутри кнопки
+  function selected_button(selected_target) { //передаётся символ внутри кнопки
+
+    let selected_html_content = selected_target.innerHTML
 
     //функция перебора массива с отслеживанием нажатых кнопок
     function toggle_visibler(arr) { //в ф-цию передаем массив
@@ -269,20 +271,32 @@ function init(value_init, previous_input, number_of_symbols_resize) {
 
       }
     }
-    if (selected_html_content === "#")
+
+    //отображение сетки//
+    if (selected_html_content === "#") {
       grid_squares.forEach( function(entry) { entry.visible = !entry.visible } )
+      selected_target.classList.toggle("unactive_visual_button")
+    }
 
     //смена цвета для бордера//
-    if (selected_html_content === "B")
+    if (selected_html_content === "B") {
+      //перекрашиваем кнопку
+      // selected_target.style.backgroundColor = basic_colors[summ_to_zero_element]
+      //перекрашиваем бордюр
       border.forEach( 
         function(entry) { 
           entry.colornum = (+entry.colornum === 9) ? 0 : ++entry.colornum //перебор цвета в замкнутом цикле 9 и смена значения
           entry.material.color.set( basic_colors[entry.colornum] ) //присвоение значения цвета
         }
       )
+      //перекрашиваем кнопку
+      selected_target.style.backgroundColor = basic_colors[border[0].colornum]
+    }
 
     //отображение бордера//
     if (selected_html_content === "b") {
+      //if (border[0].visible)
+      selected_target.classList.toggle("unactive_visual_button")
       border.forEach( function(entry) { entry.visible = !entry.visible } )
     }
     
@@ -290,6 +304,8 @@ function init(value_init, previous_input, number_of_symbols_resize) {
     if (selected_html_content === "№") {
       
       charNumber.forEach( function(entry) { entry.visible = !entry.visible } )
+      //
+      selected_target.classList.toggle("unactive_visual_button")
       //убираем бордер для отображения цифр и возвращаем при неактиве
       if (selected_mandala == 3) {
         //в зависимости от отображаемых цифр
@@ -300,9 +316,9 @@ function init(value_init, previous_input, number_of_symbols_resize) {
     }
 
     //точечный режим//
-    if (selected_html_content === ".") {
+    if (selected_html_content == "\u2219") {
       to_points()
-      palitra[17].classList.toggle("unactive_visual_button")
+      selected_target.classList.toggle("unactive_visual_button")
     }
 
     //отдаление/приближение//

@@ -12,8 +12,21 @@ import {basic_colors} from '../default_values.js'
   // //база цветов//
   
 
-  //базовый сборщик геометрии кубов//
+  //геометрия кубов//
   let cubeGeom = new THREE.CubeGeometry(1,1,0.01)
+  //геометрия точек//
+  let sphereGeom = new THREE.SphereGeometry(0.15,32,32)
+  let setGeom = cubeGeom
+  //.material.color.set(0x000000)
+  
+  //функция смены геометрии на точечную и обратно
+  function to_points() {
+  
+    let out = ( setGeom == sphereGeom )
+    setGeom = ( out ) ? cubeGeom : sphereGeom 
+
+  return out
+  }
 
   //материал кубов создаётся из массива цветов от нуля до девяти соответственно
   let color_material = basic_colors.map( color_n => new THREE.MeshBasicMaterial({ color: color_n }) )
@@ -35,7 +48,7 @@ function cubus_construct(x, y, z, colornum) {//передаются коорди
     let color_material_choice = (colornum < 0) ? color_material_for_border //в конструкторе для бордюра задаются отрицательные значения цвета
                                                : color_material[colornum]
 
-    let cubus = new THREE.Mesh( cubeGeom, //геометрия куба задана один раз
+    let cubus = new THREE.Mesh( setGeom , //геометрия куба задана один раз
                                 color_material_choice
                               )
     cubus.position.set(x,y,z) // устанавливается позиция объекта
@@ -277,6 +290,7 @@ function grid(object) {
 
 
 
-export { basic_colors, charNumber_active, charNumber,
+export {to_points,
+        charNumber_active, charNumber,
         axis_visual, plain_x_cube_visual,
         border_visual, x_border_visual, grid }

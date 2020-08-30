@@ -57,7 +57,6 @@ function undo_redo_check() {
 	undo_button.firstChild.innerHTML = (history_counter == 0) ? '' : history_counter
 	redo_button.firstChild.innerHTML = (history_counter+1 == history.length) ? '' : Math.abs(history_counter+1-history.length)
 	
-	console.log((history_counter+1)+' / '+history.length)
 	//окрашивание кнопки назад в нулевой позиции массива
 	if (history_counter == 0) {
 	  undo_button.classList.add('opacity_button')

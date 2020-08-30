@@ -9,7 +9,8 @@ import {modification_to_normal, to_one_fibbonachi_digit} from './modules/support
 import {scene, camera, renderer,
         onWindowResize, animate, remove_all_objects_from_memory} from './modules/three_manipulations.js'
 import {plane_square_3x_algorithm, curtail_diamond_algorithm, chess_algorithm} from './modules/calc_mandalas_algorithms.js'
-import {charNumber_active,
+import {to_points,
+        charNumber_active,
         charNumber,
         axis_visual,
         plain_x_cube_visual,
@@ -204,9 +205,6 @@ function init(value_init, previous_input, number_of_symbols_resize) {
   selected_mandala_type.oninput = function() { reinit() }
  
 
-
-
-
   ///numeric_adaptation
   let numeric_adaptation = document.querySelector("#numeric_adaptation")
   //зачистка предыдущих значений
@@ -299,6 +297,12 @@ function init(value_init, previous_input, number_of_symbols_resize) {
         border.forEach( function(entry) { entry.visible = visible_onoff } )
       }
 
+    }
+
+    //точечный режим//
+    if (selected_html_content === ".") {
+      to_points()
+      palitra[17].classList.toggle("unactive_visual_button")
     }
 
     //отдаление/приближение//

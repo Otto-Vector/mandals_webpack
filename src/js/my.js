@@ -55,7 +55,7 @@ function init(value_init, previous_input, number_of_symbols_resize) {
   ///////////////////PRE_BEGIN////////////////////////////////////////////////////////
   ///////////////////////////////////////////////////////////////////////////////////
 
-  
+    
   //добавление графического окна к документу в тег
   if (!+value_init)
     document.body.appendChild( renderer.domElement )
@@ -72,7 +72,11 @@ function init(value_init, previous_input, number_of_symbols_resize) {
   // 8 - на квадрат шахматный расчёт (1вар)     +
   // 9 - на квадрат шахматый расчёт (2вар)      +
   // 
-  let selected_mandala = +value_init || 4 //проверка на первый запуск init() (по умолчанию 4-ый вариант)
+  //проверка на первый запуск init() (по умолчанию 4-ый вариант)
+  let selected_mandala = +value_init || 4
+  
+  //переключатель точечного режима
+  let dots_onoff = false
   
   //////////////////////////////////////////////////////////////
   //здесь будет адаптация отдаления камеры по размеру вводимого значения
@@ -220,6 +224,8 @@ function init(value_init, previous_input, number_of_symbols_resize) {
 
   undo_redo_check()
   
+  ///////////////////////////////////////////////////
+  
   //отслеживание нажатия кнопок боковой панели и передача содержимого этих кнопок
   for (let i = 0; i < palitra.length; i++) {
     palitra[i].onmousedown = (event) => selected_button(event.target) //передача в функцию визуального содержимого кнопки
@@ -249,11 +255,19 @@ function init(value_init, previous_input, number_of_symbols_resize) {
         })
     }
 
-
-    //запуск девизуализации осей и плоскостей
-    toggle_visibler([...axis,...plain_x_cube])
-    //запуск изменения формы кнопок при нажатии девизуализации
-    palitra_button__unactive_visibler([...axis,...plain_x_cube], "unactive_visual_button")
+    
+    if (!dots_onoff) {
+      //запуск девизуализации осей и плоскостей
+      toggle_visibler([...axis,...plain_x_cube])
+      //запуск изменения формы кнопок при нажатии девизуализации
+      palitra_button__unactive_visibler([...axis,...plain_x_cube], "unactive_visual_button")
+    }
+    else {//в точечном режиме манипуляции только с точками
+      //запуск девизуализации точек
+      toggle_visibler(dots)
+      //запуск изменения формы кнопок при нажатии девизуализации точек
+      palitra_button__unactive_visibler(dots, "unactive_visual_button")
+    }
 
     //дополнительно статистика на "S"
     if (selected_html_content === "S") { //отобразить/спрятать
@@ -281,14 +295,12 @@ function init(value_init, previous_input, number_of_symbols_resize) {
     //отображение сетки//
     if (selected_html_content === "#") {
       grid_squares.forEach( function(entry) { entry.visible = !entry.visible } )
-      // selected_target.classList.toggle("unactive_visual_button")
     }
 
    
     //смена цвета для бордера//
-    if (selected_html_content === "B") {
-      //перекрашиваем кнопку
-      // selected_target.style.backgroundColor = basic_colors[summ_to_zero_element]
+    if (selected_html_content === "B" && !dots_onoff) {
+
       //перекрашиваем бордюр
       border.forEach( 
         function(entry) { 
@@ -299,17 +311,16 @@ function init(value_init, previous_input, number_of_symbols_resize) {
     }
 
     //отображение бордера//
-    if (selected_html_content === "b") {
+    if (selected_html_content === "b" && !dots_onoff) {
      
       border.forEach( function(entry) { entry.visible = !entry.visible } )
     }
     
     //отображение цифр//
-    if (selected_html_content === "№") {
+    if (selected_html_content === "№" && !dots_onoff) {
       
       charNumber.forEach( function(entry) { entry.visible = !entry.visible } )
       //
-      // selected_target.classList.toggle("unactive_visual_button")
       //убираем бордер для отображения цифр и возвращаем при неактиве
       if (selected_mandala == 3) {
         //в зависимости от отображаемых цифр
@@ -319,16 +330,28 @@ function init(value_init, previous_input, number_of_symbols_resize) {
 
     }
 
+    
     //точечный режим//
     if (selected_html_content == "\u2219") {
+      
+      dots_onoff = !dots_onoff
 
-      dots.forEach( function(entry) { entry.visible = !entry.visible })
+      dots.forEach( function(entry) { entry.visible = dots_onoff })
       
-      //отключаем все, кроме точек
-      let all_unvis = [...border,...axis,...plain_x_cube,...grid_squares,...charNumber]
-      all_unvis.forEach( function(entry) { entry.visible = false } )
+      if (dots_onoff) {
+        //отключаем все, кроме точек
+        let all_unvis = [...border,...axis,...plain_x_cube,...grid_squares,...charNumber]
+        all_unvis.forEach( function(entry) { entry.visible = false } )
+      }
+      else {
+        //включаем всё, кроме цифр
+        let all_vis = [...border,...axis,...plain_x_cube,...grid_squares]
+        all_vis.forEach( function(entry) { entry.visible = true } ) 
+      }
       
-      selected_target.classList.toggle("unactive_visual_button")
+      if (dots_onoff) palitra_button__unactive_visibler(dots, "unactive_visual_button")
+      else palitra_button__unactive_visibler([...axis,...plain_x_cube], "unactive_visual_button")
+
     }
 
     //отдаление/приближение//
@@ -344,17 +367,27 @@ function init(value_init, previous_input, number_of_symbols_resize) {
     //"#"
     palitra[10].classList.remove("unactive_visual_button")
     if (!grid_squares[0].visible) palitra[10].classList.toggle("unactive_visual_button")
+
     //"B" //тут перекрас в цвет бордера
     palitra[14].style.backgroundColor = basic_colors[border[0].colornum]
+    palitra[14].classList.remove("opacity_button")
+    if (dots_onoff) palitra[14].classList.toggle("opacity_button")
+
     //"b"
     palitra[15].classList.remove("unactive_visual_button")
     if (!border[0].visible) palitra[15].classList.toggle("unactive_visual_button")
+    palitra[15].classList.remove("opacity_button")
+    if (dots_onoff) palitra[15].classList.toggle("opacity_button")
+
     //"№"
     palitra[16].classList.remove("unactive_visual_button")
     if (!charNumber[0].visible) palitra[16].classList.toggle("unactive_visual_button")
+    palitra[16].classList.remove("opacity_button")
+    if (dots_onoff) palitra[16].classList.toggle("opacity_button")
+
     //"."
     palitra[17].classList.remove("unactive_visual_button")
-    if (!dots[0].visible) palitra[17].classList.toggle("unactive_visual_button")
+    if (!dots_onoff) palitra[17].classList.toggle("unactive_visual_button")
   }
   
 }; //init() end bracket

@@ -2,7 +2,8 @@
 
 //модули переменных и функций поддержки
 import './modules/prototypes.js' //прототипизированные функции
-import {basic_colors, camera_range, max_expansion_length} from './default_values.js'
+import {basic_colors, camera_range, max_expansion_length,
+        unactive_visual_button} from './default_values.js'
 import {modification_to_normal, to_one_fibbonachi_digit} from './modules/support.js'
 
 //модули THREE
@@ -76,8 +77,9 @@ function init(value_init, previous_input, number_of_symbols_resize) {
   let selected_mandala = +value_init || 4
   
   //переключатель точечного режима
-  let dots_onoff = false
+  let dots_mode = false
   
+
   //////////////////////////////////////////////////////////////
   //здесь будет адаптация отдаления камеры по размеру вводимого значения
   if (selected_mandala.true_of(4,3)) camera.position.set( 0, 0, camera_range ) //60 //позиция камеры для малых квадратов
@@ -192,9 +194,9 @@ function init(value_init, previous_input, number_of_symbols_resize) {
   statistic__value_counter([...axis,...plain_x_cube])
   
   //запуск изменения формы кнопок при проверке девизуализации
-  palitra_button__unactive_visibler([...axis,...plain_x_cube], "unactive_visual_button")
+  palitra_button__unactive_visibler([...axis,...plain_x_cube], unactive_visual_button)
   //затемнение неактивных кнопок на основе статы
-  palitra_button__check_unactive("opacity_button")
+  palitra_button__check_unactive(opacity_button)
   
   //изменение кнопок левой панели (отключенные объекты)
   check_left_panel()
@@ -255,18 +257,18 @@ function init(value_init, previous_input, number_of_symbols_resize) {
         })
     }
 
-    
-    if (!dots_onoff) {
+
+    if (!dots_mode) {
       //запуск девизуализации осей и плоскостей
       toggle_visibler([...axis,...plain_x_cube])
       //запуск изменения формы кнопок при нажатии девизуализации
-      palitra_button__unactive_visibler([...axis,...plain_x_cube], "unactive_visual_button")
+      palitra_button__unactive_visibler([...axis,...plain_x_cube], unactive_visual_button)
     }
     else {//в точечном режиме манипуляции только с точками
       //запуск девизуализации точек
       toggle_visibler(dots)
       //запуск изменения формы кнопок при нажатии девизуализации точек
-      palitra_button__unactive_visibler(dots, "unactive_visual_button")
+      palitra_button__unactive_visibler(dots, unactive_visual_button)
     }
 
     //дополнительно статистика на "S"
@@ -286,8 +288,8 @@ function init(value_init, previous_input, number_of_symbols_resize) {
         statistic__value_counter([...axis,...plain_x_cube])
 
         //применение доп.эффектов на кнопки цвета на основе данных статы
-        palitra_button__unactive_visibler([...axis,...plain_x_cube], "unactive_visual_button")
-        palitra_button__check_unactive("opacity_button")
+        palitra_button__unactive_visibler([...axis,...plain_x_cube], unactive_visual_button)
+        palitra_button__check_unactive(opacity_button)
 
       }
     }
@@ -299,7 +301,7 @@ function init(value_init, previous_input, number_of_symbols_resize) {
 
    
     //смена цвета для бордера//
-    if (selected_html_content === "B" && !dots_onoff) {
+    if (selected_html_content === "B" && !dots_mode) {
 
       //перекрашиваем бордюр
       border.forEach( 
@@ -311,13 +313,13 @@ function init(value_init, previous_input, number_of_symbols_resize) {
     }
 
     //отображение бордера//
-    if (selected_html_content === "b" && !dots_onoff) {
+    if (selected_html_content === "b" && !dots_mode) {
      
       border.forEach( function(entry) { entry.visible = !entry.visible } )
     }
     
     //отображение цифр//
-    if (selected_html_content === "№" && !dots_onoff) {
+    if (selected_html_content === "№" && !dots_mode) {
       
       charNumber.forEach( function(entry) { entry.visible = !entry.visible } )
       //
@@ -334,11 +336,11 @@ function init(value_init, previous_input, number_of_symbols_resize) {
     //точечный режим//
     if (selected_html_content == "\u2219") {
       
-      dots_onoff = !dots_onoff
+      dots_mode = !dots_mode
 
-      dots.forEach( function(entry) { entry.visible = dots_onoff })
+      dots.forEach( function(entry) { entry.visible = dots_mode })
       
-      if (dots_onoff) {
+      if (dots_mode) {
         //отключаем все, кроме точек
         let all_unvis = [...border,...axis,...plain_x_cube,...grid_squares,...charNumber]
         all_unvis.forEach( function(entry) { entry.visible = false } )
@@ -349,8 +351,8 @@ function init(value_init, previous_input, number_of_symbols_resize) {
         all_vis.forEach( function(entry) { entry.visible = true } ) 
       }
       
-      if (dots_onoff) palitra_button__unactive_visibler(dots, "unactive_visual_button")
-      else palitra_button__unactive_visibler([...axis,...plain_x_cube], "unactive_visual_button")
+      if (dots_mode) palitra_button__unactive_visibler(dots, unactive_visual_button)
+      else palitra_button__unactive_visibler([...axis,...plain_x_cube], unactive_visual_button)
 
     }
 
@@ -365,29 +367,29 @@ function init(value_init, previous_input, number_of_symbols_resize) {
 
   function check_left_panel() {
     //"#"
-    palitra[10].classList.remove("unactive_visual_button")
-    if (!grid_squares[0].visible) palitra[10].classList.toggle("unactive_visual_button")
+    palitra[10].classList.remove(unactive_visual_button)
+    if (!grid_squares[0].visible) palitra[10].classList.toggle(unactive_visual_button)
 
     //"B" //тут перекрас в цвет бордера
     palitra[14].style.backgroundColor = basic_colors[border[0].colornum]
-    palitra[14].classList.remove("opacity_button")
-    if (dots_onoff) palitra[14].classList.toggle("opacity_button")
+    palitra[14].classList.remove(opacity_button)
+    if (dots_mode) palitra[14].classList.toggle(opacity_button)
 
     //"b"
-    palitra[15].classList.remove("unactive_visual_button")
-    if (!border[0].visible) palitra[15].classList.toggle("unactive_visual_button")
-    palitra[15].classList.remove("opacity_button")
-    if (dots_onoff) palitra[15].classList.toggle("opacity_button")
+    palitra[15].classList.remove(unactive_visual_button)
+    if (!border[0].visible) palitra[15].classList.toggle(unactive_visual_button)
+    palitra[15].classList.remove(opacity_button)
+    if (dots_mode) palitra[15].classList.toggle(opacity_button)
 
     //"№"
-    palitra[16].classList.remove("unactive_visual_button")
-    if (!charNumber[0].visible) palitra[16].classList.toggle("unactive_visual_button")
-    palitra[16].classList.remove("opacity_button")
-    if (dots_onoff) palitra[16].classList.toggle("opacity_button")
+    palitra[16].classList.remove(unactive_visual_button)
+    if (!charNumber[0].visible) palitra[16].classList.toggle(unactive_visual_button)
+    palitra[16].classList.remove(opacity_button)
+    if (dots_mode) palitra[16].classList.toggle(opacity_button)
 
     //"."
-    palitra[17].classList.remove("unactive_visual_button")
-    if (!dots_onoff) palitra[17].classList.toggle("unactive_visual_button")
+    palitra[17].classList.remove(unactive_visual_button)
+    if (!dots_mode) palitra[17].classList.toggle(unactive_visual_button)
   }
   
 }; //init() end bracket

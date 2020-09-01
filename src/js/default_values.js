@@ -11,9 +11,11 @@
   let max_expansion_length = 45 //было 57
 /////////////////////////////////////////////////////////////////
 
-	// var axis = "ax_is"
-
+	//названия классов для манипуляций с кнопками
+  let unactive_visual_button = "unactive_visual_button"
+  let opacity_button = "opacity_button"
 
  export { camera_range, max_input_length, max_expansion_length,
- 				basic_colors
+ 				basic_colors,
+        unactive_visual_button
  				}

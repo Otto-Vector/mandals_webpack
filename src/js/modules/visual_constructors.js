@@ -220,7 +220,7 @@ function grid(object) {
 
       grid[k] = new THREE.Line(geometry_for_line[k], lineMaterial )
       
-      // grid[k].visible = false
+      grid[k].visible = false
       
       scene.add(grid[k])
       k++

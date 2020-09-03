@@ -3,7 +3,9 @@
 //модули переменных и функций поддержки
 import './modules/prototypes.js' //прототипизированные функции
 import {basic_colors, camera_range, max_expansion_length,
-        unactive_visual_button} from './default_values.js'
+        opacity_button,
+        unactive_visual_button
+        } from './default_values.js'
 import {modification_to_normal, to_one_fibbonachi_digit} from './modules/support.js'
 
 //модули THREE
@@ -47,7 +49,7 @@ import {reinit} from './modules/reinit.js'
 window.onload = init
 
 //глобальные переменные
-let axis, plain_x_cube, grid_squares, border, scale_border, dots, charNumber
+let axis, plain_x_cube, grid_squares, border, scale_border, dots, dots_mode, charNumber
 
 //основная функция
 function init(value_init, previous_input, number_of_symbols_resize) {
@@ -76,10 +78,7 @@ function init(value_init, previous_input, number_of_symbols_resize) {
   //проверка на первый запуск init() (по умолчанию 4-ый вариант)
   let selected_mandala = +value_init || 4
   
-  //переключатель точечного режима
-  let dots_mode = false
-  
-
+  dots_mode = false
   //////////////////////////////////////////////////////////////
   //здесь будет адаптация отдаления камеры по размеру вводимого значения
   if (selected_mandala.true_of(4,3)) camera.position.set( 0, 0, camera_range ) //60 //позиция камеры для малых квадратов
@@ -173,7 +172,7 @@ function init(value_init, previous_input, number_of_symbols_resize) {
 
   //точки
   dots = dots_visibler([...axis,...plain_x_cube])
- 
+
   ////анимация объектов////////////////////
   if (!+value_init) animate()
 
@@ -258,18 +257,12 @@ function init(value_init, previous_input, number_of_symbols_resize) {
     }
 
 
-    if (!dots_mode) {
-      //запуск девизуализации осей и плоскостей
-      toggle_visibler([...axis,...plain_x_cube])
-      //запуск изменения формы кнопок при нажатии девизуализации
-      palitra_button__unactive_visibler([...axis,...plain_x_cube], unactive_visual_button)
-    }
-    else {//в точечном режиме манипуляции только с точками
-      //запуск девизуализации точек
-      toggle_visibler(dots)
-      //запуск изменения формы кнопок при нажатии девизуализации точек
-      palitra_button__unactive_visibler(dots, unactive_visual_button)
-    }
+   
+    //запуск девизуализации осей и плоскостей
+    toggle_visibler((!dots_mode)?[...axis,...plain_x_cube]:dots)
+    //запуск изменения формы кнопок при нажатии девизуализации
+    palitra_button__unactive_visibler((!dots_mode)?[...axis,...plain_x_cube]:dots, unactive_visual_button)
+   
 
     //дополнительно статистика на "S"
     if (selected_html_content === "S") { //отобразить/спрятать
@@ -288,7 +281,7 @@ function init(value_init, previous_input, number_of_symbols_resize) {
         statistic__value_counter([...axis,...plain_x_cube])
 
         //применение доп.эффектов на кнопки цвета на основе данных статы
-        palitra_button__unactive_visibler([...axis,...plain_x_cube], unactive_visual_button)
+        palitra_button__unactive_visibler((!dots_mode)?[...axis,...plain_x_cube]:dots, unactive_visual_button)
         palitra_button__check_unactive(opacity_button)
 
       }
@@ -351,8 +344,8 @@ function init(value_init, previous_input, number_of_symbols_resize) {
         all_vis.forEach( function(entry) { entry.visible = true } ) 
       }
       
-      if (dots_mode) palitra_button__unactive_visibler(dots, unactive_visual_button)
-      else palitra_button__unactive_visibler([...axis,...plain_x_cube], unactive_visual_button)
+      //закруглять кнопки в зависимости от режима
+      palitra_button__unactive_visibler((!dots_mode)?[...axis,...plain_x_cube]:dots, unactive_visual_button)
 
     }
 
@@ -396,4 +389,4 @@ function init(value_init, previous_input, number_of_symbols_resize) {
 
 
 
-export {axis, plain_x_cube, grid_squares, border, scale_border, charNumber, dots, init}
+export {axis, plain_x_cube, grid_squares, border, scale_border, charNumber, dots, dots_mode, init}

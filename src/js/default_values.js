@@ -15,7 +15,12 @@
   let unactive_visual_button = "unactive_visual_button"
   let opacity_button = "opacity_button"
 
+///////////////////////////////////////////////////
+//переключатель точечного режима
+// let dots_mode = false
+
  export { camera_range, max_input_length, max_expansion_length,
  				basic_colors,
-        unactive_visual_button
+        opacity_button,
+        unactive_visual_button,
  				}

@@ -220,8 +220,6 @@ function grid(object) {
 
       grid[k] = new THREE.Line(geometry_for_line[k], lineMaterial )
       
-      grid[k].visible = false
-      
       scene.add(grid[k])
       k++
     }
@@ -273,7 +271,6 @@ function grid(object) {
           CharsN[j] = new THREE.Mesh( fontGeometry[color_n], fontMaterial )
           CharsN[j].position.set( x-0.25, y-0.3, 0.06 )
           scene.add( CharsN[j] )
-          CharsN[j].visible = false
           j++
 
         }

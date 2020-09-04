@@ -79,6 +79,23 @@ function init(value_init, previous_input, number_of_symbols_resize) {
   let selected_mandala = +value_init || 4
   
   dots_mode = false
+  let visible_colors = {
+                        '0' : true,
+                        '1' : true,
+                        '2' : true,
+                        '3' : true,
+                        '4' : true,
+                        '5' : true,
+                        '6' : true,
+                        '7' : true,
+                        '8' : true,
+                        '9' : true
+                      }
+  let grid_mode = false
+  let grid_mode_for_dots = false
+  let border_mode = true
+  let number_mode = false
+  let border_color = 9
   //////////////////////////////////////////////////////////////
   //здесь будет адаптация отдаления камеры по размеру вводимого значения
   if (selected_mandala.true_of(4,3)) camera.position.set( 0, 0, camera_range ) //60 //позиция камеры для малых квадратов
@@ -159,17 +176,17 @@ function init(value_init, previous_input, number_of_symbols_resize) {
 
   //создаём сетку
   grid_squares = grid([...axis, ...plain_x_cube])
-  
+  grid_squares.forEach( function(entry) { entry.visible = grid_mode } )
   //массив для элементов обводки мандалы
   border = border_visual( plane_of_colors[0] )
-
+  border.forEach( function(entry) { entry.visible = border_mode } )
   //массив для поворота и изменения размера обводки в мандале "ромб"
   scale_border = selected_mandala.true_of(3) ? x_border_visual(border) : null
   
   //цифры//
   //активация переменной charNumber и прорисовка объектов цифр в инвиз
   charNumber = charNumber_active([...axis,...plain_x_cube])
-
+  charNumber.forEach( function(entry) { entry.visible = number_mode } )
   //точки
   dots = dots_visibler([...axis,...plain_x_cube])
 
@@ -249,10 +266,21 @@ function init(value_init, previous_input, number_of_symbols_resize) {
     //функция перебора массива с отслеживанием нажатых кнопок
     function toggle_visibler(arr) { //в ф-цию передаем массив
       arr.forEach(function(item) { //перебираем массив
-          if (selected_html_content === "X") item.visible = false //все искомые элементы становятся невидимыми
+          if (selected_html_content === "X") {
+            item.visible = false //все искомые элементы становятся невидимыми
+            visible_colors[item.colornum] = item.visible
+          }
           if (selected_html_content === "@" ||
-             +selected_html_content === +item.colornum) item.visible = !item.visible //смена видимости на невидимость
-          if (selected_html_content === "A") item.visible = true //все искомые элементы становятся видимыми
+             +selected_html_content === +item.colornum) {
+             //смена видимости на невидимость
+             item.visible = !item.visible
+             //присваивание элементу видимости логического значения 
+             visible_colors[item.colornum] = item.visible
+          }
+          if (selected_html_content === "A") {
+           item.visible = true //все искомые элементы становятся видимыми
+           visible_colors[item.colornum] = item.visible
+          }
         })
     }
 
@@ -281,14 +309,16 @@ function init(value_init, previous_input, number_of_symbols_resize) {
         statistic__value_counter([...axis,...plain_x_cube])
 
         //применение доп.эффектов на кнопки цвета на основе данных статы
-        palitra_button__unactive_visibler((!dots_mode)?[...axis,...plain_x_cube]:dots, unactive_visual_button)
         palitra_button__check_unactive(opacity_button)
+        palitra_button__unactive_visibler((!dots_mode)?[...axis,...plain_x_cube]:dots, unactive_visual_button)
 
       }
     }
 
     //отображение сетки//
     if (selected_html_content === "#") {
+      if (!dots_mode) grid_mode = !grid_mode
+        else grid_mode_for_dots = !grid_mode_for_dots
       grid_squares.forEach( function(entry) { entry.visible = !entry.visible } )
     }
 
@@ -299,22 +329,24 @@ function init(value_init, previous_input, number_of_symbols_resize) {
       //перекрашиваем бордюр
       border.forEach( 
         function(entry) { 
-          entry.colornum = (+entry.colornum === 9) ? 0 : ++entry.colornum //перебор цвета в замкнутом цикле 9 и смена значения
-          entry.material.color.set( basic_colors[entry.colornum] ) //присвоение значения цвета
+          //перебор цвета в замкнутом цикле 9 и смена значения
+          entry.colornum = (+entry.colornum === 9) ? 0 : ++entry.colornum
+          //присвоение значения цвета
+          entry.material.color.set( basic_colors[entry.colornum] )
         }
       )
     }
 
     //отображение бордера//
     if (selected_html_content === "b" && !dots_mode) {
-     
-      border.forEach( function(entry) { entry.visible = !entry.visible } )
+      border_mode = !border_mode
+      border.forEach( function(entry) { entry.visible = border_mode } )
     }
     
     //отображение цифр//
     if (selected_html_content === "№" && !dots_mode) {
-      
-      charNumber.forEach( function(entry) { entry.visible = !entry.visible } )
+      number_mode = !number_mode
+      charNumber.forEach( function(entry) { entry.visible = number_mode } )
       //
       //убираем бордер для отображения цифр и возвращаем при неактиве
       if (selected_mandala == 3) {
@@ -335,13 +367,30 @@ function init(value_init, previous_input, number_of_symbols_resize) {
       
       if (dots_mode) {
         //отключаем все, кроме точек
-        let all_unvis = [...border,...axis,...plain_x_cube,...grid_squares,...charNumber]
+        let all_unvis = [...border,...axis,...plain_x_cube,...charNumber]
         all_unvis.forEach( function(entry) { entry.visible = false } )
+        grid_squares.forEach( function(entry) { entry.visible = grid_mode_for_dots } )
+        for (let color in visible_colors) {
+          dots.forEach( function(entry) {
+            if (entry.colornum == color) 
+            entry.visible = visible_colors[color]
+          })
+        }
+
       }
       else {
         //включаем всё, кроме цифр
-        let all_vis = [...border,...axis,...plain_x_cube,...grid_squares]
-        all_vis.forEach( function(entry) { entry.visible = true } ) 
+        border.forEach( function(entry) { entry.visible = border_mode } );
+        grid_squares.forEach( function(entry) { entry.visible = grid_mode } );
+        charNumber.forEach( function(entry) { entry.visible = number_mode } )
+        
+        for (let color in visible_colors) {
+          [...axis,...plain_x_cube].forEach( function(entry) {
+            if (entry.colornum == color) 
+            entry.visible = visible_colors[color]
+          } )
+        }
+
       }
       
       //закруглять кнопки в зависимости от режима

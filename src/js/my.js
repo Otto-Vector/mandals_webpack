@@ -121,8 +121,6 @@ function init(value_init, previous_input, number_of_symbols_resize) {
   input_string = modification_to_normal(input_string, default_string)
 
 
-
-
   //////////////////////////////////////////////////////////////
   /////// Блок адаптации букв в цифровой код //////////////////
   ////////////////////////////////////////////////////////////
@@ -177,16 +175,19 @@ function init(value_init, previous_input, number_of_symbols_resize) {
   //создаём сетку
   grid_squares = grid([...axis, ...plain_x_cube])
   grid_squares.forEach( function(entry) { entry.visible = grid_mode } )
+
   //массив для элементов обводки мандалы
   border = border_visual( plane_of_colors[0] )
   border.forEach( function(entry) { entry.visible = border_mode } )
+
   //массив для поворота и изменения размера обводки в мандале "ромб"
   scale_border = selected_mandala.true_of(3) ? x_border_visual(border) : null
-  
+
   //цифры//
   //активация переменной charNumber и прорисовка объектов цифр в инвиз
   charNumber = charNumber_active([...axis,...plain_x_cube])
   charNumber.forEach( function(entry) { entry.visible = number_mode } )
+
   //точки
   dots = dots_visibler([...axis,...plain_x_cube])
 
@@ -324,7 +325,7 @@ function init(value_init, previous_input, number_of_symbols_resize) {
 
    
     //смена цвета для бордера//
-    if (selected_html_content === "B" && !dots_mode) {
+    if (selected_html_content === "B" && !dots_mode && border_mode) {
 
       //перекрашиваем бордюр
       border.forEach( 
@@ -338,7 +339,12 @@ function init(value_init, previous_input, number_of_symbols_resize) {
     }
 
     //отображение бордера//
-    if (selected_html_content === "b" && !dots_mode) {
+    if (selected_html_content === "b" &&
+        //не включать в режиме точек
+        !dots_mode &&
+        //не включать в режиме цифр на мандале "ромб"
+        !(selected_mandala.true_of(3) && number_mode)
+      ) {
       border_mode = !border_mode
       border.forEach( function(entry) { entry.visible = border_mode } )
     }
@@ -351,8 +357,8 @@ function init(value_init, previous_input, number_of_symbols_resize) {
       //убираем бордер для отображения цифр и возвращаем при неактиве
       if (selected_mandala == 3) {
         //в зависимости от отображаемых цифр
-        let visible_onoff = !charNumber[0].visible
-        border.forEach( function(entry) { entry.visible = visible_onoff } )
+        border_mode = !border_mode
+        border.forEach( function(entry) { entry.visible = border_mode } )
       }
 
     }
@@ -414,8 +420,9 @@ function init(value_init, previous_input, number_of_symbols_resize) {
 
     //"B" //тут перекрас в цвет бордера
     palitra[14].style.backgroundColor = basic_colors[border[0].colornum]
+    
     palitra[14].classList.remove(opacity_button)
-    if (dots_mode) palitra[14].classList.toggle(opacity_button)
+    if (dots_mode || !border_mode) palitra[14].classList.toggle(opacity_button)
 
     //"b"
     palitra[15].classList.remove(unactive_visual_button)

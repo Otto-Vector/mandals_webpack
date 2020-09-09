@@ -16,17 +16,7 @@ import {basic_colors} from '../default_values.js'
   let cubeGeom = new THREE.CubeGeometry(1,1,0.01)
   //геометрия точек//
   let sphereGeom = new THREE.SphereGeometry(0.15,32,32)
-  // let setGeom = cubeGeom
-  // //.material.color.set(0x000000)
   
-  // //функция смены геометрии на точечную и обратно
-  // function to_points() {
-  
-  //   let out = ( setGeom == sphereGeom )
-  //   setGeom = ( out ) ? cubeGeom : sphereGeom 
-
-  // return out
-  // }
 
   //материал кубов создаётся из массива цветов от нуля до девяти соответственно
   let color_material = basic_colors.map( color_n => new THREE.MeshBasicMaterial({ color: color_n }) )
@@ -295,9 +285,7 @@ function dots_visibler(objectos) {
 
     dots_fn.push( cubus_construct( x, y, 0, color_n, sphereGeom) )
   }
-  
-  dots_fn.forEach( function(entry) { entry.visible = !entry.visible })
-  
+    
   return dots_fn
 }
 

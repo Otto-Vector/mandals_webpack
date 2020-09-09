@@ -97,7 +97,7 @@ header.title.new_bg {
     background-repeat: no-repeat;
 
     cursor: pointer;
-    opacity: 0.7;
+    opacity: 0.5;
 }
 
 #number_of_symbols__clear:hover {
@@ -113,6 +113,7 @@ header.title.new_bg {
     
     position: absolute;
     right: 1.5%;
+    z-index: 11;
     
     width: 4%;
     height: 5vw;
@@ -127,7 +128,6 @@ header.title.new_bg {
     background-repeat: no-repeat;
     
     cursor: pointer;
-    z-index: 11;
 }
 
 @media (max-width:900px){

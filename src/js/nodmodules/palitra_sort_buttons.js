@@ -1,6 +1,6 @@
 import {basic_colors} from '../default_values.js'
-import {axis, plain_x_cube, dots, dots_mode} from '../my.js'
-
+import {history, history_counter} from '../nodmodules/undo_redo.js'
+import {axis, plain_x_cube, dots} from '../my.js'
   ///statistic_item
   //объекты пунктов статы
   let statistic_item = document.querySelectorAll("#statistic div")
@@ -25,7 +25,7 @@ import {axis, plain_x_cube, dots, dots_mode} from '../my.js'
     //проверка на нулевые значения статы
     palitra_button__check_unactive("opacity_button")
     //переотметка неактивных визуально кубов
-    palitra_button__unactive_visibler((!dots_mode)?[...axis,...plain_x_cube]:dots, "unactive_visual_button")
+    palitra_button__unactive_visibler((!history[history_counter].dots_mode)?[...axis,...plain_x_cube]:dots, "unactive_visual_button")
   }
 
 //////////////////////////////////////////////////////////////////////////////////////////

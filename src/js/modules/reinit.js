@@ -13,6 +13,7 @@ let reinit = function (_new = 0) {
   if (!_new) add_history()
 
   //проверка на крит.значения массива history
+  //(не меньше нуля и не больше размера массива)
   if (!so_crit_value_add(_new)) {
       //зачистка памяти
       if (axis) remove_all_objects_from_memory(axis)
@@ -25,7 +26,7 @@ let reinit = function (_new = 0) {
       //всё не так просто с этим объектом. он сгруппирован
       if (scale_border) { scene.remove( scale_border ) }
       //перезапуск
-      init(...history[history_counter])
+      init()
   }
 
 }

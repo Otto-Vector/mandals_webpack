@@ -14,7 +14,6 @@ import {scene, camera, renderer,
 import {plane_square_3x_algorithm, curtail_diamond_algorithm, chess_algorithm} from './modules/calc_mandalas_algorithms.js'
 import {dots_visibler,
         charNumber_active,
-        // charNumber,
         axis_visual,
         plain_x_cube_visual,
         border_visual,
@@ -39,7 +38,7 @@ import {palitra,
 import {header_title,
         numeric_adaptation_Node_elements} from './nodmodules/numeric_adaptation.js'
 
-import {undo_button, redo_button, undo_redo_check} from './nodmodules/undo_redo.js'
+import {history, history_counter, undo_redo_check} from './nodmodules/undo_redo.js'
 
 //модуль перезапуска и очистки памяти
 import {reinit} from './modules/reinit.js'
@@ -48,22 +47,22 @@ import {reinit} from './modules/reinit.js'
 //запуск программы
 window.onload = init
 
-//глобальные переменные
-let axis, plain_x_cube, grid_squares, border, scale_border, dots, dots_mode, charNumber
-
-//основная функция
-function init(value_init, previous_input, number_of_symbols_resize) {
-
   /////////////////////////////////////////////////////////////////////////////////////
   ///////////////////PRE_BEGIN////////////////////////////////////////////////////////
   ///////////////////////////////////////////////////////////////////////////////////
 
-    
   //добавление графического окна к документу в тег
-  if (!+value_init)
-    document.body.appendChild( renderer.domElement )
+  document.body.appendChild( renderer.domElement )
   //при динамическом изменении размера окна
   window.addEventListener('resize', onWindowResize, false)
+
+//глобальные переменные
+let axis, plain_x_cube, grid_squares, border, scale_border, dots, charNumber
+
+//основная функция
+// function init(value_init, previous_input, history[history_counter].length_of_title) {
+function init() {
+
 
   
   /////////////////////////////////////////////////////////////////////////////////
@@ -76,26 +75,18 @@ function init(value_init, previous_input, number_of_symbols_resize) {
   // 9 - на квадрат шахматый расчёт (2вар)      +
   // 
   //проверка на первый запуск init() (по умолчанию 4-ый вариант)
-  let selected_mandala = +value_init || 4
   
-  dots_mode = false
-  let visible_colors = {
-                        '0' : true,
-                        '1' : true,
-                        '2' : true,
-                        '3' : true,
-                        '4' : true,
-                        '5' : true,
-                        '6' : true,
-                        '7' : true,
-                        '8' : true,
-                        '9' : true
-                      }
-  let grid_mode = false
-  let grid_mode_for_dots = false
-  let border_mode = true
-  let number_mode = false
-  let border_color = 9
+  //переназначение из длинных названий в короткие
+  let selected_mandala = history[history_counter].selected_mandala
+  // let dots_mode = history[history_counter].dots_mfode
+  // history[history_counter].let visible_colors = history[history_counter].history[history_counter].visible_colors
+
+    
+  // let history[history_counter].grid_mode = false
+  // let history[history_counter].grid_mode_for_dots = false
+  // let history[history_counter].border_mode = true
+  // let history[history_counter].number_mode = false
+  // history[history_counter].border_color = 9
   //////////////////////////////////////////////////////////////
   //здесь будет адаптация отдаления камеры по размеру вводимого значения
   if (selected_mandala.true_of(4,3)) camera.position.set( 0, 0, camera_range ) //60 //позиция камеры для малых квадратов
@@ -115,7 +106,7 @@ function init(value_init, previous_input, number_of_symbols_resize) {
 
   
   //пустая строка при первой инициализации
-  let input_string = +value_init ? previous_input : ""
+  let input_string = history[history_counter].title_of_mandala
 
   //нормализация введенной строки для корректного перевода в цифровой массив
   input_string = modification_to_normal(input_string, default_string)
@@ -126,7 +117,7 @@ function init(value_init, previous_input, number_of_symbols_resize) {
   ////////////////////////////////////////////////////////////
   
   //если не задан, то присваивается значение длины введенной строки
-  number_of_symbols_resize = +number_of_symbols_resize || input_string.length
+  history[history_counter].length_of_title = +history[history_counter].length_of_title || input_string.length
   
   //символы расположены строго по таблице (удачно получилось то, что нужен всего один пробел)
   let simbols_static = "abcdefghijklmnopqrstuvwxyz абвгдеёжзийклмнопрстуфхцчшщъыьэюя"
@@ -136,7 +127,7 @@ function init(value_init, previous_input, number_of_symbols_resize) {
   
   //изменяет размер обрабатываемой числовой строки
   let string_for_algorithms = input_string_array
-                              .to_number_of_symbols(number_of_symbols_resize)
+                              .to_number_of_symbols(history[history_counter].length_of_title)
                               .map(Number) //мапим, чтобы не изменять предыдущий массив
 
   //добавляется нулевой элемент суммы всех чисел по фибоначи
@@ -171,28 +162,37 @@ function init(value_init, previous_input, number_of_symbols_resize) {
 
   //пластины между осями
   plain_x_cube = plain_x_cube_visual(plane_of_colors)
+   
+  toggle_visibler([...axis,...plain_x_cube], !history[history_counter].dots_mode)
 
+  //точки
+  dots = dots_visibler([...axis,...plain_x_cube])
+  toggle_visibler( dots, history[history_counter].dots_mode )
+  
+  //отображение цветов, в зависимости от режима
+  all_visibler_colors(history[history_counter].dots_mode ? dots : [...axis, ...plain_x_cube])
+  
+  
   //создаём сетку
   grid_squares = grid([...axis, ...plain_x_cube])
-  grid_squares.forEach( function(entry) { entry.visible = grid_mode } )
-
+  toggle_visibler(grid_squares, history[history_counter].grid_mode)
+  
   //массив для элементов обводки мандалы
   border = border_visual( plane_of_colors[0] )
-  border.forEach( function(entry) { entry.visible = border_mode } )
-
+  toggle_visibler(border, history[history_counter].border_mode)
+  history[history_counter].border_color = border[0].colornum
   //массив для поворота и изменения размера обводки в мандале "ромб"
   scale_border = selected_mandala.true_of(3) ? x_border_visual(border) : null
 
   //цифры//
   //активация переменной charNumber и прорисовка объектов цифр в инвиз
   charNumber = charNumber_active([...axis,...plain_x_cube])
-  charNumber.forEach( function(entry) { entry.visible = number_mode } )
-
-  //точки
-  dots = dots_visibler([...axis,...plain_x_cube])
+  toggle_visibler(charNumber, history[history_counter].number_mode)
+  
 
   ////анимация объектов////////////////////
-  if (!+value_init) animate()
+  // if (!+value_init) 
+  animate()
 
 
 
@@ -211,7 +211,7 @@ function init(value_init, previous_input, number_of_symbols_resize) {
   statistic__value_counter([...axis,...plain_x_cube])
   
   //запуск изменения формы кнопок при проверке девизуализации
-  palitra_button__unactive_visibler([...axis,...plain_x_cube], unactive_visual_button)
+  palitra_button__unactive_visibler(history[history_counter].dots_mode ? dots : [...axis, ...plain_x_cube], unactive_visual_button)
   //затемнение неактивных кнопок на основе статы
   palitra_button__check_unactive(opacity_button)
   
@@ -222,16 +222,16 @@ function init(value_init, previous_input, number_of_symbols_resize) {
   title_input.value = input_string
   
   //задание дефолтных значений поля ввода количества символов
-  number_of_symbols_init(number_of_symbols_resize)
+  number_of_symbols_init(history[history_counter].length_of_title)
   
   
   ///selected mandalas type
   //селект для выбора типа мандалы
-  let selected_mandala_type = document.querySelector("#select_mandala_type")
+  let select_mandala_type = document.querySelector("#select_mandala_type")
   //задание дефолтных значений
   select_mandala_type.value = selected_mandala
   //перезапуск по выбору типа мандалы
-  selected_mandala_type.oninput = function() { reinit() }
+  select_mandala_type.oninput = function() { reinit() }
  
 
   ///numeric_adaptation
@@ -239,8 +239,9 @@ function init(value_init, previous_input, number_of_symbols_resize) {
   //зачистка предыдущих значений
   numeric_adaptation.innerHTML = null
   //запуск функции сборки    
-  numeric_adaptation_Node_elements(input_string_array, numeric_adaptation, number_of_symbols_resize)    
+  numeric_adaptation_Node_elements(input_string_array, numeric_adaptation, history[history_counter].length_of_title)    
 
+  //проверка на засвет кнопок отмены/повтора и запуск счётчика под ним
   undo_redo_check()
   
   ///////////////////////////////////////////////////
@@ -265,22 +266,22 @@ function init(value_init, previous_input, number_of_symbols_resize) {
     let selected_html_content = selected_target.innerHTML
 
     //функция перебора массива с отслеживанием нажатых кнопок
-    function toggle_visibler(arr) { //в ф-цию передаем массив
+    function toggle_visibler_from_button(arr) { //в ф-цию передаем массив
       arr.forEach(function(item) { //перебираем массив
           if (selected_html_content === "X") {
             item.visible = false //все искомые элементы становятся невидимыми
-            visible_colors[item.colornum] = item.visible
+            history[history_counter].visible_colors[item.colornum] = item.visible
           }
           if (selected_html_content === "@" ||
              +selected_html_content === +item.colornum) {
              //смена видимости на невидимость
              item.visible = !item.visible
              //присваивание элементу видимости логического значения 
-             visible_colors[item.colornum] = item.visible
+             history[history_counter].visible_colors[item.colornum] = item.visible
           }
           if (selected_html_content === "A") {
            item.visible = true //все искомые элементы становятся видимыми
-           visible_colors[item.colornum] = item.visible
+           history[history_counter].visible_colors[item.colornum] = item.visible
           }
         })
     }
@@ -288,9 +289,9 @@ function init(value_init, previous_input, number_of_symbols_resize) {
 
    
     //запуск девизуализации осей и плоскостей
-    toggle_visibler((!dots_mode)?[...axis,...plain_x_cube]:dots)
+    toggle_visibler_from_button((!history[history_counter].dots_mode)?[...axis,...plain_x_cube]:dots)
     //запуск изменения формы кнопок при нажатии девизуализации
-    palitra_button__unactive_visibler((!dots_mode)?[...axis,...plain_x_cube]:dots, unactive_visual_button)
+    palitra_button__unactive_visibler((!history[history_counter].dots_mode)?[...axis,...plain_x_cube]:dots, unactive_visual_button)
    
 
     //дополнительно статистика на "S"
@@ -311,21 +312,26 @@ function init(value_init, previous_input, number_of_symbols_resize) {
 
         //применение доп.эффектов на кнопки цвета на основе данных статы
         palitra_button__check_unactive(opacity_button)
-        palitra_button__unactive_visibler((!dots_mode)?[...axis,...plain_x_cube]:dots, unactive_visual_button)
+        palitra_button__unactive_visibler((!history[history_counter].dots_mode) ? [...axis,...plain_x_cube] : dots, unactive_visual_button)
 
       }
     }
 
     //отображение сетки//
     if (selected_html_content === "#") {
-      if (!dots_mode) grid_mode = !grid_mode
-        else grid_mode_for_dots = !grid_mode_for_dots
-      grid_squares.forEach( function(entry) { entry.visible = !entry.visible } )
+      
+      if (!history[history_counter].dots_mode)
+        history[history_counter].grid_mode = !history[history_counter].grid_mode
+      else
+        history[history_counter].grid_mode_for_dots = !history[history_counter].grid_mode_for_dots
+
+      toggle_visibler( grid_squares, history[history_counter].dots_mode ? history[history_counter].grid_mode_for_dots : history[history_counter].grid_mode )
+
     }
 
    
     //смена цвета для бордера//
-    if (selected_html_content === "B" && !dots_mode && border_mode) {
+    if (selected_html_content === "B" && !history[history_counter].dots_mode && history[history_counter].border_mode) {
 
       //перекрашиваем бордюр
       border.forEach( 
@@ -341,24 +347,26 @@ function init(value_init, previous_input, number_of_symbols_resize) {
     //отображение бордера//
     if (selected_html_content === "b" &&
         //не включать в режиме точек
-        !dots_mode &&
+        !history[history_counter].dots_mode &&
         //не включать в режиме цифр на мандале "ромб"
-        !(selected_mandala.true_of(3) && number_mode)
+        !(selected_mandala.true_of(3) && history[history_counter].number_mode)
       ) {
-      border_mode = !border_mode
-      border.forEach( function(entry) { entry.visible = border_mode } )
+
+      history[history_counter].border_mode = !history[history_counter].border_mode
+      toggle_visibler( border, history[history_counter].border_mode )
+
     }
     
     //отображение цифр//
-    if (selected_html_content === "№" && !dots_mode) {
-      number_mode = !number_mode
-      charNumber.forEach( function(entry) { entry.visible = number_mode } )
+    if (selected_html_content === "№" && !history[history_counter].dots_mode) {
+      history[history_counter].number_mode = !history[history_counter].number_mode
+      toggle_visibler( charNumber, history[history_counter].number_mode )
       //
-      //убираем бордер для отображения цифр и возвращаем при неактиве
+      //убираем бордер для отображения цифр при третьей мандале и возвращаем при неактиве
       if (selected_mandala == 3) {
         //в зависимости от отображаемых цифр
-        border_mode = !border_mode
-        border.forEach( function(entry) { entry.visible = border_mode } )
+        history[history_counter].border_mode = !history[history_counter].border_mode
+        toggle_visibler( border, history[history_counter].border_mode )
       }
 
     }
@@ -367,40 +375,35 @@ function init(value_init, previous_input, number_of_symbols_resize) {
     //точечный режим//
     if (selected_html_content == "\u2219") {
       
-      dots_mode = !dots_mode
+      history[history_counter].dots_mode = !history[history_counter].dots_mode
 
-      dots.forEach( function(entry) { entry.visible = dots_mode })
+      toggle_visibler(dots, history[history_counter].dots_mode )
       
-      if (dots_mode) {
+      if (history[history_counter].dots_mode) {
         //отключаем все, кроме точек
         let all_unvis = [...border,...axis,...plain_x_cube,...charNumber]
-        all_unvis.forEach( function(entry) { entry.visible = false } )
-        grid_squares.forEach( function(entry) { entry.visible = grid_mode_for_dots } )
-        for (let color in visible_colors) {
-          dots.forEach( function(entry) {
-            if (entry.colornum == color) 
-            entry.visible = visible_colors[color]
-          })
-        }
+        toggle_visibler( all_unvis, false )
+        
+        //отображаем сетку, в зависимости от режима
+        toggle_visibler( grid_squares, history[history_counter].grid_mode_for_dots )
+        
+        //отображаемые цвета
+        all_visibler_colors(dots)
 
       }
       else {
-        //включаем всё, кроме цифр
-        border.forEach( function(entry) { entry.visible = border_mode } );
-        grid_squares.forEach( function(entry) { entry.visible = grid_mode } );
-        charNumber.forEach( function(entry) { entry.visible = number_mode } )
+        //включаем всё, в зависимости от состояния
+        toggle_visibler( border, history[history_counter].border_mode )
+        toggle_visibler( grid_squares, history[history_counter].grid_mode )
+        toggle_visibler( charNumber, history[history_counter].number_mode )
         
-        for (let color in visible_colors) {
-          [...axis,...plain_x_cube].forEach( function(entry) {
-            if (entry.colornum == color) 
-            entry.visible = visible_colors[color]
-          } )
-        }
+        //отображение по цветам
+        all_visibler_colors([...axis,...plain_x_cube])
 
       }
       
       //закруглять кнопки в зависимости от режима
-      palitra_button__unactive_visibler((!dots_mode)?[...axis,...plain_x_cube]:dots, unactive_visual_button)
+      palitra_button__unactive_visibler((!history[history_counter].dots_mode)?[...axis,...plain_x_cube]:dots, unactive_visual_button)
 
     }
 
@@ -422,27 +425,41 @@ function init(value_init, previous_input, number_of_symbols_resize) {
     palitra[14].style.backgroundColor = basic_colors[border[0].colornum]
     
     palitra[14].classList.remove(opacity_button)
-    if (dots_mode || !border_mode) palitra[14].classList.toggle(opacity_button)
+    if (history[history_counter].dots_mode || !history[history_counter].border_mode) palitra[14].classList.toggle(opacity_button)
 
     //"b"
     palitra[15].classList.remove(unactive_visual_button)
     if (!border[0].visible) palitra[15].classList.toggle(unactive_visual_button)
     palitra[15].classList.remove(opacity_button)
-    if (dots_mode) palitra[15].classList.toggle(opacity_button)
+    if (history[history_counter].dots_mode) palitra[15].classList.toggle(opacity_button)
 
     //"№"
     palitra[16].classList.remove(unactive_visual_button)
     if (!charNumber[0].visible) palitra[16].classList.toggle(unactive_visual_button)
     palitra[16].classList.remove(opacity_button)
-    if (dots_mode) palitra[16].classList.toggle(opacity_button)
+    if (history[history_counter].dots_mode) palitra[16].classList.toggle(opacity_button)
 
     //"."
     palitra[17].classList.remove(unactive_visual_button)
-    if (!dots_mode) palitra[17].classList.toggle(unactive_visual_button)
+    if (!history[history_counter].dots_mode) palitra[17].classList.toggle(unactive_visual_button)
   }
   
+  //функция пересборки видимости по цвету
+  function all_visibler_colors(props) {
+  for (let color in history[history_counter].visible_colors) {
+          props.forEach( function(entry) {
+            if (entry.colornum == color) 
+              entry.visible = history[history_counter].visible_colors[color]
+          } )
+        }
+  }
+
+  function toggle_visibler(props, mode) {
+    props.forEach( function(entry) { entry.visible = mode } )
+  }
+
 }; //init() end bracket
 
 
 
-export {axis, plain_x_cube, grid_squares, border, scale_border, charNumber, dots, dots_mode, init}
+export {axis, plain_x_cube, grid_squares, border, scale_border, charNumber, dots, init}

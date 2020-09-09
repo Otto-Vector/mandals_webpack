@@ -3,19 +3,22 @@ import {max_expansion_length, max_input_length} from '../default_values.js'
 
 import {reinit} from '../modules/reinit.js'
 
+  ///number_of_symbols
+  //количество символов для расширения/сужения мандалы
+  let number_of_symbols = document.querySelector("#number_of_symbols")
+  
+  ///number_of_symbols__clear
+  //кнопка очистки числового значения количества символов
+  let number_of_symbols__clear = document.querySelector("#number_of_symbols__clear")
+
   ///title_input
   //поле ввода значения/имени мандалы
   let title_input = document.querySelector("#title_input")
 
-  
-  ///number_of_symbols
-  //количество символов для расширения/сужения мандалы
-  let number_of_symbols = document.querySelector("#number_of_symbols")
-
-
   ///clear_button
   //кнопка очистки значений и фокусировка на поле ввода
   let clear_button = document.querySelector("#clear_button")
+
 
 //////////////////////////////////////////////////////////////
 function number_of_symbols_init(_resize){
@@ -40,6 +43,12 @@ function number_of_symbols_init(_resize){
     if (number_of_symbols.value == 0) number_of_symbols.value = ""
     //предотвращаем ввод от руки большого значения
     if (number_of_symbols.value > max_expansion_length) number_of_symbols.value = max_expansion_length
+  }
+  
+  number_of_symbols__clear.onclick = function() {
+    number_of_symbols.value = ""
+    let todo_focus_wrap = () => number_of_symbols.focus()
+    todo_focus_wrap()
   }
   
   //контроль ввода значений мандалы

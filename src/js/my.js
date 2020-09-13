@@ -12,7 +12,7 @@ import {modification_to_normal, to_one_fibbonachi_digit} from './modules/support
 import {scene, camera, renderer,
         onWindowResize, animate, remove_all_objects_from_memory} from './modules/three_manipulations.js'
 import {plane_square_3x_algorithm, curtail_diamond_algorithm, chess_algorithm} from './modules/calc_mandalas_algorithms.js'
-import {dots_visibler,
+import {dots_visibler, color_material_for_border,
         charNumber_active,
         axis_visual,
         plain_x_cube_visual,
@@ -78,15 +78,7 @@ function init() {
   
   //переназначение из длинных названий в короткие
   let selected_mandala = history[history_counter].selected_mandala
-  // let dots_mode = history[history_counter].dots_mfode
-  // history[history_counter].let visible_colors = history[history_counter].history[history_counter].visible_colors
 
-    
-  // let history[history_counter].grid_mode = false
-  // let history[history_counter].grid_mode_for_dots = false
-  // let history[history_counter].border_mode = true
-  // let history[history_counter].number_mode = false
-  // history[history_counter].border_color = 9
   //////////////////////////////////////////////////////////////
   //здесь будет адаптация отдаления камеры по размеру вводимого значения
   if (selected_mandala.true_of(4,3)) camera.position.set( 0, 0, camera_range ) //60 //позиция камеры для малых квадратов
@@ -180,7 +172,13 @@ function init() {
   //массив для элементов обводки мандалы
   border = border_visual( plane_of_colors[0] )
   toggle_visibler(border, history[history_counter].border_mode)
-  history[history_counter].border_color = border[0].colornum
+  
+  //значения по умолчанию для неназначенного цвета бордюра
+  if (history[history_counter].border_color < 0)
+    history[history_counter].border_color = selected_mandala.true_of(3) ? 0 : plane_of_colors[0][0]
+  //перекрас бордюра в цвет из истории
+  color_material_for_border.color.set(basic_colors[history[history_counter].border_color])
+
   //массив для поворота и изменения размера обводки в мандале "ромб"
   scale_border = selected_mandala.true_of(3) ? x_border_visual(border) : null
 
@@ -331,17 +329,16 @@ function init() {
 
    
     //смена цвета для бордера//
-    if (selected_html_content === "B" && !history[history_counter].dots_mode && history[history_counter].border_mode) {
+    if (selected_html_content === "B" &&
+       !history[history_counter].dots_mode && history[history_counter].border_mode) {
 
-      //перекрашиваем бордюр
-      border.forEach( 
-        function(entry) { 
-          //перебор цвета в замкнутом цикле 9 и смена значения
-          entry.colornum = (+entry.colornum === 9) ? 0 : ++entry.colornum
-          //присвоение значения цвета
-          entry.material.color.set( basic_colors[entry.colornum] )
-        }
-      )
+      //перебор по циклу
+      history[history_counter].border_color =
+          (+history[history_counter].border_color === 9) ? 0 : ++history[history_counter].border_color
+
+      //перекрас через материал для бордюра
+      color_material_for_border.color.set(basic_colors[history[history_counter].border_color])
+
     }
 
     //отображение бордера//
@@ -422,7 +419,7 @@ function init() {
     if (!grid_squares[0].visible) palitra[10].classList.toggle(unactive_visual_button)
 
     //"B" //тут перекрас в цвет бордера
-    palitra[14].style.backgroundColor = basic_colors[border[0].colornum]
+    palitra[14].style.backgroundColor = basic_colors[history[history_counter].border_color]
     
     palitra[14].classList.remove(opacity_button)
     if (history[history_counter].dots_mode || !history[history_counter].border_mode) palitra[14].classList.toggle(opacity_button)

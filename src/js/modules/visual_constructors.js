@@ -2,7 +2,8 @@ import * as THREE from '../three.min.js'
 import {scene} from './three_manipulations.js'
 import {to_one_fibbonachi_digit} from './support.js'
 import {basic_colors} from '../default_values.js'
-// import {axis, plain_x_cube} from '../my.js'
+// import {history, history_counter} from '../nodmodules/undo_redo.js'
+
 ///////////////////////////////////////////////////////////////////////////////
 /////// ФУНКЦИИ ВИЗУАЛЬНОЙ СБОРКИ и ГРУППИРОВКИ ОБЪЕКТОВ В МАССИВ ////////////
 /////////////////////////////////////////////////////////////////////////////
@@ -21,7 +22,7 @@ import {basic_colors} from '../default_values.js'
   //материал кубов создаётся из массива цветов от нуля до девяти соответственно
   let color_material = basic_colors.map( color_n => new THREE.MeshBasicMaterial({ color: color_n }) )
   //еще один материал для бордера и дальнейших манипуляций с ним
-  let color_material_for_border = new THREE.MeshBasicMaterial({ color: basic_colors[9] })
+  let color_material_for_border = new THREE.MeshBasicMaterial({ color: 0x000000 })
   //материал для линий сетки
   let lineMaterial = new THREE.LineBasicMaterial( { color: 0x000000 } )
 
@@ -33,7 +34,7 @@ import {basic_colors} from '../default_values.js'
 
 
 //////////функция конструктора объектов КУБА////////////////////////////////////////////
-function cubus_construct(x, y, z, colornum, setGeom = cubeGeom) {//передаются координаты и номер цвета
+function cubus_construct(x, y, z, colornum=-1, setGeom = cubeGeom) {//передаются координаты и номер цвета
 
     //в конструкторе для бордюра задаются отрицательные значения цвета
     let color_material_choice = (colornum < 0) ? color_material_for_border
@@ -43,7 +44,7 @@ function cubus_construct(x, y, z, colornum, setGeom = cubeGeom) {//переда�
                                 color_material_choice
                               )
     cubus.position.set(x,y,z) // устанавливается позиция объекта
-    cubus.colornum = Math.abs(colornum) //идентификатор для отбора объектов по значению цвета
+    if (colornum >= 0) cubus.colornum = Math.abs(colornum) //идентификатор для отбора объектов по значению цвета
     scene.add(cubus) //визуализация полученного объекта
 
     return cubus
@@ -116,17 +117,14 @@ function plain_x_cube_visual(plane_of_colors_fn) {//принимает одно�
 function border_visual(input_nums_fn) {//принимает одномерный числовой массив
   //перменные для обводки мандалы
   let border_coordin = input_nums_fn.length
-  let color_n = to_one_fibbonachi_digit( input_nums_fn.slice(1).reduce( (sum,n) => sum+n ))
   let border_fn = [] //массив для элементов обводки мандалы
-
-  color_material_for_border.color.set(basic_colors[color_n]) //присваивается цвет нулевой клетки
 
     for (let i = -border_coordin; i < border_coordin; i++) {
         border_fn.push(
-          cubus_construct( -border_coordin, i, 0, -color_n ), //левая
-          cubus_construct( i, border_coordin, 0, -color_n ), //верхняя
-          cubus_construct( border_coordin, -i, 0, -color_n ), //правая
-          cubus_construct( -i, -border_coordin, 0, -color_n ) //нижняя
+          cubus_construct( -border_coordin, i, 0 ), //левая
+          cubus_construct( i, border_coordin, 0 ), //верхняя
+          cubus_construct( border_coordin, -i, 0 ), //правая
+          cubus_construct( -i, -border_coordin, 0 ) //нижняя
         )
 
     }
@@ -167,9 +165,6 @@ function x_border_visual(border_in_fn) {
   x_border.position.set(0,0,0.005)
   //изменение размера
   x_border.scale.set(scale_p,scale_p,scale_p)
-
-  //перекрас в белый цвет
-  border_in_fn.forEach( function(entry) { entry.material.color.set(basic_colors[0]) } )
 
   return x_border
 }
@@ -289,7 +284,7 @@ function dots_visibler(objectos) {
   return dots_fn
 }
 
-export { dots_visibler,
+export { dots_visibler, color_material_for_border,
         charNumber_active, //charNumber,
         axis_visual, plain_x_cube_visual,
         border_visual, x_border_visual, grid }

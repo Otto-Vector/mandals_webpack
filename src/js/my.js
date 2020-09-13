@@ -167,11 +167,14 @@ function init() {
   
   //создаём сетку
   grid_squares = grid([...axis, ...plain_x_cube])
-  toggle_visibler(grid_squares, history[history_counter].grid_mode)
+  toggle_visibler(grid_squares,
+    history[history_counter].dots_mode ? //отображение сетки в зависимости от тотчечного режима
+    history[history_counter].grid_mode_for_dots : history[history_counter].grid_mode)
   
   //массив для элементов обводки мандалы
   border = border_visual( plane_of_colors[0] )
-  toggle_visibler(border, history[history_counter].border_mode)
+  //не включать бордер в режиме точек
+  toggle_visibler(border, !history[history_counter].dots_mode && history[history_counter].border_mode)
   
   //значения по умолчанию для неназначенного цвета бордюра
   if (history[history_counter].border_color < 0)

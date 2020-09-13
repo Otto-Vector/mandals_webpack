@@ -1,0 +1,59 @@
+
+mixin checkbox(params)
+
+  //- без параметров работает как type='text' без заголовка
+  //- Принимает:
+  //-   params {object}
+  //-     title: ''           {string} - текст с названием (выводится 
+  //-     name: ''            {string} - имя переменной для данного блока
+  //-     value: ''           {string} - значение переменной для данного блока
+
+  //- Вызов:
+      +checkbox({
+        title: 'Текст после чекбокса',
+        name : '',
+        value: ''
+      })
+
+
+    //- БЛОК ПРИСВОЕНИЯ БАЗОВЫХ ЗНАЧЕНИЙ -//
+  -
+    let block_name   = 'checkbox',
+        default_type = 'checkbox',
+        main_class   = block_name,
+        label_class  = block_name + '__label',
+        input_class  = block_name + '__input',
+        box_class    = block_name + '__box',
+        text_class   = block_name + '__text';
+
+    //Проверка на миксин без параметров так как 
+    //при пустом params, не деструктурируются значения по умолчанию
+    if (!params) {
+      var params = { title: 'empty params in ='+block_name+'='};
+    }
+
+    //деструктуризация params в переменные и задание им значений по умолчанию
+    let {
+      title       = '',
+      name        = 'empty_name',
+      value       = 'empty_value'
+                } = params;
+
+
+    //- ФУНКЦИОНАЛЬНЫЙ БЛОК -//
+
+
+  //- БЛОК ВЫВОДА -//
+
+  div(class = main_class, title = title)
+
+    label(class= label_class)
+      input(
+        class = input_class,
+        type  = default_type,
+        name  = name,
+        value = value,
+
+        )&attributes(attributes)
+      span(class= box_class)
+      //- span(class= text_class)= title

@@ -1,8 +1,29 @@
+$dark-50                 : rgba(#1f2041,.5);
+$dark-25                 : rgba(#1f2041,.25);
+$purple-color            : #bc9cff;
+$mainFontSize            : 10px;
+
+
+//миксин, чтобы спрятать что-нибудь
+@mixin invisible {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  border: 0;
+  padding: 0;
+  clip: rect(0 0 0 0);
+  overflow: hidden;
+}
+
+@import "checkbox.scss";
+
 body {
     margin: 0;
     padding: 0;
     position: relative;
 }
+
 canvas {
     margin: 0;
     padding: 0;

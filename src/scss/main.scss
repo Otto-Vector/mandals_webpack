@@ -1,8 +1,8 @@
 $dark-50                 : rgba(#1f2041,.5);
 $dark-25                 : rgba(#1f2041,.25);
 $purple-color            : #bc9cff;
-$mainFontSize            : 10px;
-
+// $mainFontSize            : 10px;
+$top_buttons : 10vw;
 
 //миксин, чтобы спрятать что-нибудь
 @mixin invisible {
@@ -15,23 +15,20 @@ $mainFontSize            : 10px;
   clip: rect(0 0 0 0);
   overflow: hidden;
 }
+//позволяет вставить строку size(ширина,высота)
+@mixin size($width,$height: $width) {
+  width: $width;
+  height: $height;
+}
 
 @import "checkbox.scss";
 
-body {
+//резеты
+body, canvas, div, input, button, select, textarea {
     margin: 0;
     padding: 0;
-    position: relative;
 }
 
-canvas {
-    margin: 0;
-    padding: 0;
-}
-div {
-    margin:0;
-    padding:0;
-}
 select, input {
      appearance: none;
 }
@@ -40,8 +37,6 @@ select, input {
 input, button, select, textarea {
   outline: 0;
   border: none;
-  padding: 0;
-  margin: 0;
 }
 
 ::-moz-focus-inner {
@@ -69,7 +64,9 @@ input[type="number"]:focus {
 
 /*/////////////////////////////////////////////*/
 
-
+body {
+    position: relative;
+}
 
 header.title {
     position: absolute;
@@ -206,8 +203,6 @@ header.title.new_bg {
     
 }
 
-$top_buttons : 10vw;
-
 section.sidebar {
     position: absolute;
     top: $top_buttons;
@@ -258,7 +253,7 @@ section.sidebar #statistic div {
 
     cursor: pointer;
     user-select: none;
-    transition: 0.3s
+    transition: 0.3s;
 }
 
 .up {
@@ -272,8 +267,8 @@ section.sidebar #palitra {
 }
 
 .palitra_button {
-    width: 20px;
-    height: 20px;
+    @include size(20px);
+
     border: 1px solid;
     border-color: black;
     border-radius: 5px;
@@ -303,7 +298,6 @@ section.sidebar #palitra {
     border-radius: 50%;
     box-shadow: 0 0 4px;
     color: white;
-    // text-shadow: 0 0 1px white;
 
 }
 
@@ -341,6 +335,12 @@ footer label {
     background-position: center center;
 }
 
+.redo_to_copy {
+    background-image: url("data:image/svg+xml;charset=utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' height='32' viewBox='0 0 32 32' width='32'%3E%3Cpath d='M0 0h24v24H0z' fill='none'/%3E%3Cpath d='M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z' fill='%23808080' /%3E%3C/svg%3E");
+    background-size: 110%;
+    
+}
+
 #undo_button, #redo_button {
     position: absolute;
     padding: 0;
@@ -375,7 +375,6 @@ footer label {
     bottom: 10%;
     left: 0;
     user-select: none;
-    // font-weight: bold;
     color: #808080;
 }
 

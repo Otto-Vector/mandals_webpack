@@ -1,7 +1,7 @@
 import {scene, remove_all_objects_from_memory} from './three_manipulations.js'
 // import {number_of_symbols, title_input} from '../nodmodules/title_inputs.js'
 // import {charNumber} from './visual_constructors.js'
-import {history, history_counter, so_crit_value_add, add_history} from '../nodmodules/undo_redo.js'
+import {history, history_counter, so_crit_value_add, add_history, copy_history} from '../nodmodules/undo_redo.js'
 import {axis, plain_x_cube, border, grid_squares, scale_border, charNumber, dots, init} from '../my.js'
 
 
@@ -10,8 +10,12 @@ import {axis, plain_x_cube, border, grid_squares, scale_border, charNumber, dots
 let reinit = function (_new = 0) {
 
   //добавление записи в историю
-  if (!_new) add_history()
-
+  if (_new==0) add_history()
+  if (_new=='copy') {
+    copy_history()
+    _new = 1
+  }
+  console.log(history_counter+' of '+ history.length)
   //проверка на крит.значения массива history
   //(не меньше нуля и не больше размера массива)
   if (!so_crit_value_add(_new)) {

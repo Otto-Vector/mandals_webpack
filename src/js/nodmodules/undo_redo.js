@@ -45,9 +45,14 @@ history[++history_counter] = {
   history.length = history_counter+1
 }
 
+function copy_history() {
+  history[++history_counter] = {...history[history_counter-1]}
+  console.log(history[history_counter])
+}
+
 function so_crit_value_add(_new_){
     
-    let crit_value = (history_counter+_new_ < 0 || history_counter+_new_ == history.length)
+    let crit_value = (history_counter+_new_ < 0)
     if (crit_value) _new_ = 0
     history_counter += _new_
 
@@ -62,7 +67,7 @@ let redo_button = document.querySelector("#redo_button")
 
 //события по перемотке истории мандал
 undo_button.onclick = function () { reinit(-1) }
-redo_button.onclick = function () { reinit(1) }
+redo_button.onclick = function () { (history_counter+1 == history.length) ? reinit('copy') : reinit(1) }
 
 undo_button.firstChild.innerHTML = '77'
 
@@ -71,7 +76,7 @@ function undo_redo_check() {
 
 	//сброс цвета
 	undo_button.classList.remove('opacity_button')
-	redo_button.classList.remove('opacity_button')
+	redo_button.classList.remove('redo_to_copy')
 	
 	//отображение значения количества повторов и отмен
 	undo_button.firstChild.innerHTML = (history_counter == 0) ? '' : history_counter
@@ -83,7 +88,7 @@ function undo_redo_check() {
 	}
 	//окрашивание кнопки вперёд в крайней позиции массива
 	if (history_counter+1 >= history.length) {
-		redo_button.classList.add('opacity_button')
+		redo_button.classList.add('redo_to_copy')
 	}
 
 }
@@ -91,4 +96,4 @@ function undo_redo_check() {
 
 
 export {undo_button, redo_button, undo_redo_check,
-				history, history_counter, add_history, so_crit_value_add}
+				history, history_counter, add_history, copy_history, so_crit_value_add}

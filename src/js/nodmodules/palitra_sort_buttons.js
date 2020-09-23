@@ -1,6 +1,7 @@
-import {basic_colors} from '../default_values.js'
+import {basic_colors} from '../modules/color_change.js'
 import {history, history_counter} from '../nodmodules/undo_redo.js'
 import {axis, plain_x_cube, dots} from '../my.js'
+
   ///statistic_item
   //объекты пунктов статы
   let statistic_item = document.querySelectorAll("#statistic div")
@@ -51,10 +52,7 @@ import {axis, plain_x_cube, dots} from '../my.js'
   function palitra_button__check_unactive(unactive_class) {
 
     for (let i = 1; i < 10; i++) {
-
-      palitra[i].classList.remove(unactive_class)
-
-      if (statistic_item[i].innerHTML == 0) palitra[i].classList.toggle(unactive_class)
+      palitra[i].classList.toggle(unactive_class, statistic_item[i].innerHTML == 0)
     }
 
   }

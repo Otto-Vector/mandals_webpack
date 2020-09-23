@@ -1,7 +1,10 @@
 //база цветов//
-  let basic_colors = [ "#FFFFFF", "#E4388C", "#E4221B",
-  									   "#FF7F00", "#FFED00", "#008739",
-  									   "#02A7AA", "#47B3E7", "#2A4B9B", "#702283"]
+  let BASE_colors = [  "#FFFFFF",
+                       "#E4388C", "#E4221B", "#FF7F00",
+                       "#FFED00", "#008739", "#02A7AA",
+                       "#47B3E7", "#2A4B9B", "#702283"
+                    ]
+
 
 	//дальность камеры
   let camera_range = 60
@@ -20,7 +23,7 @@
 // let dots_mode = false
 
  export { camera_range, max_input_length, max_expansion_length,
- 				basic_colors,
+ 				BASE_colors,
         opacity_button,
         unactive_visual_button,
  				}

@@ -22,7 +22,8 @@ history[history_counter] = {
           grid_mode_for_dots: false,
           border_mode				: true,
           border_color			: -1,
-          number_mode				: false
+          number_mode				: false,
+          second_color_mode : false
           }
 
 
@@ -39,7 +40,8 @@ history[++history_counter] = {
           grid_mode_for_dots: false,
           border_mode				: true,
           border_color			: -1,
-          number_mode				: false
+          number_mode				: false,
+          second_color_mode : false
           }
   //обрезание массива при добавлении элементов не в конце списка
   history.length = history_counter+1
@@ -74,24 +76,18 @@ undo_button.firstChild.innerHTML = '77'
 //функция проверки и окрашивания стрелок в крайних значениях
 function undo_redo_check() {
 
-	//сброс цвета
-	undo_button.classList.remove('opacity_button')
+	//сброс
 	redo_button.classList.remove('redo_to_copy')
-  redo_button.classList.remove('opacity_button')
 	
-	//отображение значения количества повторов и отмен
+	//отображение значения количества повторов и отмен (в span элемент, идущий первым)
 	undo_button.firstChild.innerHTML = (history_counter == 0) ? '' : history_counter
 	redo_button.firstChild.innerHTML = (history_counter+1 == history.length) ? '' : Math.abs(history_counter+1-history.length)
 	
 	//окрашивание кнопки назад в нулевой позиции массива
-	if (history_counter == 0) {
-	  undo_button.classList.add('opacity_button')
-	}
+  undo_button.classList.toggle('opacity_button', history_counter == 0)
+
 	//окрашивание кнопки вперёд в крайней позиции массива
-	if (history_counter+1 >= history.length) {
-		// redo_button.classList.add('redo_to_copy')
-    redo_button.classList.add('opacity_button')
-	}
+  redo_button.classList.add('opacity_button', history_counter+1 >= history.length)
 
 }
 

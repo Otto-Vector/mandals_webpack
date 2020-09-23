@@ -1,7 +1,7 @@
 import * as THREE from '../three.min.js'
 import {scene} from './three_manipulations.js'
 import {to_one_fibbonachi_digit} from './support.js'
-import {basic_colors} from '../default_values.js'
+import {basic_colors} from '../modules/color_change.js'
 // import {history, history_counter} from '../nodmodules/undo_redo.js'
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -21,6 +21,10 @@ import {basic_colors} from '../default_values.js'
 
   //материал кубов создаётся из массива цветов от нуля до девяти соответственно
   let color_material = basic_colors.map( color_n => new THREE.MeshBasicMaterial({ color: color_n }) )
+  
+  function color_material_set() {
+    basic_colors.forEach(function (color,n) {color_material[n].color.set(color)})
+  }
   //еще один материал для бордера и дальнейших манипуляций с ним
   let color_material_for_border = new THREE.MeshBasicMaterial({ color: 0x000000 })
   //материал для линий сетки
@@ -284,7 +288,7 @@ function dots_visibler(objectos) {
   return dots_fn
 }
 
-export { dots_visibler, color_material_for_border,
+export { dots_visibler, color_material_for_border, color_material_set,
         charNumber_active, //charNumber,
         axis_visual, plain_x_cube_visual,
         border_visual, x_border_visual, grid }

@@ -2,17 +2,20 @@
 
 //модули переменных и функций поддержки
 import './modules/prototypes.js' //прототипизированные функции
-import {basic_colors, camera_range, max_expansion_length,
+import {camera_range, max_expansion_length,
         opacity_button,
         unactive_visual_button
         } from './default_values.js'
 import {modification_to_normal, to_one_fibbonachi_digit} from './modules/support.js'
 
+import {basic_colors, color_change_to_second} from './modules/color_change.js'
+
 //модули THREE
 import {scene, camera, renderer,
         onWindowResize, animate, remove_all_objects_from_memory} from './modules/three_manipulations.js'
 import {plane_square_3x_algorithm, curtail_diamond_algorithm, chess_algorithm} from './modules/calc_mandalas_algorithms.js'
-import {dots_visibler, color_material_for_border,
+import {dots_visibler,
+        color_material_for_border, color_material_set,
         charNumber_active,
         axis_visual,
         plain_x_cube_visual,
@@ -76,7 +79,11 @@ function init() {
   // 
   //проверка на первый запуск init() (по умолчанию 4-ый вариант)
   
-  
+  //задание цветовых схем
+  color_change_to_second(history[history_counter].second_color_mode)
+  color_material_set()
+
+
   history[history_counter].selected_mandala = history[history_counter].selected_mandala || 4
 
   //////////////////////////////////////////////////////////////
@@ -97,13 +104,8 @@ function init() {
                  + date_from_pc.getFullYear()
 
   
-  //пустая строка при первой инициализации
-  // let input_string = history[history_counter].title_of_mandala
-
   //нормализация введенной строки для корректного перевода в цифровой массив
   history[history_counter].title_of_mandala = modification_to_normal(history[history_counter].title_of_mandala, default_string)
-
-  // history[history_counter].title_of_mandala = input_string
 
   //////////////////////////////////////////////////////////////
   /////// Блок адаптации букв в цифровой код //////////////////
@@ -319,6 +321,17 @@ function init() {
       }
     }
 
+
+    //Смена схем отображения цветов
+    if (selected_html_content === "C") {
+      
+      history[history_counter].second_color_mode = !history[history_counter].second_color_mode
+      
+      color_change_to_second(history[history_counter].second_color_mode)
+      palitra_button__colored()
+      color_material_set()
+    }
+
     //отображение сетки//
     if (selected_html_content === "#") {
       
@@ -419,31 +432,28 @@ function init() {
 
   function check_left_panel() {
     let i = 11
+
+    //"C"
+    palitra[i-1].classList.toggle(unactive_visual_button, history[history_counter].second_color_mode)
+    
     //"#"
-    palitra[i].classList.remove(unactive_visual_button)
-    if (!grid_squares[0].visible) palitra[i].classList.toggle(unactive_visual_button)
+    palitra[i].classList.toggle(unactive_visual_button, !grid_squares[0].visible)
 
     //"B" //тут перекрас в цвет бордера
     palitra[i+4].style.backgroundColor = basic_colors[history[history_counter].border_color]
-    
-    palitra[i+4].classList.remove(opacity_button)
-    if (history[history_counter].dots_mode || !history[history_counter].border_mode) palitra[i+4].classList.toggle(opacity_button)
+    palitra[i+4].classList.toggle(
+      opacity_button, history[history_counter].dots_mode || !history[history_counter].border_mode)
 
     //"b"
-    palitra[i+5].classList.remove(unactive_visual_button)
-    if (!border[0].visible) palitra[i+5].classList.toggle(unactive_visual_button)
-    palitra[i+5].classList.remove(opacity_button)
-    if (history[history_counter].dots_mode) palitra[i+5].classList.toggle(opacity_button)
+    palitra[i+5].classList.toggle(unactive_visual_button, !border[0].visible)
+    palitra[i+5].classList.toggle(opacity_button, history[history_counter].dots_mode)
 
     //"№"
-    palitra[i+6].classList.remove(unactive_visual_button)
-    if (!charNumber[0].visible) palitra[i+6].classList.toggle(unactive_visual_button)
-    palitra[i+6].classList.remove(opacity_button)
-    if (history[history_counter].dots_mode) palitra[i+6].classList.toggle(opacity_button)
+    palitra[i+6].classList.toggle(unactive_visual_button, !charNumber[0].visible)
+    palitra[i+6].classList.toggle(opacity_button, history[history_counter].dots_mode)
 
     //"."
-    palitra[i+7].classList.remove(unactive_visual_button)
-    if (!history[history_counter].dots_mode) palitra[i+7].classList.toggle(unactive_visual_button)
+    palitra[i+7].classList.toggle(unactive_visual_button, !history[history_counter].dots_mode)
   }
   
   //функция пересборки видимости по цвету

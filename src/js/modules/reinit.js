@@ -9,16 +9,20 @@ import {axis, plain_x_cube, border, grid_squares, scale_border, charNumber, dots
 //функция перезапуска мандалы с новыми данными//
 let reinit = function (_new = 0) {
 
-  //добавление записи в историю
+  //добавление записи в историю только при значении "0"
   if (_new==0) add_history()
-  if (_new=='copy') {
-    copy_history()
-    _new = 1
-  }
+  
+  // if (_new=='copy') {
+  //   _new = 1
+  //   copy_history()
+  // }
+  
   console.log(history_counter+' of '+ history.length)
+
   //проверка на крит.значения массива history
   //(не меньше нуля и не больше размера массива)
   if (!so_crit_value_add(_new)) {
+      
       //зачистка памяти
       if (axis) remove_all_objects_from_memory(axis)
       if (plain_x_cube) remove_all_objects_from_memory(plain_x_cube)
@@ -29,6 +33,7 @@ let reinit = function (_new = 0) {
 
       //всё не так просто с этим объектом. он сгруппирован
       if (scale_border) { scene.remove( scale_border ) }
+
       //перезапуск
       init()
   }

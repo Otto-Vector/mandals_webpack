@@ -76,13 +76,13 @@ function init() {
   // 
   //проверка на первый запуск init() (по умолчанию 4-ый вариант)
   
-  //переназначение из длинных названий в короткие
-  let selected_mandala = history[history_counter].selected_mandala
+  
+  history[history_counter].selected_mandala = history[history_counter].selected_mandala || 4
 
   //////////////////////////////////////////////////////////////
   //здесь будет адаптация отдаления камеры по размеру вводимого значения
-  if (selected_mandala.true_of(4,3)) camera.position.set( 0, 0, camera_range ) //60 //позиция камеры для малых квадратов
-  if (selected_mandala.true_of(8,9)) camera.position.set( 0, 0, 120 ) //позиция камеры для больших квадратов
+  if (history[history_counter].selected_mandala.true_of(4,3)) camera.position.set( 0, 0, camera_range ) //60 //позиция камеры для малых квадратов
+  if (history[history_counter].selected_mandala.true_of(8,9)) camera.position.set( 0, 0, 120 ) //позиция камеры для больших квадратов
 
   
   ///////////////БЛОК ОБРАБОТКИ ВВОДИМОЙ СТРОКИ///////////////////////////////////////////////
@@ -98,24 +98,25 @@ function init() {
 
   
   //пустая строка при первой инициализации
-  let input_string = history[history_counter].title_of_mandala
+  // let input_string = history[history_counter].title_of_mandala
 
   //нормализация введенной строки для корректного перевода в цифровой массив
-  input_string = modification_to_normal(input_string, default_string)
+  history[history_counter].title_of_mandala = modification_to_normal(history[history_counter].title_of_mandala, default_string)
 
+  // history[history_counter].title_of_mandala = input_string
 
   //////////////////////////////////////////////////////////////
   /////// Блок адаптации букв в цифровой код //////////////////
   ////////////////////////////////////////////////////////////
   
   //если не задан, то присваивается значение длины введенной строки
-  history[history_counter].length_of_title = +history[history_counter].length_of_title || input_string.length
+  history[history_counter].length_of_title =  history[history_counter].title_of_mandala.length
   
   //символы расположены строго по таблице (удачно получилось то, что нужен всего один пробел)
   let simbols_static = "abcdefghijklmnopqrstuvwxyz абвгдеёжзийклмнопрстуфхцчшщъыьэюя"
 
   //переводит строку в массив чисел
-  let input_string_array = input_string.to_array_of_numbers(simbols_static)
+  let input_string_array =  history[history_counter].title_of_mandala.to_array_of_numbers(simbols_static)
   
   //изменяет размер обрабатываемой числовой строки
   let string_for_algorithms = input_string_array
@@ -134,15 +135,15 @@ function init() {
   //высчитываем двумерный массив цветов для одной стороны мандалы
   let plane_of_colors = []
 
-  if ( selected_mandala.true_of(4) )
+  if ( history[history_counter].selected_mandala.true_of(4) )
     plane_of_colors = plane_square_3x_algorithm( string_for_algorithms )
 
-  if ( selected_mandala.true_of(3) )
+  if ( history[history_counter].selected_mandala.true_of(3) )
     plane_of_colors = curtail_diamond_algorithm( plane_square_3x_algorithm( string_for_algorithms ) )
 
-  if ( selected_mandala.true_of(8,9) )
+  if ( history[history_counter].selected_mandala.true_of(8,9) )
     plane_of_colors = chess_algorithm ( string_for_algorithms,
-                                        selected_mandala.true_of(9) //передается boolean для второго расчёта оси
+                                        history[history_counter].selected_mandala.true_of(9) //передается boolean для второго расчёта оси
                                       )
 
   ///////////////////////////////////////////////////////////////////////////////
@@ -178,17 +179,17 @@ function init() {
   
   //значения по умолчанию для неназначенного цвета бордюра
   if (history[history_counter].border_color < 0)
-    history[history_counter].border_color = selected_mandala.true_of(3) ? 0 : plane_of_colors[0][0]
+    history[history_counter].border_color = history[history_counter].selected_mandala.true_of(3) ? 0 : plane_of_colors[0][0]
   //перекрас бордюра в цвет из истории
   color_material_for_border.color.set(basic_colors[history[history_counter].border_color])
 
   //массив для поворота и изменения размера обводки в мандале "ромб"
-  scale_border = selected_mandala.true_of(3) ? x_border_visual(border) : null
+  scale_border = history[history_counter].selected_mandala.true_of(3) ? x_border_visual(border) : null
 
   //цифры//
   //активация переменной charNumber и прорисовка объектов цифр в инвиз
   charNumber = charNumber_active([...axis,...plain_x_cube])
-  toggle_visibler(charNumber, history[history_counter].number_mode)
+  toggle_visibler(charNumber, !history[history_counter].dots_mode && history[history_counter].number_mode)
   
 
   ////анимация объектов////////////////////
@@ -220,7 +221,7 @@ function init() {
   check_left_panel()
 
   //вывод в заголовок обработанного текста
-  title_input.value = input_string
+  title_input.value =  history[history_counter].title_of_mandala
   
   //задание дефолтных значений поля ввода количества символов
   number_of_symbols_init(history[history_counter].length_of_title)
@@ -230,7 +231,7 @@ function init() {
   //селект для выбора типа мандалы
   let select_mandala_type = document.querySelector("#select_mandala_type")
   //задание дефолтных значений
-  select_mandala_type.value = selected_mandala
+  select_mandala_type.value = history[history_counter].selected_mandala
   //перезапуск по выбору типа мандалы
   select_mandala_type.oninput = function() { reinit() }
  
@@ -349,7 +350,7 @@ function init() {
         //не включать в режиме точек
         !history[history_counter].dots_mode &&
         //не включать в режиме цифр на мандале "ромб"
-        !(selected_mandala.true_of(3) && history[history_counter].number_mode)
+        !(history[history_counter].selected_mandala.true_of(3) && history[history_counter].number_mode)
       ) {
 
       history[history_counter].border_mode = !history[history_counter].border_mode
@@ -363,7 +364,7 @@ function init() {
       toggle_visibler( charNumber, history[history_counter].number_mode )
       //
       //убираем бордер для отображения цифр при третьей мандале и возвращаем при неактиве
-      if (selected_mandala == 3) {
+      if (history[history_counter].selected_mandala == 3) {
         //в зависимости от отображаемых цифр
         history[history_counter].border_mode = !history[history_counter].border_mode
         toggle_visibler( border, history[history_counter].border_mode )
@@ -417,31 +418,32 @@ function init() {
   }
 
   function check_left_panel() {
+    let i = 11
     //"#"
-    palitra[10].classList.remove(unactive_visual_button)
-    if (!grid_squares[0].visible) palitra[10].classList.toggle(unactive_visual_button)
+    palitra[i].classList.remove(unactive_visual_button)
+    if (!grid_squares[0].visible) palitra[i].classList.toggle(unactive_visual_button)
 
     //"B" //тут перекрас в цвет бордера
-    palitra[14].style.backgroundColor = basic_colors[history[history_counter].border_color]
+    palitra[i+4].style.backgroundColor = basic_colors[history[history_counter].border_color]
     
-    palitra[14].classList.remove(opacity_button)
-    if (history[history_counter].dots_mode || !history[history_counter].border_mode) palitra[14].classList.toggle(opacity_button)
+    palitra[i+4].classList.remove(opacity_button)
+    if (history[history_counter].dots_mode || !history[history_counter].border_mode) palitra[i+4].classList.toggle(opacity_button)
 
     //"b"
-    palitra[15].classList.remove(unactive_visual_button)
-    if (!border[0].visible) palitra[15].classList.toggle(unactive_visual_button)
-    palitra[15].classList.remove(opacity_button)
-    if (history[history_counter].dots_mode) palitra[15].classList.toggle(opacity_button)
+    palitra[i+5].classList.remove(unactive_visual_button)
+    if (!border[0].visible) palitra[i+5].classList.toggle(unactive_visual_button)
+    palitra[i+5].classList.remove(opacity_button)
+    if (history[history_counter].dots_mode) palitra[i+5].classList.toggle(opacity_button)
 
     //"№"
-    palitra[16].classList.remove(unactive_visual_button)
-    if (!charNumber[0].visible) palitra[16].classList.toggle(unactive_visual_button)
-    palitra[16].classList.remove(opacity_button)
-    if (history[history_counter].dots_mode) palitra[16].classList.toggle(opacity_button)
+    palitra[i+6].classList.remove(unactive_visual_button)
+    if (!charNumber[0].visible) palitra[i+6].classList.toggle(unactive_visual_button)
+    palitra[i+6].classList.remove(opacity_button)
+    if (history[history_counter].dots_mode) palitra[i+6].classList.toggle(opacity_button)
 
     //"."
-    palitra[17].classList.remove(unactive_visual_button)
-    if (!history[history_counter].dots_mode) palitra[17].classList.toggle(unactive_visual_button)
+    palitra[i+7].classList.remove(unactive_visual_button)
+    if (!history[history_counter].dots_mode) palitra[i+7].classList.toggle(unactive_visual_button)
   }
   
   //функция пересборки видимости по цвету

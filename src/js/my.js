@@ -81,19 +81,19 @@ function init() {
   // 6 - на квадрат шахматный расчёт (1вар) =11=    + 
   // 7 - на квадрат шахматый расчёт (2вар) =11=     +
   // 
+  
   //проверка на первый запуск init() (по умолчанию 4-ый вариант)
+  history[history_counter].selected_mandala = history[history_counter].selected_mandala || 4
+  
   
   //задание цветовых схем
   color_change_to_second(history[history_counter].second_color_mode)
   color_material_set()
 
-
-  history[history_counter].selected_mandala = history[history_counter].selected_mandala || 4
-
   //////////////////////////////////////////////////////////////
   //здесь будет адаптация отдаления камеры по размеру вводимого значения
-  if (history[history_counter].selected_mandala.true_of(4,3)) camera.position.set( 0, 0, camera_range ) //60 //позиция камеры для малых квадратов
-  if (history[history_counter].selected_mandala.true_of(8,9)) camera.position.set( 0, 0, 120 ) //позиция камеры для больших квадратов
+  if (history[history_counter].selected_mandala.true_of(2,3,4,5)) camera.position.set( 0, 0, camera_range ) //60 //позиция камеры для малых квадратов
+  if (history[history_counter].selected_mandala.true_of(6,7,8,9)) camera.position.set( 0, 0, camera_range*2 ) //позиция камеры для больших квадратов
 
   
   ///////////////БЛОК ОБРАБОТКИ ВВОДИМОЙ СТРОКИ///////////////////////////////////////////////
@@ -141,15 +141,25 @@ function init() {
   //высчитываем двумерный массив цветов для одной стороны мандалы
   let plane_of_colors = []
 
+  // 2 - квадрат (по три) =11=                      +
+  // 4 - на квадрат (по три)                        + 
+
   if ( history[history_counter].selected_mandala.true_of(4,2) )
     plane_of_colors = plane_square_3x_algorithm( string_for_algorithms,
                                                  history[history_counter].selected_mandala.true_of(2) )
 
+  // 3 - "ромб" (концентрация квадрата по три)      +
+  // 5 - "ромб" (концентрация квадрата по три) =11= +
 
   if ( history[history_counter].selected_mandala.true_of(3,5) )
     plane_of_colors = curtail_diamond_algorithm( plane_square_3x_algorithm( string_for_algorithms,
                                                  history[history_counter].selected_mandala.true_of(5) ),
                                                  history[history_counter].selected_mandala.true_of(5) )
+
+  // 8 - на квадрат шахматный расчёт (1вар)         +
+  // 9 - на квадрат шахматый расчёт (2вар)          +
+  // 6 - на квадрат шахматный расчёт (1вар) =11=    + 
+  // 7 - на квадрат шахматый расчёт (2вар) =11=     +
 
   if ( history[history_counter].selected_mandala.true_of(6,7,8,9) )
     plane_of_colors = chess_algorithm ( string_for_algorithms,

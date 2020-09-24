@@ -116,7 +116,7 @@ function init() {
   ////////////////////////////////////////////////////////////
   
   //если не задан, то присваивается значение длины введенной строки
-  history[history_counter].length_of_title =  history[history_counter].title_of_mandala.length
+  history[history_counter].length_of_title = +history[history_counter].length_of_title || history[history_counter].title_of_mandala.length
   
   //символы расположены строго по таблице (удачно получилось то, что нужен всего один пробел)
   let simbols_static = "abcdefghijklmnopqrstuvwxyz абвгдеёжзийклмнопрстуфхцчшщъыьэюя"
@@ -398,7 +398,7 @@ function init() {
       toggle_visibler( charNumber, history[history_counter].number_mode )
       //
       //убираем бордер для отображения цифр при третьей мандале и возвращаем при неактиве
-      if (history[history_counter].selected_mandala == 3) {
+      if (history[history_counter].selected_mandala.true_of(3,5)) {
         //в зависимости от отображаемых цифр
         history[history_counter].border_mode = !history[history_counter].border_mode
         toggle_visibler( border, history[history_counter].border_mode )

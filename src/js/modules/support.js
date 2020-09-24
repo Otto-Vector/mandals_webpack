@@ -10,7 +10,8 @@ function to_one_fibbonachi_digit(number_in_fn) {//передаётся числ�
 
 //функция
 function to_one_eleven_digit(number_in_fn) {
-  return number_in_fn > 9 ? to_one_eleven_digit(Math.abs(number_in_fn-11)) : number_in_fn
+  number_in_fn = Math.abs(number_in_fn-11)
+  return number_in_fn > 9 ? to_one_eleven_digit(number_in_fn) : number_in_fn
 }
 
 ////функция нормализации введенной строки, и замены его на тестовое значение
@@ -18,7 +19,6 @@ function modification_to_normal(string_from_user_input, string_by_default) {
 //принимает две строки, string_from_user_input - на обработку
 //string_by_default - на замену, если string_from_user_input оказалась false
 
-          
   return  (//проверка string_from_user_input 
             !string_from_user_input || // на значения приводящие к false
             !string_from_user_input.trim() || // (в том числе пустая строка после сброса пробелов)

@@ -81,7 +81,7 @@ function undo_redo_check() {
   undo_button.classList.toggle('opacity_button', history_counter == 0)
 
 	//окрашивание кнопки вперёд в крайней позиции массива
-  redo_button.classList.add('opacity_button', history_counter+1 >= history.length)
+  redo_button.classList.toggle('opacity_button', history_counter+1 >= history.length)
 
 }
 

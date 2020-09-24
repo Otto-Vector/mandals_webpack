@@ -1,11 +1,11 @@
-import {to_one_fibbonachi_digit} from './support.js'
+import {to_one_fibbonachi_digit, to_one_eleven_digit} from './support.js'
 
 ///////////////////////////////////////////////////////////////////////////////
 /////////////////////АЛГОРИТМЫ ПОДСЧЁТА МАНДАЛ////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////
 
 ////////пластина мандалы из кубов по первому алгоритму (Юлин вариант)///////
-function plane_square_3x_algorithm(input_nums_in_fn) {//принимает одномерный массив чисел, созданных из введенной строки
+function plane_square_3x_algorithm(input_nums_in_fn, eleven = false) {//принимает одномерный массив чисел, созданных из введенной строки
 
   //задаём основной цифро-световой массив мандалы
   let matrix = []
@@ -22,10 +22,9 @@ function plane_square_3x_algorithm(input_nums_in_fn) {//принимает од�
   for (let y=1; y < input_nums_in_fn.length; y++)
     for (let x=1; x < input_nums_in_fn.length; x++) {
 
-      fibbo_number = to_one_fibbonachi_digit( matrix[y-1][x] +
-                                              matrix[y][x-1] +
-                                              matrix[y-1][x-1]
-                                            )
+      fibbo_number = matrix[y-1][x] + matrix[y][x-1] + matrix[y-1][x-1]
+      fibbo_number = !eleven ? to_one_fibbonachi_digit(fibbo_number) : to_one_eleven_digit(fibbo_number)
+
 
       matrix[y].push(fibbo_number)
     }
@@ -34,27 +33,30 @@ function plane_square_3x_algorithm(input_nums_in_fn) {//принимает од�
 }//возвращает двумерный массив
 
 
+
 //алгоритм для мадалы "ромб"
-function curtail_diamond_algorithm(plane_of_colors_in_fn) {
+function curtail_diamond_algorithm(plane_of_colors_in_fn, eleven = false) {
 
   let diamond_matrix = [...plane_of_colors_in_fn]
-
+  let length_fn = plane_of_colors_in_fn.length;
   //краткое описание: происходит "заворачивание" углов квадратной мандалы
   // суммированием от крайних элементов к середине
-  for (let x=1; x < plane_of_colors_in_fn.length-1; x++)
-    for (let y=1; y < plane_of_colors_in_fn.length-x; y++) {
-    diamond_matrix[x][y] = to_one_fibbonachi_digit(
-        plane_of_colors_in_fn[x][y]+
-        plane_of_colors_in_fn[plane_of_colors_in_fn.length-x][plane_of_colors_in_fn.length-y]
-        )
-    diamond_matrix[plane_of_colors_in_fn.length-x][plane_of_colors_in_fn.length-y] = 0
+  for (let x=1; x < length_fn-1; x++)
+    for (let y=1; y < length_fn-x; y++) {
+    diamond_matrix[x][y] = plane_of_colors_in_fn[x][y] +
+                           plane_of_colors_in_fn[length_fn-x][length_fn-y]
+    //выбор расчёта через 11
+    diamond_matrix[x][y] = !eleven ? to_one_fibbonachi_digit(diamond_matrix[x][y]) : to_one_eleven_digit(diamond_matrix[x][y])
+    
+    //срезание углов
+    diamond_matrix[length_fn-x][length_fn-y] = 0
     }
   
   return diamond_matrix
 }
 
 ////////алгоритм сбора мандалы по шахматной схеме/////////////////////////////
-function chess_algorithm(input_nums_fn, mirror_variant = false ) {//принимает одномерный массив чисел, созданных из введенной строки и модификатор стиля отображения косой оси
+function chess_algorithm(input_nums_fn, mirror_variant = false, eleven = false ) {//принимает одномерный массив чисел, созданных из введенной строки и модификатор стиля отображения косой оси
 
   //косая ось шахматного подсчёта
   let axis_fn = !mirror_variant ?
@@ -79,25 +81,25 @@ function chess_algorithm(input_nums_fn, mirror_variant = false ) {//приним
 
     //сначала расчёт диагонали в сторону уменьшения
     for (let i=1; i < axis_fn.length; i++)
-      for (let j=i; j < axis_fn.length; j++)
+      for (let j=i; j < axis_fn.length; j++) {
 
-          matrix[j][j-i] =
-            to_one_fibbonachi_digit ( //складывается в шахматном порядке нечетная диагональ по две цифры
-                                      matrix[j][j-i+1]
-                                      + matrix[j-1][j-i]
-                                      + ((i%2==0) ? matrix[j-1][j-i+1] : 0) //четные диагонали - по три цифры
-                                    )
+           //складывается в шахматном порядке нечетная диагональ по две цифры
+          matrix[j][j-i] = matrix[j][j-i+1]
+                           + matrix[j-1][j-i]
+                           + ((i%2==0) ? matrix[j-1][j-i+1] : 0) //четные диагонали - по три цифры
+          matrix[j][j-i] = !eleven ? to_one_fibbonachi_digit ( matrix[j][j-i] ) : to_one_eleven_digit ( matrix[j][j-i] )
+      }
 
     //расчёт диагонали в сторону увеличения
-     for (let i=0; i < axis_fn.length; i++)
-      for (let j=0; j < axis_fn.length-1-i; j++)
+    for (let i=0; i < axis_fn.length; i++)
+      for (let j=0; j < axis_fn.length-1-i; j++) {
 
-          matrix[j][j+i+1] = 
-            to_one_fibbonachi_digit ( //складывается в шахматном порядке нечетная диагональ по две цифры
-                                      matrix[j][j+i]
-                                      + matrix[j+1][j+i+1]
-                                      + ((i%2==0) ? matrix[j+1][j+i] : 0) //четные диагонали - по три цифры
-                                    )
+          //складывается в шахматном порядке нечетная диагональ по две цифры
+          matrix[j][j+i+1] = matrix[j][j+i]
+                             + matrix[j+1][j+i+1]
+                             + ((i%2==0) ? matrix[j+1][j+i] : 0) //четные диагонали - по три цифры
+          matrix[j][j+i+1] = !eleven ? to_one_fibbonachi_digit ( matrix[j][j+i+1] ) : to_one_eleven_digit ( matrix[j][j+i+1] )
+      }
 
   return matrix.reverse()
 }//возвращаем развёрнутую наоборот двумерную матрицу, потому как отображение с другого угла

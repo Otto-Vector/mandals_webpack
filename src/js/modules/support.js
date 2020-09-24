@@ -1,9 +1,9 @@
-// import {max_input_length} from '../my.js'
 
 ///////////////////////////////////////////////////////////////////////////////
 ///////ВСПОМОГАТЕЛЬНЫЕ ФУНКЦИИ АНАЛИЗА И ПРЕОБРАЗОВАНИЯ///////////////////////
 /////////////////////////////////////////////////////////////////////////////
 
+//функция сложения чисел к одному числу фибоначчи
 function to_one_fibbonachi_digit(number_in_fn) {//передаётся числовое значение
 
     let amount = 
@@ -15,6 +15,11 @@ function to_one_fibbonachi_digit(number_in_fn) {//передаётся числ�
 
     return amount > 9 ? to_one_fibbonachi_digit(amount) : amount //замыкание функции при многозначной сумме
   }//возвращает одну цифру суммы всех чисел по фибоначчи
+
+//функция
+function to_one_eleven_digit(number_in_fn) {
+  return number_in_fn > 9 ? to_one_eleven_digit(Math.abs(number_in_fn-11)) : number_in_fn
+}
 
 ////функция нормализации введенной строки, и замены его на тестовое значение
 function modification_to_normal(string_from_user_input, string_by_default) {
@@ -35,4 +40,4 @@ function modification_to_normal(string_from_user_input, string_by_default) {
                 .toLowerCase()     //убираем верхний регистр
 }//возвращает обработанную строку без пробелов меньше max_input_length символов в нижнем регистре либо обработанную тестовую строку
 
-export {to_one_fibbonachi_digit, modification_to_normal}
+export {to_one_fibbonachi_digit, to_one_eleven_digit, modification_to_normal}

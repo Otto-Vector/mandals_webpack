@@ -19,7 +19,8 @@ import {to_one_fibbonachi_digit} from './support.js'
     String.prototype.delete_all_spaces = function() { return this.replace(/[\s.,%]/g, '') }
 
     ///функция перевода строки в числа
-    String.prototype.to_array_of_numbers = function(simbols_static_in_fn) {//принимает строку, где каждая позиция символа соответсвует числовому коду
+    //принимает строку, где каждая позиция символа соответсвует числовому коду
+    String.prototype.to_array_of_numbers = function(simbols_static_in_fn) {
 
       return this
               .split('') //перевод строки в массив

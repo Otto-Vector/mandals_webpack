@@ -5,11 +5,6 @@ let history = []
 let history_counter = 0
 
 //первая запись из запуска
-// history[history_counter] = [
-//           select_mandala_type.value,
-//           title_input.value,
-//           title_input.value.length
-//           ]
 
 
 history[history_counter] = {
@@ -29,7 +24,7 @@ history[history_counter] = {
 
 ////////////////////////////////////
 function add_history(){
-console.log(+select_mandala_type.value)
+
 history[++history_counter] = {
           selected_mandala  : +select_mandala_type.value,
           title_of_mandala  : title_input.value,
@@ -49,7 +44,6 @@ history[++history_counter] = {
 
 function copy_history() {
   history[history_counter] = {...history[history_counter-1]}
-  console.log(history[history_counter])
 }
 
 function so_crit_value_add(_new_){

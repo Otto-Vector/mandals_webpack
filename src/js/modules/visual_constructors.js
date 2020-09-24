@@ -1,8 +1,7 @@
 import * as THREE from '../three.min.js'
 import {scene} from './three_manipulations.js'
-import {to_one_fibbonachi_digit} from './support.js'
 import {basic_colors} from '../modules/color_change.js'
-// import {history, history_counter} from '../nodmodules/undo_redo.js'
+
 
 ///////////////////////////////////////////////////////////////////////////////
 /////// ФУНКЦИИ ВИЗУАЛЬНОЙ СБОРКИ и ГРУППИРОВКИ ОБЪЕКТОВ В МАССИВ ////////////

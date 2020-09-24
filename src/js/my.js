@@ -72,10 +72,14 @@ function init() {
   //////////////////////////BEGIN/////////////////////////////////////////////////
   ///////////////////////////////////////////////////////////////////////////////
   //  задаёт разные мандалы
-  // 3 - "ромб" (концентрация квадрата по три)  +
-  // 4 - на квадрат (по три)                    +
-  // 8 - на квадрат шахматный расчёт (1вар)     +
-  // 9 - на квадрат шахматый расчёт (2вар)      +
+  // 2 - квадрат (по три) =11=                      +
+  // 4 - на квадрат (по три)                        + 
+  // 3 - "ромб" (концентрация квадрата по три)      +
+  // 5 - "ромб" (концентрация квадрата по три) =11= +
+  // 8 - на квадрат шахматный расчёт (1вар)         +
+  // 9 - на квадрат шахматый расчёт (2вар)          +
+  // 6 - на квадрат шахматный расчёт (1вар) =11=    + 
+  // 7 - на квадрат шахматый расчёт (2вар) =11=     +
   // 
   //проверка на первый запуск init() (по умолчанию 4-ый вариант)
   
@@ -137,15 +141,21 @@ function init() {
   //высчитываем двумерный массив цветов для одной стороны мандалы
   let plane_of_colors = []
 
-  if ( history[history_counter].selected_mandala.true_of(4) )
-    plane_of_colors = plane_square_3x_algorithm( string_for_algorithms )
+  if ( history[history_counter].selected_mandala.true_of(4,2) )
+    plane_of_colors = plane_square_3x_algorithm( string_for_algorithms,
+                                                 history[history_counter].selected_mandala.true_of(2) )
 
-  if ( history[history_counter].selected_mandala.true_of(3) )
-    plane_of_colors = curtail_diamond_algorithm( plane_square_3x_algorithm( string_for_algorithms ) )
 
-  if ( history[history_counter].selected_mandala.true_of(8,9) )
+  if ( history[history_counter].selected_mandala.true_of(3,5) )
+    plane_of_colors = curtail_diamond_algorithm( plane_square_3x_algorithm( string_for_algorithms,
+                                                 history[history_counter].selected_mandala.true_of(5) ),
+                                                 history[history_counter].selected_mandala.true_of(5) )
+
+  if ( history[history_counter].selected_mandala.true_of(6,7,8,9) )
     plane_of_colors = chess_algorithm ( string_for_algorithms,
-                                        history[history_counter].selected_mandala.true_of(9) //передается boolean для второго расчёта оси
+                                        //передается boolean для второго расчёта оси
+                                        history[history_counter].selected_mandala.true_of(7,9),
+                                        history[history_counter].selected_mandala.true_of(6,7)
                                       )
 
   ///////////////////////////////////////////////////////////////////////////////
@@ -181,12 +191,12 @@ function init() {
   
   //значения по умолчанию для неназначенного цвета бордюра
   if (history[history_counter].border_color < 0)
-    history[history_counter].border_color = history[history_counter].selected_mandala.true_of(3) ? 0 : plane_of_colors[0][0]
+    history[history_counter].border_color = history[history_counter].selected_mandala.true_of(3,5) ? 0 : plane_of_colors[0][0]
   //перекрас бордюра в цвет из истории
   color_material_for_border.color.set(basic_colors[history[history_counter].border_color])
 
   //массив для поворота и изменения размера обводки в мандале "ромб"
-  scale_border = history[history_counter].selected_mandala.true_of(3) ? x_border_visual(border) : null
+  scale_border = history[history_counter].selected_mandala.true_of(3,5) ? x_border_visual(border) : null
 
   //цифры//
   //активация переменной charNumber и прорисовка объектов цифр в инвиз
@@ -364,7 +374,7 @@ function init() {
         //не включать в режиме точек
         !history[history_counter].dots_mode &&
         //не включать в режиме цифр на мандале "ромб"
-        !(history[history_counter].selected_mandala.true_of(3) && history[history_counter].number_mode)
+        !(history[history_counter].selected_mandala.true_of(3,5) && history[history_counter].number_mode)
       ) {
 
       history[history_counter].border_mode = !history[history_counter].border_mode

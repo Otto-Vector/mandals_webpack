@@ -330,6 +330,7 @@ function init() {
       color_change_to_second(history[history_counter].second_color_mode)
       palitra_button__colored()
       color_material_set()
+      color_material_for_border.color.set(basic_colors[history[history_counter].border_color])
     }
 
     //отображение сетки//

@@ -228,6 +228,12 @@ function grid(object) {
   //единый материал для всех символов(пока)
   let fontMaterial = new THREE.MeshBasicMaterial( {color: 0x000000} );
   
+  // function fontMaterial_color_change(bool) {
+
+  //   let color_in_fn = !bool ? 0x000000 : 0xffffff
+  //   fontMaterial.color.set(color_in_fn)
+  // }
+
   //создаём массив геометрий для цифр от 0 до 9
   let fontGeometry = []
 
@@ -287,7 +293,8 @@ function dots_visibler(objectos) {
   return dots_fn
 }
 
-export { dots_visibler, color_material_for_border, color_material_set,
+export { dots_visibler,
+        color_material_for_border, color_material_set,
         charNumber_active, //charNumber,
         axis_visual, plain_x_cube_visual,
         border_visual, x_border_visual, grid }

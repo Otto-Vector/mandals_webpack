@@ -18,7 +18,9 @@ history[history_counter] = {
           border_mode				: true,
           border_color			: -1,
           number_mode				: false,
-          second_color_mode : false
+          second_color_mode : false,
+          gray_mode         : false,
+          second_gray_mode  : false
           }
 
 
@@ -36,7 +38,9 @@ history[++history_counter] = {
           border_mode				: true,
           border_color			: -1,
           number_mode				: false,
-          second_color_mode : false
+          second_color_mode : false,
+          gray_mode         : false,
+          second_gray_mode  : false
           }
   //обрезание массива при добавлении элементов не в конце списка
   history.length = history_counter+1

@@ -32,7 +32,6 @@ import {to_one_fibbonachi_digit} from './support.js'
     }//возвращает массив чисел
 
 
-
     ////функция пересборки цифрового кода строки до нужного количества цифр
     Array.prototype.to_number_of_symbols = function (number_of_symbols_fn) {
 

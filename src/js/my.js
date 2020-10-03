@@ -8,7 +8,7 @@ import {camera_range, max_expansion_length,
         } from './default_values.js'
 import {modification_to_normal, to_one_fibbonachi_digit} from './modules/support.js'
 
-import {basic_colors, color_change_to_second} from './modules/color_change.js'
+import {basic_colors, color_change_to_second, color_change_to_gray, gray_second} from './modules/color_change.js'
 
 //модули THREE
 import {scene, camera, renderer,
@@ -88,8 +88,9 @@ function init() {
   
   //задание цветовых схем
   color_change_to_second(history[history_counter].second_color_mode)
+  color_change_to_gray(history[history_counter].gray_mode)
+  gray_second(history[history_counter].gray_mode && history[history_counter].second_gray_mode)
   color_material_set()
-
   //////////////////////////////////////////////////////////////
   //здесь будет адаптация отдаления камеры по размеру вводимого значения
   if (history[history_counter].selected_mandala.true_of(2,3,4,5)) camera.position.set( 0, 0, camera_range ) //60 //позиция камеры для малых квадратов
@@ -313,9 +314,10 @@ function init() {
 
    
     //запуск девизуализации осей и плоскостей
-    toggle_visibler_from_button((!history[history_counter].dots_mode)?[...axis,...plain_x_cube]:dots)
+    toggle_visibler_from_button( !history[history_counter].dots_mode ? [...axis,...plain_x_cube] : dots)
     //запуск изменения формы кнопок при нажатии девизуализации
-    palitra_button__unactive_visibler((!history[history_counter].dots_mode)?[...axis,...plain_x_cube]:dots, unactive_visual_button)
+    palitra_button__unactive_visibler( !history[history_counter].dots_mode ?
+                                       [...axis,...plain_x_cube] : dots, unactive_visual_button)
    
 
     //дополнительно статистика на "S"
@@ -345,13 +347,39 @@ function init() {
     //Смена схем отображения цветов
     if (selected_html_content === "C") {
       
-      history[history_counter].second_color_mode = !history[history_counter].second_color_mode
+      if (!history[history_counter].gray_mode) {
+       
+        history[history_counter].second_color_mode = !history[history_counter].second_color_mode
+        color_change_to_second(history[history_counter].second_color_mode)
+      }
+      else {
+        history[history_counter].second_gray_mode = !history[history_counter].second_gray_mode
+        gray_second(true)
+      }
+        palitra_button__colored()
+        color_material_set()
+        //отдельно, изменение цвета для бордюра
+        color_material_for_border.color.set(basic_colors[history[history_counter].border_color])
+    }
+
+    //Серая схема
+    if (selected_html_content === "G") {
+
+      history[history_counter].gray_mode = !history[history_counter].gray_mode
       
-      color_change_to_second(history[history_counter].second_color_mode)
+      color_change_to_gray(history[history_counter].gray_mode)
+
+      //сохранение измененной (в случае выбора) схемы цветных цветов
+      if (!history[history_counter].gray_mode) {
+        color_change_to_second(history[history_counter].second_color_mode)
+      }
+      
       palitra_button__colored()
       color_material_set()
       color_material_for_border.color.set(basic_colors[history[history_counter].border_color])
+
     }
+
 
     //отображение сетки//
     if (selected_html_content === "#") {
@@ -452,29 +480,37 @@ function init() {
   }
 
   function check_left_panel() {
-    let i = 11
-
-    //"C"
-    palitra[i-1].classList.toggle(unactive_visual_button, history[history_counter].second_color_mode)
+    let col_right_buttons = document.querySelectorAll('#palitra .palitra_button').length
     
+    //"C"
+    palitra[col_right_buttons-2].classList.toggle( unactive_visual_button,
+      //учет логики переключения в сером цвете
+      ( !history[history_counter].gray_mode && history[history_counter].second_color_mode )
+      ||
+      ( history[history_counter].gray_mode && history[history_counter].second_gray_mode )
+    )
+    
+    //"G"
+    palitra[col_right_buttons-1].classList.toggle( unactive_visual_button, history[history_counter].gray_mode)
+
     //"#"
-    palitra[i].classList.toggle(unactive_visual_button, !grid_squares[0].visible)
+    palitra[col_right_buttons].classList.toggle(unactive_visual_button, !grid_squares[0].visible)
 
     //"B" //тут перекрас в цвет бордера
-    palitra[i+4].style.backgroundColor = basic_colors[history[history_counter].border_color]
-    palitra[i+4].classList.toggle(
+    palitra[col_right_buttons+4].style.backgroundColor = basic_colors[history[history_counter].border_color]
+    palitra[col_right_buttons+4].classList.toggle(
       opacity_button, history[history_counter].dots_mode || !history[history_counter].border_mode)
 
     //"b"
-    palitra[i+5].classList.toggle(unactive_visual_button, !border[0].visible)
-    palitra[i+5].classList.toggle(opacity_button, history[history_counter].dots_mode)
+    palitra[col_right_buttons+5].classList.toggle(unactive_visual_button, !border[0].visible)
+    palitra[col_right_buttons+5].classList.toggle(opacity_button, history[history_counter].dots_mode)
 
     //"№"
-    palitra[i+6].classList.toggle(unactive_visual_button, !charNumber[0].visible)
-    palitra[i+6].classList.toggle(opacity_button, history[history_counter].dots_mode)
+    palitra[col_right_buttons+6].classList.toggle(unactive_visual_button, !charNumber[0].visible)
+    palitra[col_right_buttons+6].classList.toggle(opacity_button, history[history_counter].dots_mode)
 
     //"."
-    palitra[i+7].classList.toggle(unactive_visual_button, !history[history_counter].dots_mode)
+    palitra[col_right_buttons+7].classList.toggle(unactive_visual_button, !history[history_counter].dots_mode)
   }
   
   //функция пересборки видимости по цвету

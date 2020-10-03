@@ -5,6 +5,11 @@
                        "#47B3E7", "#2A4B9B", "#702283"
                     ]
 
+  let BASE_gray_colors = [ "#FFFFFF",
+                           "#E2E2E2", "#C6C6C6", "#AAAAAA",
+                           "#8E8E8E", "#717171", "#555555",
+                           "#383838", "#1C1C1C", "#000000"
+                        ]
 
 	//дальность камеры
   let camera_range = 60
@@ -26,4 +31,5 @@
  				BASE_colors,
         opacity_button,
         unactive_visual_button,
+        BASE_gray_colors
  				}

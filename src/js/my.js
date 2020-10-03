@@ -91,6 +91,7 @@ function init() {
   color_change_to_gray(history[history_counter].gray_mode)
   gray_second(history[history_counter].gray_mode && history[history_counter].second_gray_mode)
   color_material_set()
+
   //////////////////////////////////////////////////////////////
   //здесь будет адаптация отдаления камеры по размеру вводимого значения
   if (history[history_counter].selected_mandala.true_of(2,3,4,5)) camera.position.set( 0, 0, camera_range ) //60 //позиция камеры для малых квадратов
@@ -178,7 +179,6 @@ function init() {
 
   //пластины между осями
   plain_x_cube = plain_x_cube_visual(plane_of_colors)
-   
   toggle_visibler([...axis,...plain_x_cube], !history[history_counter].dots_mode)
 
   //точки
@@ -202,7 +202,8 @@ function init() {
   
   //значения по умолчанию для неназначенного цвета бордюра
   if (history[history_counter].border_color < 0)
-    history[history_counter].border_color = history[history_counter].selected_mandala.true_of(3,5) ? 0 : plane_of_colors[0][0]
+    history[history_counter].border_color =
+      history[history_counter].selected_mandala.true_of(3,5) ? 0 : summ_to_zero_element
   //перекрас бордюра в цвет из истории
   color_material_for_border.color.set(basic_colors[history[history_counter].border_color])
 
@@ -338,7 +339,7 @@ function init() {
 
         //применение доп.эффектов на кнопки цвета на основе данных статы
         palitra_button__check_unactive(opacity_button)
-        palitra_button__unactive_visibler((!history[history_counter].dots_mode) ? [...axis,...plain_x_cube] : dots, unactive_visual_button)
+        palitra_button__unactive_visibler(!history[history_counter].dots_mode ? [...axis,...plain_x_cube] : dots, unactive_visual_button)
 
       }
     }
@@ -349,11 +350,10 @@ function init() {
       
       if (!history[history_counter].gray_mode) {
        
-        history[history_counter].second_color_mode = !history[history_counter].second_color_mode
-        color_change_to_second(history[history_counter].second_color_mode)
+        color_change_to_second(history[history_counter].swich_mode('second_color_mode'))
       }
       else {
-        history[history_counter].second_gray_mode = !history[history_counter].second_gray_mode
+        history[history_counter].swich_mode('second_gray_mode')
         gray_second(true)
       }
         palitra_button__colored()
@@ -365,8 +365,7 @@ function init() {
     //Серая схема
     if (selected_html_content === "G") {
 
-      history[history_counter].gray_mode = !history[history_counter].gray_mode
-      
+      history[history_counter].swich_mode('gray_mode')
       color_change_to_gray(history[history_counter].gray_mode)
 
       //сохранение измененной (в случае выбора) схемы цветных цветов
@@ -385,11 +384,13 @@ function init() {
     if (selected_html_content === "#") {
       
       if (!history[history_counter].dots_mode)
-        history[history_counter].grid_mode = !history[history_counter].grid_mode
+        history[history_counter].swich_mode('grid_mode')
       else
-        history[history_counter].grid_mode_for_dots = !history[history_counter].grid_mode_for_dots
+        history[history_counter].swich_mode('grid_mode_for_dots')
 
-      toggle_visibler( grid_squares, history[history_counter].dots_mode ? history[history_counter].grid_mode_for_dots : history[history_counter].grid_mode )
+      toggle_visibler( grid_squares, history[history_counter].dots_mode ?
+        history[history_counter].grid_mode_for_dots : history[history_counter].grid_mode
+      )
 
     }
 
@@ -415,20 +416,20 @@ function init() {
         !(history[history_counter].selected_mandala.true_of(3,5) && history[history_counter].number_mode)
       ) {
 
-      history[history_counter].border_mode = !history[history_counter].border_mode
+      history[history_counter].swich_mode('border_mode')
       toggle_visibler( border, history[history_counter].border_mode )
 
     }
     
     //отображение цифр//
     if (selected_html_content === "№" && !history[history_counter].dots_mode) {
-      history[history_counter].number_mode = !history[history_counter].number_mode
+      history[history_counter].swich_mode('number_mode')
       toggle_visibler( charNumber, history[history_counter].number_mode )
       //
       //убираем бордер для отображения цифр при третьей мандале и возвращаем при неактиве
       if (history[history_counter].selected_mandala.true_of(3,5)) {
         //в зависимости от отображаемых цифр
-        history[history_counter].border_mode = !history[history_counter].border_mode
+        history[history_counter].swich_mode('border_mode')
         toggle_visibler( border, history[history_counter].border_mode )
       }
 
@@ -437,10 +438,8 @@ function init() {
     
     //точечный режим//
     if (selected_html_content == "\u2219") {
-      
-      history[history_counter].dots_mode = !history[history_counter].dots_mode
-
-      toggle_visibler(dots, history[history_counter].dots_mode )
+    
+      toggle_visibler(dots, history[history_counter].swich_mode('dots_mode') )
       
       if (history[history_counter].dots_mode) {
         //отключаем все, кроме точек
@@ -466,7 +465,7 @@ function init() {
       }
       
       //закруглять кнопки в зависимости от режима
-      palitra_button__unactive_visibler((!history[history_counter].dots_mode)?[...axis,...plain_x_cube]:dots, unactive_visual_button)
+      palitra_button__unactive_visibler(!history[history_counter].dots_mode ? [...axis,...plain_x_cube] : dots, unactive_visual_button)
 
     }
 
@@ -527,6 +526,9 @@ function init() {
     props.forEach( function(entry) { entry.visible = mode } )
   }
 
+  function bool_sw(bool) {
+    bool = !bool
+  }
 }; //init() end bracket
 
 

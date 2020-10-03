@@ -20,7 +20,8 @@ history[history_counter] = {
           number_mode				: false,
           second_color_mode : false,
           gray_mode         : false,
-          second_gray_mode  : false
+          second_gray_mode  : false,
+          swich_mode : function(mode) {this[mode] = !this[mode]; return this[mode]}
           }
 
 
@@ -40,7 +41,8 @@ history[++history_counter] = {
           number_mode				: false,
           second_color_mode : false,
           gray_mode         : false,
-          second_gray_mode  : false
+          second_gray_mode  : false,
+          swich_mode : function(mode) {this[mode] = !this[mode]; return this[mode]}
           }
   //обрезание массива при добавлении элементов не в конце списка
   history.length = history_counter+1

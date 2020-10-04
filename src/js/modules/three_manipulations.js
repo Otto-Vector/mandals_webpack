@@ -1,7 +1,6 @@
 import * as THREE from '../three.min.js'
-// import { scene, camera, renderer} from './visual_constructors.js'
 import { OrbitControls } from '../OrbitControls.js'
-
+import {history, history_counter} from '../nodmodules/undo_redo.js'
 
 /////////////////////////////////////////////////////////////////////////////
   //добавил сцену
@@ -44,7 +43,7 @@ function animate() {
   // рендеринг
   controls.update() //манипуляция со сценой
   renderer.render( scene, camera )
-  // console.log(camera.position)
+  history[history_counter].camera_range = camera.position.z
 }
 
 

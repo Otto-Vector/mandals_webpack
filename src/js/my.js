@@ -2,7 +2,7 @@
 
 //модули переменных и функций поддержки
 import './modules/prototypes.js' //прототипизированные функции
-import {camera_range, max_expansion_length,
+import {max_expansion_length,
         opacity_button,
         unactive_visual_button
         } from './default_values.js'
@@ -62,10 +62,9 @@ window.onload = init
 //глобальные переменные
 let axis, plain_x_cube, grid_squares, border, scale_border, dots, charNumber
 
-//основная функция
-// function init(value_init, previous_input, history[history_counter].length_of_title) {
-function init() {
 
+//основная функция
+function init() {
 
   
   /////////////////////////////////////////////////////////////////////////////////
@@ -94,8 +93,8 @@ function init() {
 
   //////////////////////////////////////////////////////////////
   //здесь будет адаптация отдаления камеры по размеру вводимого значения
-  if (history[history_counter].selected_mandala.true_of(2,3,4,5)) camera.position.set( 0, 0, camera_range ) //60 //позиция камеры для малых квадратов
-  if (history[history_counter].selected_mandala.true_of(6,7,8,9)) camera.position.set( 0, 0, camera_range*2 ) //позиция камеры для больших квадратов
+  if (history[history_counter].selected_mandala.true_of(2,3,4,5)) camera.position.set( 0, 0, history[history_counter].camera_range ) //60 //позиция камеры для малых квадратов
+  if (history[history_counter].selected_mandala.true_of(6,7,8,9)) camera.position.set( 0, 0, history[history_counter].camera_range == 60 ? 120 : history[history_counter].camera_range ) //позиция камеры для больших квадратов
 
   
   ///////////////БЛОК ОБРАБОТКИ ВВОДИМОЙ СТРОКИ///////////////////////////////////////////////
@@ -470,8 +469,12 @@ function init() {
     }
 
     //отдаление/приближение//
-    if (selected_html_content === "+") camera.position.z = (camera.position.z > 10) ? camera.position.z - 10 : 10
-    if (selected_html_content === "-") camera.position.z = camera.position.z + 10
+    if (selected_html_content === "+") {
+      camera.position.z = (camera.position.z > 10) ? camera.position.z - 9 : 10
+    }
+    if (selected_html_content === "-") {
+      camera.position.z = camera.position.z + 9
+    }
 
     //пересборка отображения кнопок левой панели
     check_left_panel()

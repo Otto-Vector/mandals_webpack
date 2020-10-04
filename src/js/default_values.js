@@ -11,8 +11,7 @@
                            "#383838", "#1C1C1C", "#000000"
                         ]
 
-	//дальность камеры
-  let camera_range = 60
+	
   //максимальное количество символов вводимой строки
   let max_input_length = 33
   //максимальное количество знаков на расширение
@@ -24,12 +23,11 @@
   let opacity_button = "opacity_button"
 
 ///////////////////////////////////////////////////
-//переключатель точечного режима
-// let dots_mode = false
 
- export { camera_range, max_input_length, max_expansion_length,
+
+ export { max_input_length, max_expansion_length,
  				BASE_colors,
+        BASE_gray_colors,
         opacity_button,
         unactive_visual_button,
-        BASE_gray_colors
  				}

@@ -21,7 +21,8 @@ history[history_counter] = {
           second_color_mode : false,
           gray_mode         : false,
           second_gray_mode  : false,
-          swich_mode : function(mode) {this[mode] = !this[mode]; return this[mode]}
+          camera_range      : 60,
+          swich_mode        : function(mode) {this[mode] = !this[mode]; return this[mode]}
           }
 
 
@@ -42,6 +43,7 @@ history[++history_counter] = {
           second_color_mode : false,
           gray_mode         : false,
           second_gray_mode  : false,
+          camera_range      : 60,
           swich_mode : function(mode) {this[mode] = !this[mode]; return this[mode]}
           }
   //обрезание массива при добавлении элементов не в конце списка

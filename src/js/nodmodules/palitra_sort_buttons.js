@@ -1,5 +1,5 @@
 import {basic_colors} from '../modules/color_change.js'
-import {history, history_counter} from '../nodmodules/undo_redo.js'
+import {history, history_counter} from '../modules/history.js'
 import {axis, plain_x_cube, dots} from '../my.js'
 
   ///statistic_item
@@ -45,7 +45,8 @@ import {axis, plain_x_cube, dots} from '../my.js'
   
   //окрашиваем кнопки визуализации цветов
   function palitra_button__colored() {
-    palitra.forEach( (palitra_item) => palitra_item.style.background = basic_colors[palitra_item.innerHTML] )
+    palitra.forEach( palitra_item =>
+      palitra_item.style.background = basic_colors[palitra_item.innerHTML] )
   }
   
   //затемнение неактивных кнопок на основе статы
@@ -59,15 +60,13 @@ import {axis, plain_x_cube, dots} from '../my.js'
 
   //запуск изменения формы кнопок при проверке девизуализации
   function palitra_button__unactive_visibler(arr, unactive_visual_class) {
-   
+    
+
     for (let i=1; i < 10; i++) {
+      //условие
+      let visible_of = element => element.colornum == palitra[i].innerHTML && element.visible == false
 
-      palitra[i].classList.remove(unactive_visual_class)
-   
-      let visible_of = (element) => element.colornum == palitra[i].innerHTML && element.visible == false
-
-      if (arr.some(visible_of))
-          palitra[i].classList.add(unactive_visual_class)
+      palitra[i].classList.toggle(unactive_visual_class, arr.some(visible_of))
     }
 
   }

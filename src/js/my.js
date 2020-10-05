@@ -1,14 +1,17 @@
 "use strict"
 
-//модули переменных и функций поддержки
-import './modules/prototypes.js' //прототипизированные функции
+//базовые переменные и объекты
+import {history, history_counter} from './modules/history.js'
 import {max_expansion_length,
         opacity_button,
-        unactive_visual_button
-        } from './default_values.js'
-import {modification_to_normal, to_one_fibbonachi_digit} from './modules/support.js'
+        unactive_visual_button} from './default_values.js'
 
+
+//модули переменных и функций поддержки
+import './modules/prototypes.js' //прототипизированные функции
+import {modification_to_normal, to_one_fibbonachi_digit} from './modules/support.js'
 import {basic_colors, color_change_to_second, color_change_to_gray, gray_second} from './modules/color_change.js'
+
 
 //модули THREE
 import {scene, camera, renderer,
@@ -22,6 +25,7 @@ import {dots_visibler,
         border_visual,
         x_border_visual,
         grid} from './modules/visual_constructors.js'
+
 
 //модули для обработки DOM элементов
 import {title_input,
@@ -40,8 +44,8 @@ import {palitra,
         statistic_sort_button__sort} from './nodmodules/palitra_sort_buttons.js'
 import {header_title,
         numeric_adaptation_Node_elements} from './nodmodules/numeric_adaptation.js'
+import {undo_redo_check} from './nodmodules/undo_redo.js'
 
-import {history, history_counter, undo_redo_check} from './nodmodules/undo_redo.js'
 
 //модуль перезапуска и очистки памяти
 import {reinit} from './modules/reinit.js'
@@ -50,14 +54,14 @@ import {reinit} from './modules/reinit.js'
 //запуск программы
 window.onload = init
 
-  /////////////////////////////////////////////////////////////////////////////////////
-  ///////////////////PRE_BEGIN////////////////////////////////////////////////////////
-  ///////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////
+///////////////////PRE_BEGIN////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////
 
-  //добавление графического окна к документу в тег
-  document.body.appendChild( renderer.domElement )
-  //при динамическом изменении размера окна
-  window.addEventListener('resize', onWindowResize, false)
+//добавление графического окна к документу в тег
+document.body.appendChild( renderer.domElement )
+//при динамическом изменении размера окна
+window.addEventListener('resize', onWindowResize, false)
 
 //глобальные переменные
 let axis, plain_x_cube, grid_squares, border, scale_border, dots, charNumber
@@ -529,9 +533,6 @@ function init() {
     props.forEach( function(entry) { entry.visible = mode } )
   }
 
-  function bool_sw(bool) {
-    bool = !bool
-  }
 }; //init() end bracket
 
 

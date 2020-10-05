@@ -1,5 +1,5 @@
 import {scene, remove_all_objects_from_memory} from './three_manipulations.js'
-import {history, history_counter, so_crit_value_add, add_history, copy_history} from '../nodmodules/undo_redo.js'
+import {history, history_counter, so_crit_value_add, add_history, copy_history} from '../modules/history.js'
 import {axis, plain_x_cube, border, grid_squares, scale_border, charNumber, dots, init} from '../my.js'
 
 

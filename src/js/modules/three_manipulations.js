@@ -1,6 +1,6 @@
 import * as THREE from '../three.min.js'
 import { OrbitControls } from '../OrbitControls.js'
-import {history, history_counter} from '../nodmodules/undo_redo.js'
+import {history, history_counter} from '../modules/history.js'
 
 /////////////////////////////////////////////////////////////////////////////
   //добавил сцену

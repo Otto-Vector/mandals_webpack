@@ -486,10 +486,13 @@ function init() {
   }
 
   function check_left_panel() {
-    let col_right_buttons = document.querySelectorAll('#palitra .palitra_button').length
+    
+    //создаём буфер со значениями кнопок в ключах
+    let face = {}
+    for (const [i, val] of palitra.entries()) { face[val.innerHTML] = i }
     
     //"C"
-    palitra[col_right_buttons-2].classList.toggle( unactive_visual_button,
+    palitra[face["C"]].classList.toggle( unactive_visual_button,
       //учет логики переключения в сером цвете
       ( !history[history_counter].gray_mode && history[history_counter].second_color_mode )
       ||
@@ -497,26 +500,26 @@ function init() {
     )
     
     //"G"
-    palitra[col_right_buttons-1].classList.toggle( unactive_visual_button, history[history_counter].gray_mode)
+    palitra[face["G"]].classList.toggle( unactive_visual_button, history[history_counter].gray_mode)
 
     //"#"
-    palitra[col_right_buttons].classList.toggle(unactive_visual_button, !grid_squares[0].visible)
+    palitra[face["#"]].classList.toggle(unactive_visual_button, !grid_squares[0].visible)
 
     //"B" //тут перекрас в цвет бордера
-    palitra[col_right_buttons+4].style.backgroundColor = basic_colors[history[history_counter].border_color]
-    palitra[col_right_buttons+4].classList.toggle(
+    palitra[face["B"]].style.backgroundColor = basic_colors[history[history_counter].border_color]
+    palitra[face["B"]].classList.toggle(
       opacity_button, history[history_counter].dots_mode || !history[history_counter].border_mode)
 
     //"b"
-    palitra[col_right_buttons+5].classList.toggle(unactive_visual_button, !border[0].visible)
-    palitra[col_right_buttons+5].classList.toggle(opacity_button, history[history_counter].dots_mode)
+    palitra[face["b"]].classList.toggle(unactive_visual_button, !border[0].visible)
+    palitra[face["b"]].classList.toggle(opacity_button, history[history_counter].dots_mode)
 
     //"№"
-    palitra[col_right_buttons+6].classList.toggle(unactive_visual_button, !charNumber[0].visible)
-    palitra[col_right_buttons+6].classList.toggle(opacity_button, history[history_counter].dots_mode)
+    palitra[face["№"]].classList.toggle(unactive_visual_button, !charNumber[0].visible)
+    palitra[face["№"]].classList.toggle(opacity_button, history[history_counter].dots_mode)
 
-    //"."
-    palitra[col_right_buttons+7].classList.toggle(unactive_visual_button, !history[history_counter].dots_mode)
+    //"∙"
+    palitra[face["∙"]].classList.toggle(unactive_visual_button, !history[history_counter].dots_mode)
   }
   
   //функция пересборки видимости по цвету

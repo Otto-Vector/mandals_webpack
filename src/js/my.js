@@ -198,6 +198,10 @@ function init() {
     history[history_counter].dots_mode ? //отображение сетки в зависимости от тотчечного режима
     history[history_counter].grid_mode_for_dots : history[history_counter].grid_mode)
   
+  //для корректировки отображения обводки на ромбовидных мандалах
+  if (history[history_counter].selected_mandala.true_of(3,5) && history[history_counter].number_mode)
+    history[history_counter].border_mode = false
+
   //массив для элементов обводки мандалы
   border = border_visual( plane_of_colors[0] )
   //не включать бордер в режиме точек
@@ -212,7 +216,6 @@ function init() {
 
   //массив для поворота и изменения размера обводки в мандале "ромб"
   scale_border = history[history_counter].selected_mandala.true_of(3,5) ? x_border_visual(border) : null
-
   //цифры//
   //активация переменной charNumber и прорисовка объектов цифр в инвиз
   charNumber = charNumber_active([...axis,...plain_x_cube])

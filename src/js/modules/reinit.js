@@ -1,16 +1,20 @@
 import {scene, remove_all_objects_from_memory} from './three_manipulations.js'
-import {history, history_counter, so_crit_value_add, add_history, copy_history} from '../modules/history.js'
+import {history, history_counter, so_crit_value_add, add_history, copy_history, copy_history_colors, copy_history_visual} from '../modules/history.js'
 import {axis, plain_x_cube, border, grid_squares, scale_border, charNumber, dots, init} from '../my.js'
+import {color_check, visual_check} from '../nodmodules/checks.js'
 
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////
 //функция перезапуска мандалы с новыми данными//
+
 let reinit = function (_new = 0) {
 
   //добавление записи в историю только при значении "0"
-  if (_new==0) add_history()
-  
-  
+  if (_new==0) {
+    add_history()
+    if (color_check.checked) copy_history_colors()
+    if (visual_check.checked) copy_history_visual()
+  }
   //проверка на крит.значения массива history
   //(не меньше нуля и не больше размера массива)
   if (!so_crit_value_add(_new)) {

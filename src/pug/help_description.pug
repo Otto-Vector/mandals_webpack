@@ -1,0 +1,45 @@
+
+mixin help_description(params)
+
+  //- без параметров работает как type='text' без заголовка
+  //- Принимает:
+  //-   params {object}
+  //-     title: ''           {string} - текст с названием (выводится при наведении мыши
+  //-     text: ''            {string} - вводится значение title, к которому привязан блок
+  //-     shortcut_key: ''    {string} - вводится ключ
+
+  //- Вызов:
+      +help_description({
+        title: 'Текст после чекбокса',
+        text: '',
+        shortcut_key: ''
+      })
+
+
+    //- БЛОК ПРИСВОЕНИЯ БАЗОВЫХ ЗНАЧЕНИЙ -//
+  -
+    let block_name   = 'help_description',
+        main_class   = block_name,
+        text_class   = block_name + '__text'
+        shortcut_key = '('+shortcut_key+')';
+
+    //Проверка на миксин без параметров так как 
+    //при пустом params, не деструктурируются значения по умолчанию
+    if (!params) {
+      var params = { title: 'shortcut key is '+shortcut_key};
+    }
+
+    //деструктуризация params в переменные и задание им значений по умолчанию
+    let {
+      title       = 'shortcut key is',
+      text        = 'empty_text'
+                } = params;
+
+
+    //- ФУНКЦИОНАЛЬНЫЙ БЛОК -//
+
+
+  //- БЛОК ВЫВОДА -//
+
+  div(class = main_class, title = title)
+    span(class= text_class) #{text}

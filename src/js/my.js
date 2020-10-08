@@ -45,7 +45,7 @@ import {palitra,
 import {header_title,
         numeric_adaptation_Node_elements} from './nodmodules/numeric_adaptation.js'
 import {undo_redo_check} from './nodmodules/undo_redo.js'
-
+import './nodmodules/help_description.js'
 
 //модуль перезапуска и очистки памяти
 import {reinit} from './modules/reinit.js'
@@ -492,7 +492,7 @@ function init() {
     
     //создаём буфер со значениями кнопок в ключах
     let face = {}
-    for (const [i, val] of palitra.entries()) { face[val.innerHTML] = i }
+    for (const [i, val] of palitra.entries()) { face[val.innerText[0]] = i }
     
     //"C"
     palitra[face["C"]].classList.toggle( unactive_visual_button,

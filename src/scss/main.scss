@@ -22,6 +22,7 @@ $top_buttons : 10vw;
 }
 
 @import "checkbox.scss";
+@import "help_description.scss";
 
 //резеты
 body, canvas, div, input, button, select, textarea {
@@ -94,12 +95,8 @@ header.title.new_bg {
 
 }
 
-#number_of_symbols {
-
-}
 
 #number_of_symbols__clear {
-    // display: none;
     
     position:relative;
     z-index: 11;
@@ -155,6 +152,8 @@ header.title.new_bg {
     }
 }
 
+/*БЛОК МЕНЮ СУЖЕНИЯ*/
+
 #numeric_adaptation {
     
     background-color: transparent;
@@ -209,6 +208,8 @@ section.sidebar {
     right: 5px;
 }
 
+/*БЛОК СТАТИСТИКИ*/
+
 section.sidebar #statistic {
     
     user-select: none;
@@ -259,6 +260,8 @@ section.sidebar #statistic div {
     transform: rotate(180deg);
 }
 
+/*БЛОК КНОПОК*/
+
 section.sidebar #palitra {
     padding-right: 5px;
     background-color: rgba(0,0,0,0);
@@ -266,6 +269,7 @@ section.sidebar #palitra {
 }
 
 .palitra_button {
+
     @include size(20px);
 
     border: 1px solid;
@@ -305,6 +309,8 @@ section.sidebar #palitra {
     top: $top_buttons;
     left: 10px;
 }
+
+/*НИЖНИЙ БЛОК*/
 
 footer {
     box-sizing: border-box;
@@ -400,7 +406,6 @@ footer label {
     margin-top: 5px;
     cursor: pointer;
 }
-
 
 .unbold {
     font-weight: lighter;

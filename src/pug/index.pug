@@ -1,4 +1,5 @@
 include ./checkbox
+include ./help_description
 
 doctype html
 head
@@ -38,7 +39,7 @@ body
         - for (let i=1; i<10; i++) {
           .palitra_button #{i}
         - }
-        +checkbox({title:"Сохранить цветовые настройки"})
+        +checkbox({title:"Сохранить цветовые настройки", name: "color_check"})
         .palitra_button(title='Цветовые схемы') C
         .palitra_button(title='Серая схема') G
 
@@ -53,8 +54,14 @@ body
       .palitra_button(title='Точечный режим') &#8729;
       .palitra_button(title='Приблизить') +
       .palitra_button(title='Отдалить') -
-      +checkbox({title:"Сохранить настройки отображения"})
+      +checkbox({title:"Сохранить настройки отображения", name: "visual_check"})
       .palitra_button(title='Помощь') ?
+
+    #help_panel
+      - for (let i=1; i<=12; i++) {
+        +help_description
+      - }
+
 
     footer
       button#undo_button.bg_undo_redo(title='Предыдущее значение')

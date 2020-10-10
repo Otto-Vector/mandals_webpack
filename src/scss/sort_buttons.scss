@@ -1,0 +1,49 @@
+section.sidebar #statistic {
+    
+    user-select: none;
+    font-size: 0%;
+    
+    transform: scaleX(0);
+    transform-origin: right;
+    
+    transition: 0.5s;
+    transition-timing-function: cubic-bezier(1,0,0,1);
+}
+
+section.sidebar #statistic.active {
+    font-size: 100%;
+    
+    transform: scaleX(1);
+  
+}
+
+section.sidebar #statistic div {
+    height: 18px;
+
+    margin: 9px 4px;
+    padding-bottom: 2px;
+
+    text-align: right;
+    text-shadow: .5px .5px white;
+}
+
+.bg_arrow_down {
+    background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' width='11' height='7' stroke='%23000' stroke-linecap='round' stroke-linejoin='round' fill='%23fff' fill-rule='evenodd'%3e%3cpath d='M.5 1l4.75 5L10 1z' fill='%23989da1' stroke='%23989da1'/%3e%3c/svg%3e");
+    background-repeat: no-repeat;
+}
+
+#statistic_sort_button {
+    width: 20px;
+    border-radius: 5px;    
+    
+    background-color: whitesmoke;
+    background-position: 50% 50%;
+
+    cursor: pointer;
+    user-select: none;
+    transition: 0.3s;
+}
+
+.up {
+    transform: rotate(180deg);
+}

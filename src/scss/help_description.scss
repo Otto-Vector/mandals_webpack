@@ -2,10 +2,27 @@
     position: absolute;
     top: $top_buttons;
     left: 50px;
+
+    transform: scaleX(0);
+    transform-origin: left;
+    
+    transition: 0.5s;
+    transition-timing-function: cubic-bezier(1,1,0,1);
+
+    &.active {
+    	transform: scaleX(1);
+    }
 }
 
 .help_description {
+	
 	font-size: 11px;
-	padding: 8.1px 0;
-	text-shadow: 0.4px 0.4px whitesmoke;
+	padding: 8.15px 0;
+	font-weight: bold;
+  user-select: none;
+
+	&__text {
+  background: radial-gradient(rgba(0,0,0,0.2), rgba(0,0,0,0.3)25%, rgba(0,0,0,0)80% );
+	}
+
 }

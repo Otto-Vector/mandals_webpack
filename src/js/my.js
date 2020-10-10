@@ -45,6 +45,7 @@ import {palitra,
 import {header_title,
         numeric_adaptation_Node_elements} from './nodmodules/numeric_adaptation.js'
 import {undo_redo_check} from './nodmodules/undo_redo.js'
+
 import './nodmodules/help_description.js'
 
 //модуль перезапуска и очистки памяти
@@ -482,7 +483,11 @@ function init() {
     if (selected_html_content === "-") {
       camera.position.z = camera.position.z + 9
     }
-
+    
+    if (selected_html_content === "?") {
+      help_panel.classList.toggle('active')
+    }
+    
     //пересборка отображения кнопок левой панели
     check_left_panel()
 

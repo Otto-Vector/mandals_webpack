@@ -1,0 +1,55 @@
+/*кнопки отмены и повтора*/
+
+.bg_undo_redo {
+    background-image: url("data:image/svg+xml;charset=utf8,%3C?xml version='1.0' ?%3E%3Csvg viewBox='0 0 32 32' xmlns='http://www.w3.org/2000/svg'%3E%3Cdefs%3E%3Cstyle%3E.cls-1{fill:%23808080;}%3C/style%3E%3C/defs%3E%3Ctitle/%3E%3Cg data-name='Layer 50' id='Layer_50'%3E%3Cpath class='cls-1' d='M30,29a1,1,0,0,1-.81-.41l-2.12-2.92A18.66,18.66,0,0,0,15,18.25V22a1,1,0,0,1-1.6.8l-12-9a1,1,0,0,1,0-1.6l12-9A1,1,0,0,1,15,4V8.24A19,19,0,0,1,31,27v1a1,1,0,0,1-.69.95A1.12,1.12,0,0,1,30,29ZM14,16.11h.1A20.68,20.68,0,0,1,28.69,24.5l.16.21a17,17,0,0,0-15-14.6,1,1,0,0,1-.89-1V6L3.67,13,13,20V17.11a1,1,0,0,1,.33-.74A1,1,0,0,1,14,16.11Z'/%3E%3C/g%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-color: transparent;
+    background-position: center center;
+}
+
+.redo_to_copy {
+    background-image: url("data:image/svg+xml;charset=utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' height='32' viewBox='0 0 32 32' width='32'%3E%3Cpath d='M0 0h24v24H0z' fill='none'/%3E%3Cpath d='M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z' fill='%23808080' /%3E%3C/svg%3E");
+    background-size: 110%;
+    
+}
+
+#undo_button, #redo_button {
+    position: absolute;
+    padding: 0;
+    
+    width: 4%;
+    height: 100%;
+    
+    cursor: pointer;
+}
+
+#undo_button {
+    left: 3%;
+}
+
+#redo_button {
+    right: 3%;
+    transform: scale(-1,1);
+}
+
+
+@media (max-width:900px){
+    
+    #undo_button, #redo_button {
+        width: 6%;
+    }
+}
+
+/*формат чисел под стрелочками отмены и повтора*/
+
+#undo_button span, #redo_button span{
+    position: absolute;
+    bottom: 10%;
+    left: 0;
+    user-select: none;
+    color: #808080;
+}
+
+#redo_button span {
+    transform: scale(-1,1);
+}

@@ -1,0 +1,58 @@
+/*изменение заливки при развертывании списка*/
+header.title.new_bg {
+    background: linear-gradient(rgba(0,0,0,0.2),rgba(0,0,0,0.6)25%,rgba(0,0,0,0.7));
+}
+
+#numeric_adaptation {
+    
+    background-color: transparent;
+    color: white;
+    
+    font-size: 3vw;
+        
+    text-shadow: 0 0.2vw 0.15vw #555555;
+    text-align: center;
+    width: 80%;
+    margin: 0 auto;
+    
+    overflow-y: scroll;
+}
+
+#numeric_adaptation.active {
+    height: 75vh;
+}
+
+.numeric_adaptation_item {
+
+    font-size: 0%;
+    line-height: 200%;
+    text-align: center;
+    
+    transform: scaleY(0);
+    
+    transform-origin: top;
+    
+    transition: 0.2s;
+    transition-timing-function: ease-in-out;
+
+    cursor: pointer;
+}
+
+
+.numeric_adaptation_item.active {
+    font-size: 100%;
+    transform: scaleY(1);
+}
+
+.numeric_adaptation_item:hover {
+
+    font-weight: bold;
+    
+}
+
+section.sidebar {
+    position: absolute;
+    top: $top_buttons;
+    display: flex;
+    right: 5px;
+}

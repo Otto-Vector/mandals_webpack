@@ -36,6 +36,7 @@ function numeric_adaptation_Node_elements(input_string_array_fn, to_Node, now_re
   /////////////////////////////////////////////////////////////////
   
   let numeric_adaptation_item_first = document.querySelector(".numeric_adaptation_item_first")
+
   //вывод подменюшки сокращения по нажатию на первый элемент
     numeric_adaptation_item_first.onclick = function() {
       //активация каждого элемента в списке
@@ -50,6 +51,7 @@ function numeric_adaptation_Node_elements(input_string_array_fn, to_Node, now_re
 
     
   let numeric_adaptation_item = document.querySelectorAll(".numeric_adaptation_item")
+
   //выбор меню из списка сокращений
     numeric_adaptation_item.forEach( (item,i) => item.onclick = function() {
       

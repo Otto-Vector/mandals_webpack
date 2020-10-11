@@ -32,4 +32,24 @@ function modification_to_normal(string_from_user_input, string_by_default) {
                 .toLowerCase()     //убираем верхний регистр
 }//возвращает обработанную строку без пробелов в нижнем регистре либо обработанную тестовую строку
 
-export {to_one_fibbonachi_digit, to_one_eleven_digit, modification_to_normal}
+
+////////////ВИДИМОСТЬ//////////////////
+
+//функция пересборки видимости элементов по цвету
+function all_visibler_colors(props, visible_colors) {
+//принимается массив объектов THREE.js
+//и массив логических значений по номеру цвета
+  for (let color in visible_colors) {
+    props.forEach( function(entry) {
+      if (entry.colornum == color)
+        entry.visible = visible_colors[color]
+    } )
+  }
+}
+//функция отключения/включения видимости объектов
+function toggle_visibler(props, mode) {
+  props.forEach( function(entry) { entry.visible = mode } )
+}
+
+export {to_one_fibbonachi_digit, to_one_eleven_digit, modification_to_normal,
+        all_visibler_colors, toggle_visibler}

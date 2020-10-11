@@ -38,5 +38,5 @@
         BASE_second_colors,
         BASE_gray_colors,
         opacity_button,
-        unactive_visual_button,
+        unactive_visual_button
  				}

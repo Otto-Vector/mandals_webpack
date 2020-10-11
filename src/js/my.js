@@ -9,7 +9,8 @@ import {max_expansion_length,
 
 //модули переменных и функций поддержки
 import './modules/prototypes.js' //прототипизированные функции
-import {modification_to_normal, to_one_fibbonachi_digit} from './modules/support.js'
+import {modification_to_normal, to_one_fibbonachi_digit,
+        all_visibler_colors, toggle_visibler} from './modules/support.js'
 import {basic_colors, color_change_to_second,
         color_change_to_gray, gray_second} from './modules/color_change.js'
 
@@ -47,10 +48,14 @@ import {header_title,
         numeric_adaptation_Node_elements} from './nodmodules/numeric_adaptation.js'
 import {undo_redo_check} from './nodmodules/undo_redo.js'
 
+//функционал вывода помощи
 import './nodmodules/help_description.js'
 
 //модуль перезапуска и очистки памяти
 import {reinit} from './modules/reinit.js'
+
+//функционал нажатия кнопок
+import {selected_button, check_left_panel} from './modules/selected_buttons_todo.js'
 
 
 //запуск программы
@@ -87,22 +92,21 @@ function init() {
   // 7 - на квадрат шахматый расчёт (2вар) =11=     +
   // 
   
-  //проверка на первый запуск init() (по умолчанию 4-ый вариант)
-  history[history_counter].selected_mandala = history[history_counter].selected_mandala || 4
+
+  /////////////БЛОК ОБРАБОТКИ ЦВЕТОВЫХ СХЕМ///////////////////////////////////////////////
   
-  
-  //задание цветовых схем
+  //задание второй цветовой схемы
   color_change_to_second(history[history_counter].second_color_mode)
-  
   //манипуляции с серыми цветовыми схемами
   if (history[history_counter].gray_mode) {
     color_change_to_gray(history[history_counter].gray_mode)
     gray_second(history[history_counter].second_gray_mode)
   }
-  
+  //перекрас материала по новым цветовым схемам
   color_material_set()
 
-  //////////////////////////////////////////////////////////////
+  /////////////БЛОК ОБРАБОТКИ ДАЛЬНОСТИ КАМЕРЫ///////////////////////////////////////////////
+  
   //здесь будет адаптация отдаления камеры по размеру вводимого значения
   if (history[history_counter].selected_mandala.true_of(2,3,4,5)) camera.position.set( 0, 0, history[history_counter].camera_range ) //60 //позиция камеры для малых квадратов
   if (history[history_counter].selected_mandala.true_of(6,7,8,9)) camera.position.set( 0, 0, history[history_counter].camera_range == 60 ? 120 : history[history_counter].camera_range ) //позиция камеры для больших квадратов
@@ -196,7 +200,7 @@ function init() {
   toggle_visibler( dots, history[history_counter].dots_mode )
   
   //отображение цветов, в зависимости от режима
-  all_visibler_colors(history[history_counter].dots_mode ? dots : [...axis, ...plain_x_cube])
+  all_visibler_colors(history[history_counter].dots_mode ? dots : [...axis, ...plain_x_cube], history[history_counter].visible_colors)
   
   
   //создаём сетку
@@ -206,8 +210,10 @@ function init() {
     history[history_counter].grid_mode_for_dots : history[history_counter].grid_mode)
   
   //для корректировки отображения обводки на ромбовидных мандалах
-  if (history[history_counter].selected_mandala.true_of(3,5) && history[history_counter].number_mode)
-    history[history_counter].border_mode = false
+  history[history_counter].border_mode =
+    ( history[history_counter].selected_mandala.true_of(3,5)
+      && history[history_counter].number_mode ) ? false : history[history_counter].border_mode
+
 
   //массив для элементов обводки мандалы
   border = border_visual( plane_of_colors[0] )
@@ -254,9 +260,11 @@ function init() {
   //затемнение неактивных кнопок на основе статы
   palitra_button__check_unactive(opacity_button)
   
-  //изменение кнопок левой панели (отключенные объекты)
+  //изменение вида кнопок левой панели (отключенные объекты)
   check_left_panel()
-
+  //проверка на засвет кнопок отмены/повтора и запуск счётчика под ним
+  undo_redo_check()
+  
   //вывод в заголовок обработанного текста
   title_input.value =  history[history_counter].title_of_mandala
   
@@ -280,280 +288,15 @@ function init() {
   //запуск функции сборки    
   numeric_adaptation_Node_elements(input_string_array, numeric_adaptation, history[history_counter].length_of_title)    
 
-  //проверка на засвет кнопок отмены/повтора и запуск счётчика под ним
-  undo_redo_check()
   
   ///////////////////////////////////////////////////
   
-  //отслеживание нажатия кнопок боковой панели и передача содержимого этих кнопок
-  for (let i = 0; i < palitra.length; i++) {
-    palitra[i].onmousedown = (event) => selected_button(event.target) //передача в функцию визуального содержимого кнопки
-  }
-
-  
+   
   //\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//
   //\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//
   //\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//
-
-  ////////////////////////////////////////////////////////////////////////////////////////////////////
-  ///МАНИПУЛЯЦИИ С ПРИМЕНЕНИЕМ И ОСЛЕЖИВАНИЕМ СОБЫТИЙ НАЖАТИЯ НА ОБЪЕКТЫ И КНОПКИ НА БОКОВОЙ ПАНЕЛИ///
-  ////////////////////////////////////////////////////////////////////////////////////////////////////
-
-  ////функция проверки нажатой кнопки боковых панелей
-  function selected_button(selected_target) { //передаётся символ внутри кнопки
-
-    let selected_html_content = selected_target.innerHTML
-
-    //функция перебора массива с отслеживанием нажатых кнопок
-    function toggle_visibler_from_button(arr) { //в ф-цию передаем массив
-      arr.forEach(function(item) { //перебираем массив
-          if (selected_html_content === "X") {
-            item.visible = false //все искомые элементы становятся невидимыми
-            history[history_counter].visible_colors[item.colornum] = item.visible
-          }
-          if (selected_html_content === "@" ||
-             +selected_html_content === +item.colornum) {
-             //смена видимости на невидимость
-             item.visible = !item.visible
-             //присваивание элементу видимости логического значения 
-             history[history_counter].visible_colors[item.colornum] = item.visible
-          }
-          if (selected_html_content === "A") {
-           item.visible = true //все искомые элементы становятся видимыми
-           history[history_counter].visible_colors[item.colornum] = item.visible
-          }
-        })
-    }
-
-
-   
-    //запуск девизуализации осей и плоскостей
-    toggle_visibler_from_button( !history[history_counter].dots_mode ? [...axis,...plain_x_cube] : dots)
-    //запуск изменения формы кнопок при нажатии девизуализации
-    palitra_button__unactive_visibler( !history[history_counter].dots_mode ?
-                                       [...axis,...plain_x_cube] : dots, unactive_visual_button)
-   
-
-    //дополнительно статистика на "S"
-    if (selected_html_content === "S") { //отобразить/спрятать
-      
-      statistic.classList.toggle("active")
-
-      //при девизуализации статы, кнопки цвета возвращаются на свои места
-      if (statistic.className != "active") {
-
-        //возврат и перекрас кнопок цвета
-        palitra_button__default_pos_value()
-        palitra_button__colored()
-
-        //переподсчёт статы по новым положениям кнопок
-        statistic_item__zero()
-        statistic__value_counter([...axis,...plain_x_cube])
-
-        //применение доп.эффектов на кнопки цвета на основе данных статы
-        palitra_button__check_unactive(opacity_button)
-        palitra_button__unactive_visibler(!history[history_counter].dots_mode ? [...axis,...plain_x_cube] : dots, unactive_visual_button)
-
-      }
-    }
-
-
-    //Смена схем отображения цветов
-    if (selected_html_content === "C") {
-      
-      if (!history[history_counter].gray_mode) {
-       
-        color_change_to_second(history[history_counter].swich_mode('second_color_mode'))
-      }
-      else {
-        history[history_counter].swich_mode('second_gray_mode')
-        gray_second(true)
-      }
-
-        palitra_button__colored()
-        color_material_set()
-        //отдельно, изменение цвета для бордюра
-        color_material_for_border.color.set(basic_colors[history[history_counter].border_color])
-    }
-
-    //Серая схема
-    if (selected_html_content === "G") {
-
-      history[history_counter].swich_mode('gray_mode')
-      color_change_to_gray(history[history_counter].gray_mode)
-
-      //сохранение измененной (в случае выбора) схемы цветных цветов
-      if (!history[history_counter].gray_mode) {
-        color_change_to_second(history[history_counter].second_color_mode)
-      }
-      
-      palitra_button__colored()
-      color_material_set()
-      //отдельно, изменение цвета для бордюра
-      color_material_for_border.color.set(basic_colors[history[history_counter].border_color])
-
-    }
-
-
-    //отображение сетки//
-    if (selected_html_content === "#") {
-      
-      if (!history[history_counter].dots_mode)
-        history[history_counter].swich_mode('grid_mode')
-      else
-        history[history_counter].swich_mode('grid_mode_for_dots')
-
-      toggle_visibler( grid_squares, history[history_counter].dots_mode ?
-        history[history_counter].grid_mode_for_dots : history[history_counter].grid_mode
-      )
-
-    }
-
-   
-    //смена цвета для бордера//
-    if (selected_html_content === "B" &&
-       !history[history_counter].dots_mode && history[history_counter].border_mode) {
-
-      //перебор по циклу
-      history[history_counter].border_color =
-          (+history[history_counter].border_color === 9) ? 0 : ++history[history_counter].border_color
-
-      //перекрас через материал для бордюра
-      color_material_for_border.color.set(basic_colors[history[history_counter].border_color])
-
-    }
-
-    //отображение бордера//
-    if (selected_html_content === "b" &&
-        //не включать в режиме точек
-        !history[history_counter].dots_mode &&
-        //не включать в режиме цифр на мандале "ромб"
-        !(history[history_counter].selected_mandala.true_of(3,5) && history[history_counter].number_mode)
-      ) {
-
-      history[history_counter].swich_mode('border_mode')
-      toggle_visibler( border, history[history_counter].border_mode )
-
-    }
-    
-    //отображение цифр//
-    if (selected_html_content === "№" && !history[history_counter].dots_mode) {
-      history[history_counter].swich_mode('number_mode')
-      toggle_visibler( charNumber, history[history_counter].number_mode )
-      //
-      //убираем бордер для отображения цифр при третьей мандале и возвращаем при неактиве
-      if (history[history_counter].selected_mandala.true_of(3,5)) {
-        //в зависимости от отображаемых цифр
-        history[history_counter].swich_mode('border_mode')
-        toggle_visibler( border, history[history_counter].border_mode )
-      }
-
-    }
-
-    
-    //точечный режим//
-    if (selected_html_content == "\u2219") {
-    
-      toggle_visibler(dots, history[history_counter].swich_mode('dots_mode') )
-      
-      if (history[history_counter].dots_mode) {
-        //отключаем все, кроме точек
-        let all_unvis = [...border,...axis,...plain_x_cube,...charNumber]
-        toggle_visibler( all_unvis, false )
-        
-        //отображаем сетку, в зависимости от режима
-        toggle_visibler( grid_squares, history[history_counter].grid_mode_for_dots )
-        
-        //отображаемые цвета
-        all_visibler_colors(dots)
-
-      }
-      else {
-        //включаем всё, в зависимости от состояния
-        toggle_visibler( border, history[history_counter].border_mode )
-        toggle_visibler( grid_squares, history[history_counter].grid_mode )
-        toggle_visibler( charNumber, history[history_counter].number_mode )
-        
-        //отображение по цветам
-        all_visibler_colors([...axis,...plain_x_cube])
-
-      }
-      
-      //закруглять кнопки в зависимости от режима
-      palitra_button__unactive_visibler(!history[history_counter].dots_mode ? [...axis,...plain_x_cube] : dots, unactive_visual_button)
-
-    }
-
-    //отдаление/приближение//
-    if (selected_html_content === "+") {
-      camera.position.z = (camera.position.z > 10) ? camera.position.z - 9 : 10
-    }
-    if (selected_html_content === "-") {
-      camera.position.z = camera.position.z + 9
-    }
-    
-    if (selected_html_content === "?") {
-      help_panel.classList.toggle('active')
-    }
-    
-    //пересборка отображения кнопок левой панели
-    check_left_panel()
-
-  }
-
-  function check_left_panel() {
-    
-    //создаём буфер со значениями кнопок в ключах
-    let face = {}
-    for (const [i, val] of palitra.entries()) { face[val.innerText[0]] = i }
-    
-    //"C"
-    palitra[face["C"]].classList.toggle( unactive_visual_button,
-      //учет логики переключения в сером цвете
-      ( !history[history_counter].gray_mode && history[history_counter].second_color_mode )
-      ||
-      ( history[history_counter].gray_mode && history[history_counter].second_gray_mode )
-    )
-    
-    //"G"
-    palitra[face["G"]].classList.toggle( unactive_visual_button, history[history_counter].gray_mode)
-
-    //"#"
-    palitra[face["#"]].classList.toggle(unactive_visual_button, !grid_squares[0].visible)
-
-    //"B" //тут перекрас в цвет бордера
-    palitra[face["B"]].style.backgroundColor = basic_colors[history[history_counter].border_color]
-    palitra[face["B"]].classList.toggle(
-      opacity_button, history[history_counter].dots_mode || !history[history_counter].border_mode)
-
-    //"b"
-    palitra[face["b"]].classList.toggle(unactive_visual_button, !border[0].visible)
-    palitra[face["b"]].classList.toggle(opacity_button, history[history_counter].dots_mode)
-
-    //"№"
-    palitra[face["№"]].classList.toggle(unactive_visual_button, !charNumber[0].visible)
-    palitra[face["№"]].classList.toggle(opacity_button, history[history_counter].dots_mode)
-
-    //"∙"
-    palitra[face["∙"]].classList.toggle(unactive_visual_button, !history[history_counter].dots_mode)
-  }
-  
-  //функция пересборки видимости по цвету
-  function all_visibler_colors(props) {
-  for (let color in history[history_counter].visible_colors) {
-          props.forEach( function(entry) {
-            if (entry.colornum == color) 
-              entry.visible = history[history_counter].visible_colors[color]
-          } )
-        }
-  }
-
-  function toggle_visibler(props, mode) {
-    props.forEach( function(entry) { entry.visible = mode } )
-  }
 
 }; //init() end bracket
-
 
 
 export {axis, plain_x_cube, grid_squares, border, scale_border, charNumber, dots, init}

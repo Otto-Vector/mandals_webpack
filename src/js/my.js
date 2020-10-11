@@ -10,7 +10,8 @@ import {max_expansion_length,
 //модули переменных и функций поддержки
 import './modules/prototypes.js' //прототипизированные функции
 import {modification_to_normal, to_one_fibbonachi_digit} from './modules/support.js'
-import {basic_colors, color_change_to_second, color_change_to_gray, gray_second} from './modules/color_change.js'
+import {basic_colors, color_change_to_second,
+        color_change_to_gray, gray_second} from './modules/color_change.js'
 
 
 //модули THREE
@@ -92,8 +93,13 @@ function init() {
   
   //задание цветовых схем
   color_change_to_second(history[history_counter].second_color_mode)
-  color_change_to_gray(history[history_counter].gray_mode)
-  gray_second(history[history_counter].gray_mode && history[history_counter].second_gray_mode)
+  
+  //манипуляции с серыми цветовыми схемами
+  if (history[history_counter].gray_mode) {
+    color_change_to_gray(history[history_counter].gray_mode)
+    gray_second(history[history_counter].second_gray_mode)
+  }
+  
   color_material_set()
 
   //////////////////////////////////////////////////////////////
@@ -363,6 +369,7 @@ function init() {
         history[history_counter].swich_mode('second_gray_mode')
         gray_second(true)
       }
+
         palitra_button__colored()
         color_material_set()
         //отдельно, изменение цвета для бордюра
@@ -382,6 +389,7 @@ function init() {
       
       palitra_button__colored()
       color_material_set()
+      //отдельно, изменение цвета для бордюра
       color_material_for_border.color.set(basic_colors[history[history_counter].border_color])
 
     }

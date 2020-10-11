@@ -52,7 +52,7 @@ function copy_history_visual() {
   history[history_counter].grid_mode 					= history[history_counter-1].grid_mode
   history[history_counter].grid_mode_for_dots = history[history_counter-1].grid_mode_for_dots
   history[history_counter].border_mode 				= history[history_counter-1].border_mode
-  history[history_counter].border_color 			= history[history_counter-1].border_color
+  // history[history_counter].border_color 			= history[history_counter-1].border_color
   history[history_counter].number_mode 				= history[history_counter-1].number_mode
 }
 function so_crit_value_add(_new_){

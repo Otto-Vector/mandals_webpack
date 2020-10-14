@@ -194,7 +194,7 @@ function selected_button(selected_target) { //передаётся символ 
       toggle_visibler( charNumber, history[history_counter].number_mode )
       
       //отображение по цветам
-      all_visibler_colors([...axis,...plain_x_cube], history[history_counter].visible_colors)
+      all_visibler_colors([...axis, ...plain_x_cube], history[history_counter].visible_colors)
 
     }
     

@@ -16,6 +16,8 @@ import {history, history_counter} from '../modules/history.js'
   renderer.setPixelRatio(window.devicePixelRatio)
   renderer.setSize( window.innerWidth-4, window.innerHeight-4 ) //отнял по 4 пикселя, потому что появляется прокрутка
 
+
+
 ///////////МАНИПУЛЯЦИИ СО СЦЕНОЙ (оставил только приближение и удаление)//////////////////////
 
 // активация внутри функции render() и onwindowresize() строкой controls.update()

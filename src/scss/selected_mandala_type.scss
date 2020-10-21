@@ -1,5 +1,5 @@
 label.select_mandala_type {
-    font-family: arial;
+    font-family: $mainFont;
     font-size: 110%;
     font-weight: bold;
     text-shadow: 0.5px 0.5px white;
@@ -9,7 +9,7 @@ label.select_mandala_type {
 
 
 #select_mandala_type {
-    
+    font-family: $mainFont;
     background-color: #e3e4e5;
     background-position: 97% 50%;
     background-size: 5%;
@@ -17,9 +17,7 @@ label.select_mandala_type {
     border: 1px solid #a2a2a2;
     border-radius: 3px;
     color: #757575;
-    // padding: 5px 24px 5px 9px;
     padding: 5px;
     margin: 5px;
-    // margin-top: 5px;
     cursor: pointer;
 }

@@ -1,7 +1,16 @@
+// @font-face {
+//   font-family: Quicksand-Bold;
+//   src: url('~@fonts/Quicksand/Quicksand-Bold.woff') format('woff'),
+//        url('~@fonts/Quicksand/Quicksand-Bold.ttf') format('truetype');
+// }
+
+$mainFont                : Times New Roman;
+$headerFont              : Arial;
+
 $dark-50                 : rgba(#1f2041,.5);
 $dark-25                 : rgba(#1f2041,.25);
 $purple-color            : #bc9cff;
-// $mainFontSize            : 10px;
+// $mainFont               : 10px;
 $top_buttons : 10vw;
 
 //миксин, чтобы спрятать что-нибудь
@@ -29,6 +38,7 @@ $top_buttons : 10vw;
 
 body {
     position: relative;
+    font-family: $mainFont;
 }
 
 header.title {
@@ -93,7 +103,3 @@ footer {
 
 /*Выбор типа мандалы*/
 @import 'selected_mandala_type.scss';
-
-// .unbold {
-//     font-weight: lighter;
-// }

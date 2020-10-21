@@ -108,10 +108,12 @@ function init() {
   /////////////БЛОК ОБРАБОТКИ ДАЛЬНОСТИ КАМЕРЫ///////////////////////////////////////////////
   
   //здесь будет адаптация отдаления камеры по размеру вводимого значения
-  if (history[history_counter].selected_mandala.true_of(2,3,4,5)) camera.position.set( 0, 0, history[history_counter].camera_range ) //60 //позиция камеры для малых квадратов
-  if (history[history_counter].selected_mandala.true_of(6,7,8,9)) camera.position.set( 0, 0, history[history_counter].camera_range == 60 ? 120 : history[history_counter].camera_range ) //позиция камеры для больших квадратов
 
-  
+  // if (history[history_counter].selected_mandala.true_of(2,3,4,5)) camera.position.set( 0, 0, history[history_counter].camera_range ) //60 //позиция камеры для малых квадратов
+  // if (history[history_counter].selected_mandala.true_of(6,7,8,9)) camera.position.set( 0, 0, history[history_counter].camera_range == 60 ? 120 : history[history_counter].camera_range ) //позиция камеры для больших квадратов
+  // console.log(2 * Math.tan( vFov / 2 ) * history[history_counter].camera_range);
+  // camera.fov = 2 * Math.atan( height / ( 2 * dist ) ) * ( 180 / Math.PI );
+  // camera.position.set(0,0, 2 * Math.atan( (19) / ( 2 * 10 ) ) * ( 180 / Math.PI ) );
   ///////////////БЛОК ОБРАБОТКИ ВВОДИМОЙ СТРОКИ///////////////////////////////////////////////
 
   ///заменяемая строка при неверном вводе (сейчас вводит дату)
@@ -150,7 +152,15 @@ function init() {
   //в начало массива
   string_for_algorithms.unshift( summ_to_zero_element )
 
- 
+  //////////////////////////////////////////////////////
+  let modificatorV = history[history_counter].selected_mandala.true_of(2,3,4,5) ? 2 : 4
+  let paddingV = 5 * modificatorV
+
+  let lengthForView = (history[history_counter].length_of_title*modificatorV+5+paddingV) //размер объекта
+  let vFov = camera.fov * Math.PI / 180 //вычисление градуса положения камеры
+  let vDist = lengthForView / (2 * Math.tan( vFov / 2 )) //расчёт дистанции видимости
+  history[history_counter].camera_range = vDist
+  camera.position.set( 0, 0, history[history_counter].camera_range)
 
 
   ///////////ВЫБОР АЛГОРИТМА РАСЧЁТА///////////

@@ -27,7 +27,7 @@ import {dots_visibler,
         border_visual,
         x_border_visual,
         grid} from './modules/visual_constructors.js'
-
+import {autofocus} from './modules/camera_autofocus.js'
 
 //модули для обработки DOM элементов
 import {title_input,
@@ -152,15 +152,7 @@ function init() {
   //в начало массива
   string_for_algorithms.unshift( summ_to_zero_element )
 
-  //////////////////////////////////////////////////////
-  let modificatorV = history[history_counter].selected_mandala.true_of(2,3,4,5) ? 2 : 4
-  let paddingV = 5 * modificatorV
-
-  let lengthForView = (history[history_counter].length_of_title*modificatorV+5+paddingV) //размер объекта
-  let vFov = camera.fov * Math.PI / 180 //вычисление градуса положения камеры
-  let vDist = lengthForView / (2 * Math.tan( vFov / 2 )) //расчёт дистанции видимости
-  history[history_counter].camera_range = vDist
-  camera.position.set( 0, 0, history[history_counter].camera_range)
+  
 
 
   ///////////ВЫБОР АЛГОРИТМА РАСЧЁТА///////////
@@ -298,6 +290,28 @@ function init() {
   numeric_adaptation_Node_elements(input_string_array, numeric_adaptation, history[history_counter].length_of_title)    
 
   ///////////////////////////////////////////////////
+//////////////////////////////////////////////////////
+  // let modificatorV = history[history_counter].selected_mandala.true_of(2,3,4,5) ? 2 : 4
+  // // let paddingV = 4 * modificatorV
+
+  // //размер объекта
+  // let lengthForView = history[history_counter].length_of_title*modificatorV+3
+  
+  // //высота верхнего блока
+  // let title_size = document.querySelector('header.title').offsetHeight
+  // let canvas = document.querySelector('canvas')
+  // let header_padding = ( canvas.height - title_size*3 )/canvas.height
+
+  // //вычисление градуса положения камеры
+  // let vFov = camera.fov * Math.PI / 180
+  // let vh_mode = canvas.width < canvas.height ? canvas.height / canvas.width : 1
+  // //расчёт дистанции видимости
+  // let vDist = (lengthForView / 2 /  Math.tan( vFov / 2 ) * vh_mode ) / header_padding
+  // // * (canvas.height / canvas.width )
+  // history[history_counter].camera_range = vDist
+  // camera.position.set( 0, 0, history[history_counter].camera_range)
+
+  autofocus();
 
 }; //init() end bracket
 

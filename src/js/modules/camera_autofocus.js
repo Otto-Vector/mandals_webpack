@@ -36,8 +36,6 @@ function autofocus() {
 
   history[history_counter].camera_range = vDist
 
-
-  
   camera.position.set( 0, 0, history[history_counter].camera_range)  
 }
 

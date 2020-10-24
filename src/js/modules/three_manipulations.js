@@ -1,6 +1,7 @@
 import * as THREE from '../three.min.js'
 import { OrbitControls } from '../OrbitControls.js'
 import {history, history_counter} from '../modules/history.js'
+import {autofocus} from './camera_autofocus.js'
 
 /////////////////////////////////////////////////////////////////////////////
   //добавил сцену
@@ -34,6 +35,7 @@ function onWindowResize() {
 
   controls.update() //для сохранения пропорций при динамическом изменении ширины экрана
 
+  autofocus()
 }
 
 

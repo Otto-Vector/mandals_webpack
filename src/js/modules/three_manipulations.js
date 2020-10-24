@@ -45,7 +45,7 @@ function animate() {
   // рендеринг
   controls.update() //манипуляция со сценой
   renderer.render( scene, camera )
-  history[history_counter].camera_range = camera.position.z
+  // history[history_counter].camera_range = camera.position.z
 }
 
 

@@ -3,29 +3,33 @@ import {camera} from './three_manipulations.js'
 
 
 function autofocus() {
+  
   let modificatorV = history[history_counter].selected_mandala.true_of(2,3,4,5) ? 2 : 4
-  // let paddingV = 4 * modificatorV
 
   //размер объекта
-  let lengthForView = history[history_counter].length_of_title*modificatorV+3
-
+  let lengthForView = history[history_counter].length_of_title*modificatorV+5
+  
   //высота верхнего блока
-  let before_title_pad = 80
-  let title_size = document.querySelector('header.title').offsetHeight + before_title_pad
+  let title_height = document.querySelector('header.title').offsetHeight
+  //без дополнительго отступа всё равно криво работает. это оптимальный
+  let after_title_pad = 80
+  title_height += after_title_pad
+
+  //для размера поля откуда брать ширину и высоту
   let canvas = document.querySelector('canvas')
+  
+  //путём брейншторма родилась эта формула
+  let pass_pad = (size_of_object, pad_percent) => 
+    (size_of_object*pad_percent)/(1-pad_percent)*2+1
 
-  function effective_title(lengthForView_fn, plus = 1 ) {
+  //изменненный размер видимого объекта для дальнейшей фокусировки
+  lengthForView += pass_pad( lengthForView, title_height / canvas.height )
 
-    let size_of_one_square = canvas.height / (lengthForView_fn + plus)
-    
-    return (plus * size_of_one_square > title_size) ?
-      plus*2+1 : effective_title( lengthForView_fn, ++plus )
-  }
 
-  lengthForView += effective_title(lengthForView)
 
   //вычисление градуса положения камеры
   let vFov = camera.fov * Math.PI / 180
+  //соотношение для широкого экрана и для узкого телефонного
   let vh_mode = canvas.width < canvas.height ? canvas.height / canvas.width : 1
   //расчёт дистанции видимости
   let vDist = (lengthForView / 2 /  Math.tan( vFov / 2 ) * vh_mode )

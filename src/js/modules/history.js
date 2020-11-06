@@ -41,7 +41,7 @@ function copy_history() {
 }
 
 function copy_history_colors() {
-	history[history_counter].visible_colors 		= history[history_counter-1].visible_colors
+	history[history_counter].visible_colors 		= [...history[history_counter-1].visible_colors]
   history[history_counter].second_color_mode  = history[history_counter-1].second_color_mode
   history[history_counter].gray_mode          = history[history_counter-1].gray_mode
   history[history_counter].second_gray_mode  	= history[history_counter-1].second_gray_mode
@@ -54,6 +54,7 @@ function copy_history_visual() {
   history[history_counter].border_mode 				= history[history_counter-1].border_mode
   history[history_counter].number_mode 				= history[history_counter-1].number_mode
 }
+
 function so_crit_value_add(_new_){
     
     let crit_value = (history_counter+_new_ < 0 || history_counter+_new_ >= history.length)

@@ -7,7 +7,7 @@ function autofocus() {
   let modificatorV = history[history_counter].selected_mandala.true_of(2,3,4,5) ? 2 : 4
 
   //размер объекта
-  let lengthForView = history[history_counter].length_of_title*modificatorV+5
+  let lengthForView = history[history_counter].length_of_title*modificatorV+3
   
   //высота верхнего блока
   let title_height = document.querySelector('header.title').offsetHeight
@@ -20,19 +20,21 @@ function autofocus() {
   
   //путём брейншторма родилась эта формула
   let pass_pad = (size_of_object, pad_percent) => 
-    (size_of_object*pad_percent)/(1-pad_percent)*2+1
+    ((size_of_object*pad_percent)/(1-pad_percent))*2+1
 
+  let pad_perc = title_height / canvas.height
   //изменненный размер видимого объекта для дальнейшей фокусировки
-  lengthForView += pass_pad( lengthForView, title_height / canvas.height )
-
-
+  lengthForView += pass_pad( lengthForView, pad_perc )
 
   //вычисление градуса положения камеры
   let vFov = camera.fov * Math.PI / 180
+
   //соотношение для широкого экрана и для узкого телефонного
   let vh_mode = canvas.width < canvas.height ? canvas.height / canvas.width : 1
   //расчёт дистанции видимости
-  let vDist = (lengthForView / 2 /  Math.tan( vFov / 2 ) * vh_mode )
+  let vDist = lengthForView / 2 /  Math.tan( vFov / 2 ) * vh_mode
+  console.log("vDist = "+vDist)
+  // camera.fov = 2 * Math.atan( ( lengthForView / vh_mode ) / ( 2 * vDist ) ) * ( 180 / Math.PI )
 
   history[history_counter].camera_range = vDist
 

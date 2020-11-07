@@ -63,6 +63,7 @@ header.title {
 
 /*БЛОК КНОПОК*/
 
+/*панель кнопок справа*/
 section.sidebar #palitra {
     padding-right: 5px;
     background-color: rgba(0,0,0,0);
@@ -71,10 +72,11 @@ section.sidebar #palitra {
 
 @import 'palitra_buttons.scss';
 
+/*панель кнопок слева*/
 #left_panel {
     position: absolute;
     top: $top_buttons;
-    left: 10px;
+    left: 5px;
 }
 
 /*стили чекбоксов*/

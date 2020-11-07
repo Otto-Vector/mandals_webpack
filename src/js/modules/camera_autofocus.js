@@ -33,7 +33,6 @@ function autofocus() {
   let vh_mode = canvas.width < canvas.height ? canvas.height / canvas.width : 1
   //расчёт дистанции видимости
   let vDist = lengthForView / 2 /  Math.tan( vFov / 2 ) * vh_mode
-  console.log("vDist = "+vDist)
   // camera.fov = 2 * Math.atan( ( lengthForView / vh_mode ) / ( 2 * vDist ) ) * ( 180 / Math.PI )
 
   history[history_counter].camera_range = vDist

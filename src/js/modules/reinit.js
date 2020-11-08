@@ -12,8 +12,11 @@ let reinit = function (_new = 0) {
   //добавление записи в историю только при значении "0"
   if (_new==0) {
     add_history()
-    if (color_check.checked) copy_history_colors()
-    if (visual_check.checked) copy_history_visual()
+    // if (color_check.checked) copy_history_colors()
+    if (visual_check.checked) {
+      copy_history_visual()
+      copy_history_colors()
+    }
   }
   //проверка на крит.значения массива history
   //(не меньше нуля и не больше размера массива)

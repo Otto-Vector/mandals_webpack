@@ -9,7 +9,7 @@
   }
 
   &__input {
-  @include invisible;
+    @include invisible;
   }
 
   &__box {
@@ -20,7 +20,8 @@
       color: $dark-50;
       radius: 4px;
       width: 1px;
-      }
+    }
+    background-color: whitesmoke;
     transition: .3s;
   }
 

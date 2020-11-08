@@ -105,15 +105,7 @@ function init() {
   //перекрас материала по новым цветовым схемам
   color_material_set()
 
-  /////////////БЛОК ОБРАБОТКИ ДАЛЬНОСТИ КАМЕРЫ///////////////////////////////////////////////
-  
-  //здесь будет адаптация отдаления камеры по размеру вводимого значения
 
-  // if (history[history_counter].selected_mandala.true_of(2,3,4,5)) camera.position.set( 0, 0, history[history_counter].camera_range ) //60 //позиция камеры для малых квадратов
-  // if (history[history_counter].selected_mandala.true_of(6,7,8,9)) camera.position.set( 0, 0, history[history_counter].camera_range == 60 ? 120 : history[history_counter].camera_range ) //позиция камеры для больших квадратов
-  // console.log(2 * Math.tan( vFov / 2 ) * history[history_counter].camera_range);
-  // camera.fov = 2 * Math.atan( height / ( 2 * dist ) ) * ( 180 / Math.PI );
-  // camera.position.set(0,0, 2 * Math.atan( (19) / ( 2 * 10 ) ) * ( 180 / Math.PI ) );
   ///////////////БЛОК ОБРАБОТКИ ВВОДИМОЙ СТРОКИ///////////////////////////////////////////////
 
   ///заменяемая строка при неверном вводе (сейчас вводит дату)
@@ -289,29 +281,11 @@ function init() {
   //запуск функции сборки    
   numeric_adaptation_Node_elements(input_string_array, numeric_adaptation, history[history_counter].length_of_title)    
 
-  ///////////////////////////////////////////////////
-//////////////////////////////////////////////////////
-  // let modificatorV = history[history_counter].selected_mandala.true_of(2,3,4,5) ? 2 : 4
-  // // let paddingV = 4 * modificatorV
 
-  // //размер объекта
-  // let lengthForView = history[history_counter].length_of_title*modificatorV+3
   
-  // //высота верхнего блока
-  // let title_size = document.querySelector('header.title').offsetHeight
-  // let canvas = document.querySelector('canvas')
-  // let header_padding = ( canvas.height - title_size*3 )/canvas.height
-
-  // //вычисление градуса положения камеры
-  // let vFov = camera.fov * Math.PI / 180
-  // let vh_mode = canvas.width < canvas.height ? canvas.height / canvas.width : 1
-  // //расчёт дистанции видимости
-  // let vDist = (lengthForView / 2 /  Math.tan( vFov / 2 ) * vh_mode ) / header_padding
-  // // * (canvas.height / canvas.width )
-  // history[history_counter].camera_range = vDist
-  // camera.position.set( 0, 0, history[history_counter].camera_range)
-
-  autofocus();
+  // onWindowResize()
+  //автофокусировка дальности камеры в зависимости от размера экрана и т.п.
+  autofocus()
 
 }; //init() end bracket
 

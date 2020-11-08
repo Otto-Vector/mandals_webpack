@@ -4,10 +4,10 @@ import {camera} from './three_manipulations.js'
 
 function autofocus() {
   
-  let modificatorV = history[history_counter].selected_mandala.true_of(2,3,4,5) ? 2 : 4
+  let modificatorV = history[history_counter].selected_mandala.true_of(2,3,4,5) ? 1 : 2
 
   //размер объекта
-  let lengthForView = history[history_counter].length_of_title*modificatorV+3
+  let lengthForView = history[history_counter].length_of_title*(2*modificatorV)+(3+modificatorV)
   
   //высота верхнего блока
   let title_height = document.querySelector('header.title').offsetHeight

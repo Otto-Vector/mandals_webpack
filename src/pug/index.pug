@@ -34,57 +34,59 @@ body
           div 0
         - }
         
-        - let right_panel = 0;
-      #palitra
-        - right_panel++;
-        .palitra_button(title='Статистика') S
-        - for (let i=1; i<10; i++) {
-        - right_panel++;
-          .palitra_button( title = i ) #{i}
-        - }
-        - right_panel++;
-        .palitra_button(title='Цветовые схемы') C
-        - right_panel++;
-        .palitra_button(title='Серая схема') G
-        - right_panel++;
-        .palitra_button(title='Убрать помощь справа' position='right') ?
+        - let right_panel = [{title:'Статистика', content : 'S'},
+        - {title: '1', content : '1'},
+        - {title: '2', content : '2'},
+        - {title: '3', content : '3'},
+        - {title: '4', content : '4'},
+        - {title: '5', content : '5'},
+        - {title: '6', content : '6'},
+        - {title: '7', content : '7'},
+        - {title: '8', content : '8'},
+        - {title: '9', content : '9'},
+        - {title: 'Цветовые схемы', content : 'C'},
+        - {title: 'Серая схема', content : 'G'},
+        - {title: 'Убрать помощь справа', content : '?', position : 'right'},
+        - ];
 
-      - let left_panel = 0;
+      #palitra
+        - for (let i=0; i<right_panel.length; i++) {
+          .palitra_button( title=right_panel[i].title position = right_panel[i].position) #{right_panel[i].content}
+        - }
+        
+
+        - let left_panel = [{title:'Убрать сетку', content : '#'},
+        - {title: 'Убрать все цвета', content : 'X'},
+        - {title: 'Поменять активные с невидимыми', content : '@'},
+        - {title: 'Вернуть все цвета', content : 'A'},
+        - {title: 'Поменять цвет обводки', content : 'B'},
+        - {title: 'Убрать/отобразить обводку', content : 'b'},
+        - {title: 'Убрать/отобразить цифры', content : '№'},
+        - {title: 'Точечный режим', content : '\u2219'},
+        - {title: 'Приблизить', content : '+'},
+        - {title: 'Отдалить', content : '-'},
+        - {title: 'Развернуть на весь экран', content : '\u25A3'},
+        - {title: 'Сохранить настройки отображения', name : 'visual_check'},
+        - {title: 'Убрать помощь слева', content : '?', position : 'left'},
+        - ];
+
     #left_panel
-      - left_panel++;
-      .palitra_button(title='Убрать сетку') #
-      - left_panel++;
-      .palitra_button(title='Убрать все цвета') X
-      - left_panel++;
-      .palitra_button(title='Поменять активные с невидимыми') @
-      - left_panel++;
-      .palitra_button(title='Вернуть все цвета') A
-      - left_panel++;
-      .palitra_button(title='Поменять цвет обводки') B
-      - left_panel++;
-      .palitra_button(title='Убрать/отобразить обводку') b
-      - left_panel++;
-      .palitra_button(title='Убрать/отобразить цифры') №
-      - left_panel++;
-      .palitra_button(title='Точечный режим') &#8729;
-      - left_panel++;
-      .palitra_button(title='Приблизить') +
-      - left_panel++;
-      .palitra_button(title='Отдалить') -
-      - left_panel++;
-      .palitra_button(title='Развернуть на весь экран') &#9635;
-      - left_panel++;
-      +checkbox({title:"Сохранить настройки отображения", name: "visual_check"})
-      - left_panel++;
-      .palitra_button(title='Убрать помощь слева' position = 'left') ?
+      - for (let i=0; i<left_panel.length; i++) {
+      - if (!left_panel[i].name) {
+        .palitra_button( title=left_panel[i].title position = left_panel[i].position) #{left_panel[i].content}
+      - } else {
+        +checkbox( {title: left_panel[i].title, name: left_panel[i].name} )
+      - }
+      - }
+      
 
     #help_panel.left
-      - for (let i=1; i<=left_panel; i++) {
+      - for (let i=0; i<left_panel.length; i++) {
         +help_description
       - }
 
     #help_panel.right
-      - for (let i=1; i<=right_panel; i++) {
+      - for (let i=0; i< right_panel.length; i++) {
         +help_description
       - }
 

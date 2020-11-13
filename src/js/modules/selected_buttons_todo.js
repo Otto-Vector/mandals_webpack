@@ -8,6 +8,7 @@ import {palitra, palitra_button__unactive_visibler, palitra_button__colored,
         palitra_button__check_unactive} from '../nodmodules/palitra_sort_buttons.js'
 import {all_visibler_colors, toggle_visibler} from './support.js'
 import {color_material_for_border, color_material_set} from './visual_constructors.js'
+import {help_panel_vis} from '../nodmodules/help_description.js'
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 ///МАНИПУЛЯЦИИ С ПРИМЕНЕНИЕМ И ОСЛЕЖИВАНИЕМ СОБЫТИЙ НАЖАТИЯ НА ОБЪЕКТЫ И КНОПКИ НА БОКОВОЙ ПАНЕЛИ///
@@ -212,7 +213,10 @@ function selected_button(selected_target) { //передаётся символ 
   }
   
   if (selected_html_content === "?") {
-    help_panel.classList.toggle('active')
+      //берем данные из тега значение position (left/right) у кнопки
+      let position = selected_target.getAttribute('position')
+      //активируем нужную панель помощи
+      help_panel_vis(position)
   }
   
   //пересборка отображения кнопок левой панели

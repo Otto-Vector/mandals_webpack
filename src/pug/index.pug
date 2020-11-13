@@ -37,11 +37,11 @@ body
       #palitra
         .palitra_button(title='Статистика') S
         - for (let i=1; i<10; i++) {
-          .palitra_button #{i}
+          .palitra_button( title = i ) #{i}
         - }
-        //- +checkbox({title:"Сохранить цветовые настройки", name: "color_check"})
         .palitra_button(title='Цветовые схемы') C
         .palitra_button(title='Серая схема') G
+        .palitra_button(title='Убрать помощь справа' position='right') ?
 
     #left_panel
       .palitra_button(title='Убрать сетку') #
@@ -55,13 +55,17 @@ body
       .palitra_button(title='Приблизить') +
       .palitra_button(title='Отдалить') -
       +checkbox({title:"Сохранить настройки отображения", name: "visual_check"})
-      .palitra_button(title='Помощь') ?
+      .palitra_button(title='Убрать помощь слева' position = 'left') ?
 
-    #help_panel
+    #help_panel.left
       - for (let i=1; i<=12; i++) {
         +help_description
       - }
 
+    #help_panel.right
+        - for (let i=1; i<=13; i++) {
+          +help_description
+        - }
 
     footer
       button#undo_button.bg_undo_redo(title='Предыдущее значение')

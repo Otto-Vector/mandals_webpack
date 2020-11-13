@@ -1,13 +1,22 @@
 #help_panel {
+
     position: absolute;
     top: $top_buttons;
-    left: 50px;
-
     transform: scaleX(0);
-    transform-origin: left;
-    
     transition: 0.5s;
     transition-timing-function: cubic-bezier(1,1,0,1);
+
+    &.left {
+        text-align: left;
+        left: 50px;
+        transform-origin: left;
+    }
+
+    &.right {
+        text-align: right;
+        right: 50px;
+        transform-origin: right;
+    }
 
     &.active {
     	transform: scaleX(1);

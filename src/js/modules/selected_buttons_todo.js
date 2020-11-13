@@ -212,9 +212,16 @@ function selected_button(selected_target) { //передаётся символ 
     camera.position.z = camera.position.z + 9
   }
   
+  if (selected_html_content == "\u25A3") {
+
+    console.log('\u25A3')
+  }
+
+  //активация панели помощи справа или слева
   if (selected_html_content === "?") {
       //берем данные из тега значение position (left/right) у кнопки
       let position = selected_target.getAttribute('position')
+      console.log(selected_target.position)
       //активируем нужную панель помощи
       help_panel_vis(position)
   }

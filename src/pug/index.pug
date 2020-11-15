@@ -34,7 +34,8 @@ body
           div 0
         - }
         
-        - let right_panel = [{title:'Статистика', content : 'S'},
+        - let right_panel = [
+        - {title:'Статистика', content : 'S'},
         - {title: '1', content : '1'},
         - {title: '2', content : '2'},
         - {title: '3', content : '3'},
@@ -55,7 +56,8 @@ body
         - }
         
 
-        - let left_panel = [{title:'Убрать сетку', content : '#'},
+        - let left_panel = [
+        - {title:'Убрать сетку', content : '#'},
         - {title: 'Убрать все цвета', content : 'X'},
         - {title: 'Поменять активные с невидимыми', content : '@'},
         - {title: 'Вернуть все цвета', content : 'A'},
@@ -72,11 +74,10 @@ body
 
     #left_panel
       - for (let i=0; i<left_panel.length; i++) {
-      - if (!left_panel[i].name) {
+      - if (!left_panel[i].name)
         .palitra_button( title=left_panel[i].title position = left_panel[i].position) #{left_panel[i].content}
-      - } else {
+      - else
         +checkbox( {title: left_panel[i].title, name: left_panel[i].name} )
-      - }
       - }
       
 

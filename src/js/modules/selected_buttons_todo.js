@@ -211,9 +211,9 @@ function selected_button(selected_target) { //передаётся символ 
   if (selected_html_content === "-") {
     camera.position.z = camera.position.z + 9
   }
-  
-  if (selected_html_content == "\u25A3") {
 
+  //расширение на весь экран (пока пустое)
+  if (selected_html_content == "\u25A3") {
     console.log('\u25A3')
   }
 

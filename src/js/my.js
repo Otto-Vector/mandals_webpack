@@ -107,6 +107,8 @@ function init() {
 
 
   ///////////////БЛОК ОБРАБОТКИ ВВОДИМОЙ СТРОКИ///////////////////////////////////////////////
+  
+  let default_start_string = ["Любовь", "Жизнь", "Гармония", "Покой", "Совершенство"]
 
   ///заменяемая строка при неверном вводе (сейчас вводит дату)
   let default_string = "01234567890" //тестовая строка на которую заменяется при неверном вводе
@@ -116,7 +118,8 @@ function init() {
   default_string = date_from_pc.getDate().zero_include()
                  + (date_from_pc.getMonth()+1).zero_include()
                  + date_from_pc.getFullYear()
-
+  
+  default_string = default_start_string[Math.floor(Math.random()*default_start_string.length)]
   
   //нормализация введенной строки для корректного перевода в цифровой массив
   history[history_counter].title_of_mandala = modification_to_normal(history[history_counter].title_of_mandala, default_string)

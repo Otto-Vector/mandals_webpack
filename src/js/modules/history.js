@@ -15,8 +15,8 @@ let history_default = {
           number_mode				: false,
           visible_colors  	: [true,true,true,true,true,true,true,true,true,true],
           second_color_mode : false,
-          gray_mode         : false,
-          second_gray_mode  : false,
+          gray_mode         : true,
+          second_gray_mode  : true,
           // camera_range      : 30,
           swich_mode        : function(mode) {this[mode] = !this[mode]; return this[mode]}
           }
